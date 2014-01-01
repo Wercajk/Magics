@@ -1,0 +1,4 @@
+Magics
+======
+
+Magics static website
