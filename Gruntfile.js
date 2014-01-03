@@ -29,15 +29,15 @@ module.exports = function (grunt) {
         watch: {
             js: {
                 files: ['<%= yeoman.app %>/scripts/{,*/}*.js'],
-                tasks: ['jshint'],
+                // tasks: ['jshint'],
                 options: {
                     livereload: true
                 }
             },
-            jstest: {
-                files: ['test/spec/{,*/}*.js'],
-                tasks: ['test:watch']
-            },
+            // jstest: {
+            //     files: ['test/spec/{,*/}*.js'],
+            //     tasks: ['test:watch']
+            // },
             gruntfile: {
                 files: ['Gruntfile.js']
             },
@@ -55,6 +55,7 @@ module.exports = function (grunt) {
                 },
                 files: [
                     '<%= yeoman.app %>/{,*/}.html',
+                    '<%= yeoman.app %>/*.html',
                     '.tmp/styles/{,*/}*.css',
                     '<%= yeoman.app %>/images/{,*/}*.{gif,jpeg,jpg,png,svg,webp}'
                 ]

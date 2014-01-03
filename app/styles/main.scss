@@ -2,6 +2,7 @@ $icon-font-path: "/bower_components/sass-bootstrap/fonts/";
 
 @import 'sass-bootstrap/lib/bootstrap';
 
+
 .browsehappy {
     margin: 0.2em 0;
     background: #ccc;
@@ -14,7 +15,7 @@ body {
     padding-top: 20px;
     padding-bottom: 20px;
     background: url(/images/background.jpg);
-    /*background: url(/images/master.jpg);*/
+    // background: url(/images/master.jpg);
     background-position: 50% 0;
     background-repeat: no-repeat;
     font-family: Calibri, Candara, Segoe, "Segoe UI", Optima, Arial, sans-serif;
