@@ -1,0 +1,43 @@
+doctype
+//if lt IE 7
+    <html class="no-js lt-ie9 lt-ie8 lt-ie7">
+//if IE 7
+    <html class="no-js lt-ie9 lt-ie8">
+//if IE 8
+    <html class="no-js lt-ie9">
+// [if gt IE 8] <!
+html(class="no-js", lang="en")
+    // <![endif]
+  head
+    meta(charset='utf-8')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge,chrome=1')
+    title
+    meta(name='description', content='')
+    meta(name='viewport', content='width=device-width')
+    //
+       Place favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons
+    script
+      // Enable Brunch HTML/CSS Auto Reload
+      window.brunch = window.brunch || {};
+    link(rel='stylesheet', href='css/app.css')
+  body
+    .container
+      .row-fluid
+        .span12.magics-main-logo
+          img(alt='Magics', src='images/Magics-Logo.png')
+        .span12.loading-circle
+          img(alt='Magics', src='images/Loading.gif')
+        .span12.loading-claim The revolutionary thin diaper
+
+      include includes/menu
+
+
+      .body
+      .footer
+        p x
+    script(src='js/app.js', onload='require(\'initialize\');')
+    script.
+      var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
+      (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+      g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+      s.parentNode.insertBefore(g,s)}(document,'script'));

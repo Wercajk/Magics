@@ -13,13 +13,48 @@ body
   padding-top 20px
   padding-bottom 20px
   // background url(/images/background.jpg)
-  background url(/images/master.jpg)
+  background url(/images/master-color.jpg)
   background-position 50% 0
   background-repeat no-repeat
   font-family Calibri, Candara, Segoe, "Segoe UI", Optima, Arial, sans-serif
 
+.menu
+  text-transform uppercase
+  font-size 20px
+  font-weight normal
+
+
+.menu > ul
+  border-radius 8px
+  background url(/images/Menu-Background.png) no-repeat
+  background-position 50% 50%
+  width 607px
+
+.menu > ul > li
+  padding 11px 22px
+
+.menu > ul > li > a
+  color #fff
+  padding 5px 8px
+
+
+.nav-pills>li.active>a, .nav-pills>li.active>a:hover, .nav-pills>li.active>a:focus {
+  background: none
+}
+
+.nav-pills>li.active
+  background url(/images/Menu-Selected.png) no-repeat
+
+.nav>li>a:hover, .nav>li>a:focus {
+  text-decoration: none;
+  background-color: #151C64;
+}
+
+
 .body
   height 2500px
+
+
 
 .magics-main-logo
   text-align center
@@ -36,4 +71,7 @@ body
   font-size 33px
   font-wight bold
   color #fff
+
+
+
 

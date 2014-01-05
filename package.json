@@ -22,14 +22,17 @@
         "css-brunch": ">= 1.0 < 1.8",
         "stylus-brunch": ">= 1.0 < 1.8",
 
-        "handlebars-brunch": ">= 1.0 < 1.8",
+        "static-handlebars-brunch": "~0.1.0",
 
         "uglify-js-brunch": ">= 1.0 < 1.8",
         "clean-css-brunch": ">= 1.0 < 1.8",
 
         "coffeelint-brunch": ">= 1.0 < 1.8",
         "imageoptmizer-brunch": "~0.0.3",
-        "auto-reload-brunch": ">= 1.0 < 1.8"
+        "auto-reload-brunch": ">= 1.0 < 1.8",
+
+        "jade-brunch": ">= 1.7.5",
+        "static-jade-brunch": ">= 1.7.0"
     },
     "devDependencies": {
         "karma": "~0.10",

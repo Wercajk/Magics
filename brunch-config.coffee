@@ -16,6 +16,9 @@ exports.config =
             joinTo: 'js/app.js'
 
     plugins:
+        plugins:
+            jade:
+              pretty: yes
         autoReload:
             enabled:
                 js: on
