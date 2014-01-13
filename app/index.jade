@@ -20,30 +20,29 @@ html(class="no-js", lang="en")
     link(rel='stylesheet', href='css/app.css')
 
   body
-    .container
-      // Loading
-      .loading
-        include includes/loading
+    // Loading
+    .page.page_loading
+      include includes/loading
 
-      // Products
-      .products
-        include includes/menu
-        include includes/products
+      //- // Products
+      //- .products
+      //-   include includes/menu
+      //-   include includes/products
 
-      // About
-      .about
-        include includes/menu
-        include includes/about
+      //- // About
+      //- .about
+      //-   include includes/menu
+      //-   include includes/about
 
 
-      // Contact
-      .contact
-        include includes/menu
-        include includes/contact
+      //- // Contact
+      //- .contact
+      //-   include includes/menu
+      //-   include includes/contact
 
-      // Footer
-      .footer.cf
-        p All Rights Reserved Drylock Technologies | 2013 -2014 Created by Wercajk
+      //- // Footer
+      //- .footer.cf
+      //-   p All Rights Reserved Drylock Technologies | 2013 -2014 Created by Wercajk
 
     script(src='js/app.js', onload='require(\'initialize\');')
     script.
