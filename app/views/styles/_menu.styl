@@ -10,6 +10,7 @@
 
 .menu > ul > li
   padding 11px 7px
+  margin-top 16px
 
 .menu > ul > li > a
   color #fff
@@ -18,13 +19,11 @@
 
 .menu > ul > li > a.longer
   width 154px
+  padding-left 0
+  padding-right 0
 
 .nav-pills>li.active>a, .nav-pills>li.active>a:hover, .nav-pills>li.active>a:focus
   background: none
-
-.nav-pills>li.active
-  background url(/images/Menu-Selected.png) no-repeat
-  background-position 50% 50%
 
 .nav>li>a:hover, .nav>li>a:focus
   text-decoration none
@@ -43,15 +42,29 @@
   // top 11px
   // right -10px
 
-.products-menu
-  margin-top 263px
+// .products-menu
+//   margin-top 263px
 
 .nav>li>a:hover, .nav>li>a:focus {
   text-decoration: none;
   background: none;
 }
 
-.nav>li>a {
-  text-decoration: none;
-  background-color: none;
-}
+.nav>li>a
+  text-decoration none
+  background-color none
+
+
+menu-active()
+  background url(/images/Menu-Selected.png) no-repeat
+  background-position 50% 50%
+
+.products .products-link
+  menu-active()
+
+.about .about-link
+  menu-active()
+
+.contact .contact-link
+  menu-active()
+
