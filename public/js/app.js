@@ -16453,10 +16453,74 @@ if ( typeof window === "object" && typeof window.document === "object" ) {
   connect();
 })();
 
+;require.register("includes/about", function(exports, require, module) {
+var __templateData = function anonymous(locals) {
+var buf = [];
+buf.push("<div class=\"headline\"><h2>World class product innovation</h2><h3>Revolutionary Technology</h3></div><div class=\"row\"><div class=\"col-md-12\">Drylock</div><div class=\"col-md-12\">original fluffless technology</div><div class=\"col-md-12\"><span>Allows for thin, comfortable and highly absorbent products. The thinnest and fastest performance diaper on the market. Products with integrated fluid management system. The product interacts with and responds to the liquid. Breakthrough engineering and product know-how.</span><img src=\"images/About-Diaper.png\"/></div></div><div class=\"row\"><div class=\"col-md-12\">Ecological Benefits</div><div class=\"col-md-12\"><ul><li>Fluffless diaper: eliminating cellulose saves millions of trees each year.</li><li>Glueless core: elimination of glue saves tons of chemicals each year.</li><li>Compactness of diaper: saves packaging material and reduces transportation and warehousing requirements.</li></ul><img src=\"images/Product-Recycle.png\"/></div></div><div class=\"row\"><div class=\"col-md-12\">A perfect score. In terms of overall performance, Drylock is superior to all US made diapers. Carlos Richer (2012 STUDY COMPARING DRYLOCK WITH ALL MAIN US BRANDS)</div><div class=\"col-md-12\">Saugt mehr und schneller als herkömmliche Produkte. Hy-TecHygiene Consulting</div><div class=\"col-md-12\">Very good in dryness and absorption. Courtray Consulting Labservice</div></div>");;return buf.join("");
+};
+if (typeof define === 'function' && define.amd) {
+  define([], function() {
+    return __templateData;
+  });
+} else if (typeof module === 'object' && module && module.exports) {
+  module.exports = __templateData;
+} else {
+  __templateData;
+}
+});
+
+;require.register("includes/contact", function(exports, require, module) {
+var __templateData = function anonymous(locals) {
+var buf = [];
+buf.push("<div>Drylock Technologies NV\nSpinnerijstraat 14 9240 Zele Belgium\ninfo@drylock.eu\nDrylock Technologies, s.r.o.\nVlámská 801 Hrádek nad Nisou 463 34\nCzech Republic\ninfo.cz@drylock.eu\n￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼\nMy name:\nMy address:\nMessage:</div>");;return buf.join("");
+};
+if (typeof define === 'function' && define.amd) {
+  define([], function() {
+    return __templateData;
+  });
+} else if (typeof module === 'object' && module && module.exports) {
+  module.exports = __templateData;
+} else {
+  __templateData;
+}
+});
+
+;require.register("includes/loading", function(exports, require, module) {
+var __templateData = function anonymous(locals) {
+var buf = [];
+buf.push("<div class=\"row\"><div class=\"col-md-12 magics-main-logo\"><img alt=\"Magics\" src=\"images/Magics-Logo.png\"/></div><div class=\"span12 loading-circle\"><img alt=\"Magics\" src=\"images/Loading.gif\"/></div><div class=\"span12 loading-claim\">The revolutionary thin diaper</div></div>");;return buf.join("");
+};
+if (typeof define === 'function' && define.amd) {
+  define([], function() {
+    return __templateData;
+  });
+} else if (typeof module === 'object' && module && module.exports) {
+  module.exports = __templateData;
+} else {
+  __templateData;
+}
+});
+
 ;require.register("includes/menu", function(exports, require, module) {
 var __templateData = function anonymous(locals) {
 var buf = [];
-buf.push("<div class=\"col-md-2 hidden-xs hidden-sm\"><img src=\"images/Menu-Magics-Logo.png\" class=\"menu-magics-logo\"/></div><div class=\"col-md-8 menu col-xs-12 col-sm-12\"><ul class=\"nav nav-pills\"><li class=\"active\"><a href=\"#Products\">Products</a></li><li class=\"active\"><a href=\"#About\">About</a></li><li class=\"active\"><a href=\"#Contact\">Contact</a></li><li><a href=\"#\" class=\"longer\">Order Online</a></li></ul></div><div class=\"col-md-2 hidden-xs hidden-sm\"><a href=\"http://www.drylock.eu/\" class=\"menu-drylock-logo\"><img src=\"images/Menu-Drylock-Logo.png\"/></a></div>");;return buf.join("");
+buf.push("<div class=\"row\"><div class=\"col-md-2 hidden-xs hidden-sm\"><img src=\"images/Menu-Magics-Logo.png\" class=\"menu-magics-logo\"/></div><div class=\"col-md-8 menu col-xs-12 col-sm-12\"><ul class=\"nav nav-pills\"><li class=\"active\"><a href=\"#Products\">Products</a></li><li class=\"active\"><a href=\"#About\">About</a></li><li class=\"active\"><a href=\"#Contact\">Contact</a></li><li><a href=\"#\" class=\"longer\">Order Online</a></li></ul></div><div class=\"col-md-2 hidden-xs hidden-sm\"><a href=\"http://www.drylock.eu/\" class=\"menu-drylock-logo\"><img src=\"images/Menu-Drylock-Logo.png\"/></a></div></div>");;return buf.join("");
+};
+if (typeof define === 'function' && define.amd) {
+  define([], function() {
+    return __templateData;
+  });
+} else if (typeof module === 'object' && module && module.exports) {
+  module.exports = __templateData;
+} else {
+  __templateData;
+}
+});
+
+;require.register("includes/products", function(exports, require, module) {
+var __templateData = function anonymous(locals) {
+var buf = [];
+buf.push("<div class=\"products-content\"><div class=\"row\"><div class=\"col-md-5 col-md-push-1\"><div class=\"row diapers-detail\"><div class=\"col-md-6\"><div class=\"diapers-info text-right\"><div class=\"title\">NEW BORN</div><div class=\"weight\">2–5 kg</div><div class=\"description\">36 ultra thin diapers</div></div></div><div class=\"col-md-1\"><div class=\"number-circle number-orange\">1</div></div><div class=\"col-md-5\"><img src=\"images/packshots/Magics_1_fin.png\"/></div></div></div><div class=\"col-md-5 col-md-push-1 diapers-2\"><div class=\"row diapers-detail\"><div class=\"col-md-5\"><img src=\"images/packshots/Magics_2_fin.png\"/></div><div class=\"col-md-1\"><div class=\"number-circle number-yellow\">2</div></div><div class=\"col-md-6 text-left\"><div class=\"diapers-info text-left\"><div class=\"title\">MINI</div><div class=\"weight\">3–6 kg</div><div class=\"description\">34 ultra thin diapers</div></div></div></div></div></div><div class=\"row\"><div class=\"col-md-5 col-md-push-1 diapers-3\"><div class=\"row diapers-detail\"><div class=\"col-md-5\"><img src=\"images/packshots/Magics_3_fin.png\"/></div><div class=\"col-md-1\"><div class=\"number-circle number-yellow\">3</div></div><div class=\"col-md-6 text-left\"><div class=\"diapers-info text-left\"><div class=\"title\">MIDI</div><div class=\"weight\">4–9 kg</div><div class=\"description\">31 ultra thin diapers</div></div></div></div></div><div class=\"col-md-5 col-md-push-1 diapers-4\"><div class=\"row diapers-detail\"><div class=\"col-md-5\"><img src=\"images/packshots/Magics_4_fin.png\"/></div><div class=\"col-md-1\"><div class=\"number-circle number-yellow\">4</div></div><div class=\"col-md-6 text-left\"><div class=\"diapers-info text-left\"><div class=\"title\">MAXI</div><div class=\"weight\">7–18 kg</div><div class=\"description\">29 ultra thin diapers</div></div></div></div></div></div><div class=\"row\"><div class=\"col-md-5 col-md-push-1 diapers-5\"><div class=\"row diapers-detail\"><div class=\"col-md-5\"><img src=\"images/packshots/Magics_5_fin.png\"/></div><div class=\"col-md-1\"><div class=\"number-circle number-yellow\">5</div></div><div class=\"col-md-6 text-left\"><div class=\"diapers-info text-left\"><div class=\"title\">JUNIOR</div><div class=\"weight\">11–25 kg</div><div class=\"description\">27 ultra thin diapers</div></div></div></div></div><div class=\"col-md-5 col-md-push-1 diapers-6\"><div class=\"row diapers-detail\"><div class=\"col-md-5\"><img src=\"images/packshots/Magics_6_fin.png\"/></div><div class=\"col-md-1\"><div class=\"number-circle number-yellow\">6</div></div><div class=\"col-md-6 text-left\"><div class=\"diapers-info text-left\"><div class=\"title\">XL</div><div class=\"weight\">16–30kg</div><div class=\"description\">25 ultra thin diapers</div></div></div></div></div></div><div class=\"row\"><div class=\"col-md-12\"><a href=\"http://www.youtube.com/watch?v=-HDieM32pts\"><img src=\"images/Video.png\"/><span>Watch our videos!</span></a></div></div></div>");;return buf.join("");
 };
 if (typeof define === 'function' && define.amd) {
   define([], function() {
@@ -16472,7 +16536,7 @@ if (typeof define === 'function' && define.amd) {
 ;require.register("index", function(exports, require, module) {
 var __templateData = function anonymous(locals) {
 var buf = [];
-buf.push("<!DOCTYPE html><!--[if lt IE 7]><html class=\"no-js lt-ie9 lt-ie8 lt-ie7\"><![endif]--><!--[if IE 7]><html class=\"no-js lt-ie9 lt-ie8\"><![endif]--><!--[if IE 8]><html class=\"no-js lt-ie9\"><![endif]--><!-- [if gt IE 8] <!--><html lang=\"en\" class=\"no-js\"><!-- <![endif]--></html><head><meta charset=\"utf-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\"><title></title><meta name=\"description\" content=\"\"><meta name=\"viewport\" content=\"width=device-width\"><!--<Place>favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons</Place>--><script>// Enable Brunch HTML/CSS Auto Reload\nwindow.brunch = window.brunch || {};</script><link rel=\"stylesheet\" href=\"css/app.css\"></head><body><div class=\"container\"><div class=\"row\"><div class=\"col-md-12 magics-main-logo\"><img alt=\"Magics\" src=\"images/Magics-Logo.png\"></div><div class=\"span12 loading-circle\"><img alt=\"Magics\" src=\"images/Loading.gif\"></div><div class=\"span12 loading-claim\">The revolutionary thin diaper</div></div><div class=\"row products-menu\"><div class=\"col-md-2 hidden-xs hidden-sm\"><img src=\"images/Menu-Magics-Logo.png\"></div><div class=\"col-md-8 menu col-xs-12 col-sm-12\"><ul class=\"nav nav-pills\"><li class=\"active\"><a href=\"#Products\">Products</a></li><li class=\"active\"><a href=\"#About\">About</a></li><li class=\"active\"><a href=\"#Contact\">Contact</a></li><li><a href=\"#\" class=\"longer\">Order Online</a></li></ul></div><div class=\"col-md-2 hidden-xs hidden-sm\"><a href=\"http://www.drylock.eu/\"><img src=\"images/Menu-Drylock-Logo.png\"></a></div></div><div class=\"body\"></div><div class=\"footer\"><p>x</p></div></div><script src=\"js/app.js\" onload=\"require('initialize');\"></script><script>var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];\n(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];\ng.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';\ns.parentNode.insertBefore(g,s)}(document,'script'));</script></body>");;return buf.join("");
+buf.push("<!DOCTYPE html><!--[if lt IE 7]><html class=\"no-js lt-ie9 lt-ie8 lt-ie7\"><![endif]--><!--[if IE 7]><html class=\"no-js lt-ie9 lt-ie8\"><![endif]--><!--[if IE 8]><html class=\"no-js lt-ie9\"><![endif]--><!-- [if gt IE 8] <!--><html lang=\"en\" class=\"no-js\"><!-- <![endif]--><head><meta charset=\"utf-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\"><title>Magics - THE REVOLUTIONARY THIN DIAPER</title><meta name=\"description\" content=\"\"><meta name=\"viewport\" content=\"width=device-width\"><script>window.brunch = window.brunch || {};</script><link rel=\"stylesheet\" href=\"MyFontsWebfontsKit.css\"><link rel=\"stylesheet\" href=\"css/app.css\"></head><body><div class=\"container\"><!-- Loading--><div class=\"loading\"><div class=\"row\"><div class=\"col-md-12 magics-main-logo\"><img alt=\"Magics\" src=\"images/Magics-Logo.png\"></div><div class=\"span12 loading-circle\"><img alt=\"Magics\" src=\"images/Loading.gif\"></div><div class=\"span12 loading-claim\">The revolutionary thin diaper</div></div></div><!-- Products--><div class=\"products\"><div class=\"row\"><div class=\"col-md-2 hidden-xs hidden-sm\"><img src=\"images/Menu-Magics-Logo.png\" class=\"menu-magics-logo\"></div><div class=\"col-md-8 menu col-xs-12 col-sm-12\"><ul class=\"nav nav-pills\"><li class=\"active\"><a href=\"#Products\">Products</a></li><li class=\"active\"><a href=\"#About\">About</a></li><li class=\"active\"><a href=\"#Contact\">Contact</a></li><li><a href=\"#\" class=\"longer\">Order Online</a></li></ul></div><div class=\"col-md-2 hidden-xs hidden-sm\"><a href=\"http://www.drylock.eu/\" class=\"menu-drylock-logo\"><img src=\"images/Menu-Drylock-Logo.png\"></a></div></div><div class=\"row\"><div class=\"col-md-3\"><div class=\"diapers-info text-right\"><div class=\"title\">NEW BORN</div><div class=\"weight\">2–5 kg</div><div class=\"description\">36 ultra thin diapers</div></div></div><div class=\"col-md-1\"><div class=\"number-circle number-orange\">1</div></div><div class=\"col-md-3\"><img src=\"images/packshots/Magics_1_fin.png\"></div></div><div class=\"row\"><div class=\"col-md-12\"><img src=\"images/packshots/Magics_2_fin.png\"><img src=\"images/packshots/Magics_3_fin.png\"><img src=\"images/packshots/Magics_4_fin.png\"><img src=\"images/packshots/Magics_5_fin.png\"><img src=\"images/packshots/Magics_6_fin.png\"><img src=\"images/packshots/Magics_Mats_fin.png\"><img src=\"images/packshots/Magics_Wipes.png\"></div></div><div class=\"row\"><div class=\"col-md-12\"><a href=\"http://www.youtube.com/watch?v=-HDieM32pts\"><img src=\"images/Video.png\"><span>Watch our videos!</span></a></div></div></div><!-- About--><div class=\"about\"><div class=\"row\"><div class=\"col-md-2 hidden-xs hidden-sm\"><img src=\"images/Menu-Magics-Logo.png\" class=\"menu-magics-logo\"></div><div class=\"col-md-8 menu col-xs-12 col-sm-12\"><ul class=\"nav nav-pills\"><li class=\"active\"><a href=\"#Products\">Products</a></li><li class=\"active\"><a href=\"#About\">About</a></li><li class=\"active\"><a href=\"#Contact\">Contact</a></li><li><a href=\"#\" class=\"longer\">Order Online</a></li></ul></div><div class=\"col-md-2 hidden-xs hidden-sm\"><a href=\"http://www.drylock.eu/\" class=\"menu-drylock-logo\"><img src=\"images/Menu-Drylock-Logo.png\"></a></div></div><div class=\"row\"><div class=\"col-md-12\">World class product innovation</div><div class=\"col-md-12\">Revolutionary Technology</div><div class=\"col-md-12\">Drylock</div><div class=\"col-md-12\">original fluffless technology</div><div class=\"col-md-12\"><span>Allows for thin, comfortable and highly absorbent products. The thinnest and fastest performance diaper on the market. Products with integrated fluid management system. The product interacts with and responds to the liquid. Breakthrough engineering and product know-how.</span><img src=\"images/About-Diaper.png\"></div></div><div class=\"row\"><div class=\"col-md-12\">Ecological Benefits</div><div class=\"col-md-12\"><ul><li>Fluffless diaper: eliminating cellulose saves millions of trees each year.</li><li>Glueless core: elimination of glue saves tons of chemicals each year.</li><li>Compactness of diaper: saves packaging material and reduces transportation and warehousing requirements.</li></ul><img src=\"images/Product-Recycle.png\"></div></div><div class=\"row\"><div class=\"col-md-12\">A perfect score. In terms of overall performance, Drylock is superior to all US made diapers. Carlos Richer (2012 STUDY COMPARING DRYLOCK WITH ALL MAIN US BRANDS)</div><div class=\"col-md-12\">Saugt mehr und schneller als herkömmliche Produkte. Hy-TecHygiene Consulting</div><div class=\"col-md-12\">Very good in dryness and absorption. Courtray Consulting Labservice</div></div></div><!-- Contact--><div class=\"contact\"><div class=\"row\"><div class=\"col-md-2 hidden-xs hidden-sm\"><img src=\"images/Menu-Magics-Logo.png\" class=\"menu-magics-logo\"></div><div class=\"col-md-8 menu col-xs-12 col-sm-12\"><ul class=\"nav nav-pills\"><li class=\"active\"><a href=\"#Products\">Products</a></li><li class=\"active\"><a href=\"#About\">About</a></li><li class=\"active\"><a href=\"#Contact\">Contact</a></li><li><a href=\"#\" class=\"longer\">Order Online</a></li></ul></div><div class=\"col-md-2 hidden-xs hidden-sm\"><a href=\"http://www.drylock.eu/\" class=\"menu-drylock-logo\"><img src=\"images/Menu-Drylock-Logo.png\"></a></div></div><div>Drylock Technologies NV\nSpinnerijstraat 14 9240 Zele Belgium\ninfo@drylock.eu\nDrylock Technologies, s.r.o.\nVlámská 801 Hrádek nad Nisou 463 34\nCzech Republic\ninfo.cz@drylock.eu\n￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼\nMy name:\nMy address:\nMessage:</div></div><!-- Footer--><div class=\"footer cf\"><p>All Rights Reserved Drylock Technologies | 2013 -2014 Created by Wercajk</p></div></div><script src=\"js/app.js\" onload=\"require('initialize');\"></script><script>var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];\n(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];\ng.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';\ns.parentNode.insertBefore(g,s)}(document,'script'));</script></body></html>");;return buf.join("");
 };
 if (typeof define === 'function' && define.amd) {
   define([], function() {

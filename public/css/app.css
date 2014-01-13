@@ -595,29 +595,24 @@ table {
 }
 html,
 body {
-  height: 100%;
   width: 100%;
+  font-family: Calibri, Candara, Segoe, "Segoe UI", Optima, Arial, sans-serif;
 }
 body,
 input {
-  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", sans-serif;
   font-weight: 300;
   text-rendering: optimizeLegibility;
 }
-.browsehappy {
-  margin: 0.2em 0;
-  background: #ccc;
-  color: #000;
-  padding: 0.2em 0;
+.cf {
+  zoom: 1;
 }
-/* Space out content a bit */
-body {
-  padding-top: 20px;
-  padding-bottom: 20px;
-  background: url("/images/master-color.jpg");
-  background-position: 50% 0;
-  background-repeat: no-repeat;
-  font-family: Calibri, Candara, Segoe, "Segoe UI", Optima, Arial, sans-serif;
+.cf:before,
+.cf:after {
+  content: "";
+  display: table;
+}
+.cf:after {
+  clear: both;
 }
 .menu > ul {
   text-transform: uppercase;
@@ -656,25 +651,46 @@ body {
   background-color: #151c64;
 }
 .menu-magics-logo {
-  float: right;
+  overflow: visible;
+  float: left;
   position: relative;
-  top: -15px;
-  left: 10px;
 }
 .menu-drylock-logo {
+  float: right;
   position: relative;
-  top: 11px;
-  left: -10px;
 }
 .products-menu {
   margin-top: 263px;
 }
-.body {
-  height: 2500px;
+.nav>li>a:hover,
+.nav>li>a:focus {
+  text-decoration: none;
+  background: none;
+}
+.nav>li>a {
+  text-decoration: none;
+  background-color: none;
+}
+.browsehappy {
+  margin: 0.2em 0;
+  background: #ccc;
+  color: #000;
+  padding: 0.2em 0;
+}
+body {
+  height: 4848px;
+  background: url("/images/master-color.jpg");
+  background-position: 50% 0;
+  background-repeat: no-repeat;
+}
+.loading {
+  position: absolute;
+  top: 96px;
+  left: 0;
+  width: 100%;
 }
 .magics-main-logo {
   text-align: center;
-  margin-top: 78px;
 }
 .loading-circle {
   text-align: center;
@@ -685,8 +701,105 @@ body {
   text-align: center;
   text-transform: uppercase;
   font-size: 33px;
-  font-wight: bold;
+  font-weight: bold;
   color: #fff;
+}
+.products {
+  position: absolute;
+  top: 880px;
+  color: #141a62;
+}
+.products .products-content {
+  margin-top: 85px;
+}
+.products .diapers-2 {
+  padding-top: 115px;
+  padding-left: 35px;
+}
+.products .diapers-detail img {
+  position: relative;
+  top: -28px;
+  left: -6px;
+}
+.products .diapers-detail .number-circle {
+  position: relative;
+  top: -5px;
+  left: -18px;
+}
+.products .diapers-info .title {
+  font-size: 40px;
+  line-height: 1.03;
+  font-weight: bold;
+}
+.products .diapers-info .weight {
+  font-size: 30px;
+  line-height: 0.9;
+}
+.products .diapers-info .description {
+  font-size: 17px;
+}
+.products .number-circle {
+  font-family: FontoonCom;
+  font-style: roman;
+  -webkit-border-radius: 50%;
+  border-radius: 50%;
+  behavior: url("PIE.htc");
+  width: 40px;
+  height: 40px;
+  padding: 4px;
+  color: #fff;
+  font-size: 25px;
+  text-align: center;
+  font-weight: normal;
+}
+.products .number-orange {
+  background: #ff8300;
+}
+.products .number-yellow {
+  background: #fcd003;
+}
+.products .number-green {
+  background: #72bd44;
+}
+.products .number-pink {
+  background: #d91369;
+}
+.products .number-blue {
+  background: #00aced;
+}
+.products .number-violet {
+  background: #5a3f97;
+}
+.about {
+  position: absolute;
+  top: 2365px;
+}
+.about .headline {
+  padding-left: 41px;
+}
+.about .headline h2 {
+  color: #d91369;
+  font-size: 40px;
+  margin-top: 54px;
+  margin-bottom: 5px;
+  font-family: FontoonCom;
+  font-style: roman;
+}
+.about .headline h3 {
+  color: #fff;
+  font-size: 27px;
+  margin-top: 0px;
+  margin-left: 3px;
+  font-family: FontoonCom;
+  font-style: roman;
+}
+.contact {
+  position: absolute;
+  top: 3964px;
+}
+.footer {
+  position: absolute;
+  top: 4200px;
 }
 
 
