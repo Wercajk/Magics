@@ -15769,7 +15769,7 @@ if (typeof define === 'function' && define.amd) {
 ;require.register("includes/contact", function(exports, require, module) {
 var __templateData = function anonymous(locals) {
 var buf = [];
-buf.push("<div>Drylock Technologies NV\nSpinnerijstraat 14 9240 Zele Belgium\ninfo@drylock.eu\nDrylock Technologies, s.r.o.\nVlámská 801 Hrádek nad Nisou 463 34\nCzech Republic\ninfo.cz@drylock.eu\n￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼\nMy name:\nMy address:\nMessage:</div>");;return buf.join("");
+;return buf.join("");
 };
 if (typeof define === 'function' && define.amd) {
   define([], function() {
