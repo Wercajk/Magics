@@ -614,20 +614,24 @@ input {
 .cf:after {
   clear: both;
 }
-.menu > ul {
+.menu {
+  margin: 0 auto;
+  width: 940px;
+}
+.menu ul {
   text-transform: uppercase;
   font-size: 20px;
   font-weight: normal;
-  margin: 0 auto;
   -webkit-border-radius: 8px;
   border-radius: 8px;
   background: url("/images/Menu-Background.png") no-repeat;
   background-position: 50% 50%;
   width: 607px;
+  float: left;
 }
 .menu > ul > li {
   padding: 11px 7px;
-  margin-top: 16px;
+  margin-top: 0px;
 }
 .menu > ul > li > a {
   color: #fff;
@@ -650,13 +654,12 @@ input {
   background-color: #151c64;
 }
 .menu-magics-logo {
-  overflow: visible;
   float: left;
-  position: relative;
+  margin-right: 9px;
 }
 .menu-drylock-logo {
-  float: right;
-  position: relative;
+  float: left;
+  margin-left: 20px;
 }
 .nav>li>a:hover,
 .nav>li>a:focus {
@@ -683,6 +686,7 @@ body {
   background: url("/images/master-color.jpg");
   background-position: 50% 0;
   background-repeat: no-repeat;
+  height: 4000px;
 }
 .loading .logo {
   text-align: center;
