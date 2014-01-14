@@ -15751,10 +15751,8 @@ if ( typeof define === 'function' && define.amd ) {
 })();
 
 ;require.register("includes/about", function(exports, require, module) {
-var __templateData = function template(locals) {
+var __templateData = function anonymous(locals) {
 var buf = [];
-var jade_mixins = {};
-
 buf.push("<div class=\"about-content\"><h2>World class product innovation</h2><h3>Revolutionary Technology</h3></div>");;return buf.join("");
 };
 if (typeof define === 'function' && define.amd) {
@@ -15769,10 +15767,8 @@ if (typeof define === 'function' && define.amd) {
 });
 
 ;require.register("includes/contact", function(exports, require, module) {
-var __templateData = function template(locals) {
+var __templateData = function anonymous(locals) {
 var buf = [];
-var jade_mixins = {};
-
 buf.push("<div>Drylock Technologies NV\nSpinnerijstraat 14 9240 Zele Belgium\ninfo@drylock.eu\nDrylock Technologies, s.r.o.\nVlámská 801 Hrádek nad Nisou 463 34\nCzech Republic\ninfo.cz@drylock.eu\n￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼￼\nMy name:\nMy address:\nMessage:</div>");;return buf.join("");
 };
 if (typeof define === 'function' && define.amd) {
@@ -15787,10 +15783,8 @@ if (typeof define === 'function' && define.amd) {
 });
 
 ;require.register("includes/loading", function(exports, require, module) {
-var __templateData = function template(locals) {
+var __templateData = function anonymous(locals) {
 var buf = [];
-var jade_mixins = {};
-
 buf.push("<div class=\"page-center\"><div class=\"logo\"><img alt=\"Magics\" src=\"images/Magics-Logo.png\"/></div><div class=\"circle\"><img alt=\"Magics\" src=\"images/Loading.gif\"/></div><div class=\"claim\">The revolutionary thin diaper</div></div>");;return buf.join("");
 };
 if (typeof define === 'function' && define.amd) {
@@ -15805,10 +15799,8 @@ if (typeof define === 'function' && define.amd) {
 });
 
 ;require.register("includes/menu", function(exports, require, module) {
-var __templateData = function template(locals) {
+var __templateData = function anonymous(locals) {
 var buf = [];
-var jade_mixins = {};
-
 buf.push("<div class=\"menu cf\"><img src=\"images/Menu-Magics-Logo.png\" class=\"menu-magics-logo\"/><ul class=\"nav nav-pills\"><li class=\"products-link\"><a href=\"#Products\">Products</a></li><li class=\"about-link\"><a href=\"#About\">About</a></li><li class=\"contact-link\"><a href=\"#Contact\">Contact</a></li><li><a href=\"#\" class=\"longer\">Order Online</a></li></ul><a href=\"http://www.drylock.eu/\" class=\"menu-drylock-logo\"><img src=\"images/Menu-Drylock-Logo.png\"/></a></div>");;return buf.join("");
 };
 if (typeof define === 'function' && define.amd) {
@@ -15823,11 +15815,9 @@ if (typeof define === 'function' && define.amd) {
 });
 
 ;require.register("includes/products", function(exports, require, module) {
-var __templateData = function template(locals) {
+var __templateData = function anonymous(locals) {
 var buf = [];
-var jade_mixins = {};
-
-buf.push("<div class=\"products-content\"><div class=\"row\"><div class=\"col-md-5 col-md-push-1\"><div class=\"row diapers-detail\"><div class=\"col-md-6\"><div class=\"diapers-info text-right\"><div class=\"title\">NEW BORN</div><div class=\"weight\">2–5 kg</div><div class=\"description\">36 ultra thin diapers</div></div></div><div class=\"col-md-1\"><div class=\"number-circle number-orange\">1</div></div><div class=\"col-md-5\"><img src=\"images/packshots/Magics_1_fin.png\"/></div></div></div><div class=\"col-md-5 col-md-push-1 diapers-2\"><div class=\"row diapers-detail\"><div class=\"col-md-5\"><img src=\"images/packshots/Magics_2_fin.png\"/></div><div class=\"col-md-1\"><div class=\"number-circle number-yellow\">2</div></div><div class=\"col-md-6 text-left\"><div class=\"diapers-info text-left\"><div class=\"title\">MINI</div><div class=\"weight\">3–6 kg</div><div class=\"description\">34 ultra thin diapers</div></div></div></div></div></div><div class=\"row\"><div class=\"col-md-5 col-md-push-1 diapers-3\"><div class=\"row diapers-detail\"><div class=\"col-md-5\"><img src=\"images/packshots/Magics_3_fin.png\"/></div><div class=\"col-md-1\"><div class=\"number-circle number-yellow\">3</div></div><div class=\"col-md-6 text-left\"><div class=\"diapers-info text-left\"><div class=\"title\">MIDI</div><div class=\"weight\">4–9 kg</div><div class=\"description\">31 ultra thin diapers</div></div></div></div></div><div class=\"col-md-5 col-md-push-1 diapers-4\"><div class=\"row diapers-detail\"><div class=\"col-md-5\"><img src=\"images/packshots/Magics_4_fin.png\"/></div><div class=\"col-md-1\"><div class=\"number-circle number-yellow\">4</div></div><div class=\"col-md-6 text-left\"><div class=\"diapers-info text-left\"><div class=\"title\">MAXI</div><div class=\"weight\">7–18 kg</div><div class=\"description\">29 ultra thin diapers</div></div></div></div></div></div><div class=\"row\"><div class=\"col-md-5 col-md-push-1 diapers-5\"><div class=\"row diapers-detail\"><div class=\"col-md-5\"><img src=\"images/packshots/Magics_5_fin.png\"/></div><div class=\"col-md-1\"><div class=\"number-circle number-yellow\">5</div></div><div class=\"col-md-6 text-left\"><div class=\"diapers-info text-left\"><div class=\"title\">JUNIOR</div><div class=\"weight\">11–25 kg</div><div class=\"description\">27 ultra thin diapers</div></div></div></div></div><div class=\"col-md-5 col-md-push-1 diapers-6\"><div class=\"row diapers-detail\"><div class=\"col-md-5\"><img src=\"images/packshots/Magics_6_fin.png\"/></div><div class=\"col-md-1\"><div class=\"number-circle number-yellow\">6</div></div><div class=\"col-md-6 text-left\"><div class=\"diapers-info text-left\"><div class=\"title\">XL</div><div class=\"weight\">16–30kg</div><div class=\"description\">25 ultra thin diapers</div></div></div></div></div></div><div class=\"row\"><div class=\"col-md-12\"><a href=\"http://www.youtube.com/watch?v=-HDieM32pts\"><img src=\"images/Video.png\"/><span>Watch our videos!</span></a></div></div></div>");;return buf.join("");
+buf.push("<div class=\"products-content\"><div class=\"row\"><div class=\"col-md-6 diapers-1\"><div class=\"row diapers-detail\"><div class=\"col-md-6\"><div class=\"diapers-info text-right\"><div class=\"title\">NEW BORN</div><div class=\"weight\">2–5 kg</div><div class=\"description\">36 ultra thin diapers</div></div></div><div class=\"col-md-1\"><div class=\"number-circle number-orange\">1</div></div><div class=\"col-md-5\"><img src=\"images/packshots/Magics_1_fin.png\"/></div></div></div><div class=\"col-md-6 diapers-2\"><div class=\"row diapers-detail\"><div class=\"col-md-6\"><img src=\"images/packshots/Magics_2_fin.png\"/></div><div class=\"col-md-1\"><div class=\"number-circle number-yellow\">2</div></div><div class=\"col-md-5 text-left\"><div class=\"diapers-info text-left\"><div class=\"title\">MINI</div><div class=\"weight\">3–6 kg</div><div class=\"description\">34 ultra thin diapers</div></div></div></div></div></div><div class=\"row\"><div class=\"col-md-5 col-md-push-1 diapers-3\"><div class=\"row diapers-detail\"><div class=\"col-md-5\"><img src=\"images/packshots/Magics_3_fin.png\"/></div><div class=\"col-md-1\"><div class=\"number-circle number-green\">3</div></div><div class=\"col-md-6 text-left\"><div class=\"diapers-info text-left\"><div class=\"title\">MIDI</div><div class=\"weight\">4–9 kg</div><div class=\"description\">31 ultra thin diapers</div></div></div></div></div><div class=\"col-md-5 col-md-push-1 diapers-4\"><div class=\"row diapers-detail\"><div class=\"col-md-6 text-right\"><div class=\"diapers-info text-right\"><div class=\"title\">MAXI</div><div class=\"weight\">7–18 kg</div><div class=\"description\">29 ultra thin diapers</div></div></div><div class=\"col-md-1\"><div class=\"number-circle number-pink\">4</div></div><div class=\"col-md-5\"><img src=\"images/packshots/Magics_4_fin.png\"/></div></div></div></div><div class=\"row\"><div class=\"col-md-5 col-md-push-1 diapers-5\"><div class=\"row diapers-detail\"><div class=\"col-md-6 text-right\"><div class=\"diapers-info text-right\"><div class=\"title\">JUNIOR</div><div class=\"weight\">11–25 kg</div><div class=\"description\">27 ultra thin diapers</div></div></div><div class=\"col-md-1\"><div class=\"number-circle number-blue\">5</div></div><div class=\"col-md-5\"><img src=\"images/packshots/Magics_5_fin.png\"/></div></div></div><div class=\"col-md-5 col-md-push-1 diapers-6\"><div class=\"row diapers-detail\"><div class=\"col-md-5\"><img src=\"images/packshots/Magics_6_fin.png\"/></div><div class=\"col-md-1\"><div class=\"number-circle number-violet\">6</div></div><div class=\"col-md-6 text-left\"><div class=\"diapers-info text-left\"><div class=\"title\">XL</div><div class=\"weight\">16–30kg</div><div class=\"description\">25 ultra thin diapers</div></div></div></div></div></div><div class=\"row\"><div class=\"col-md-5 col-md-push-1 wipes\"><div class=\"row diapers-detail\"><div class=\"col-md-12 text-center\"><div class=\"diapers-info text-center\"><div class=\"title\">BABY WIPES</div><div class=\"description\">64 ultra soft sheets</div></div><img src=\"images/packshots/Magics_wipes.png\"/></div></div></div><div class=\"col-md-4 col-md-push-2 text-center videos\"><div class=\"videos-detail text-center\"><a href=\"http://www.youtube.com/watch?v=-HDieM32pts\"><img src=\"images/Video.png\"/><div class=\"button\">Watch our videos!</div></a></div></div></div></div>");;return buf.join("");
 };
 if (typeof define === 'function' && define.amd) {
   define([], function() {
@@ -15841,11 +15831,9 @@ if (typeof define === 'function' && define.amd) {
 });
 
 ;require.register("index", function(exports, require, module) {
-var __templateData = function template(locals) {
+var __templateData = function anonymous(locals) {
 var buf = [];
-var jade_mixins = {};
-
-buf.push("<!DOCTYPE html><!--if lt IE 7<html class=\"no-js lt-ie9 lt-ie8 lt-ie7\">--><!--if IE 7<html class=\"no-js lt-ie9 lt-ie8\">--><!--if IE 8<html class=\"no-js lt-ie9\">--><!-- [if gt IE 8] <!--><html lang=\"en\" class=\"no-js\"><!-- <![endif]--><head><meta charset=\"utf-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\"><title>Magics - THE REVOLUTIONARY THIN DIAPER</title><meta name=\"description\" content=\"\"><meta name=\"viewport\" content=\"width=device-width\"><script>window.brunch = window.brunch || {};</script><link rel=\"stylesheet\" href=\"MyFontsWebfontsKit.css\"><link rel=\"stylesheet\" href=\"css/app.css\"></head><body><!-- Loading--><div class=\"loading\"><div class=\"page-center\"><div class=\"logo\"><img alt=\"Magics\" src=\"images/Magics-Logo.png\"></div><div class=\"circle\"><img alt=\"Magics\" src=\"images/Loading.gif\"></div><div class=\"claim\">The revolutionary thin diaper</div></div></div><!-- Products--><div class=\"products\"><div class=\"menu cf\"><img src=\"images/Menu-Magics-Logo.png\" class=\"menu-magics-logo\"><ul class=\"nav nav-pills\"><li class=\"products-link\"><a href=\"#Products\">Products</a></li><li class=\"about-link\"><a href=\"#About\">About</a></li><li class=\"contact-link\"><a href=\"#Contact\">Contact</a></li><li><a href=\"#\" class=\"longer\">Order Online</a></li></ul><a href=\"http://www.drylock.eu/\" class=\"menu-drylock-logo\"><img src=\"images/Menu-Drylock-Logo.png\"></a></div></div><!-- About--><div class=\"about\"><div class=\"menu cf\"><img src=\"images/Menu-Magics-Logo.png\" class=\"menu-magics-logo\"><ul class=\"nav nav-pills\"><li class=\"products-link\"><a href=\"#Products\">Products</a></li><li class=\"about-link\"><a href=\"#About\">About</a></li><li class=\"contact-link\"><a href=\"#Contact\">Contact</a></li><li><a href=\"#\" class=\"longer\">Order Online</a></li></ul><a href=\"http://www.drylock.eu/\" class=\"menu-drylock-logo\"><img src=\"images/Menu-Drylock-Logo.png\"></a></div><div class=\"about-content\"><h2>World class product innovation</h2><h3>Revolutionary Technology</h3></div></div><!-- Contact--><div class=\"contact\"><div class=\"menu cf\"><img src=\"images/Menu-Magics-Logo.png\" class=\"menu-magics-logo\"><ul class=\"nav nav-pills\"><li class=\"products-link\"><a href=\"#Products\">Products</a></li><li class=\"about-link\"><a href=\"#About\">About</a></li><li class=\"contact-link\"><a href=\"#Contact\">Contact</a></li><li><a href=\"#\" class=\"longer\">Order Online</a></li></ul><a href=\"http://www.drylock.eu/\" class=\"menu-drylock-logo\"><img src=\"images/Menu-Drylock-Logo.png\"></a></div></div><!-- Footer--><div class=\"footer cf\"><p>All Rights Reserved Drylock Technologies | 2013 -2014 Created by Wercajk</p></div><script src=\"js/app.js\" onload=\"require('initialize');\"></script><script>var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];\n(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];\ng.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';\ns.parentNode.insertBefore(g,s)}(document,'script'));</script></body></html>");;return buf.join("");
+buf.push("<!DOCTYPE html><!--[if lt IE 7]><html class=\"no-js lt-ie9 lt-ie8 lt-ie7\"><![endif]--><!--[if IE 7]><html class=\"no-js lt-ie9 lt-ie8\"><![endif]--><!--[if IE 8]><html class=\"no-js lt-ie9\"><![endif]--><!-- [if gt IE 8] <!--><html lang=\"en\" class=\"no-js\"><!-- <![endif]--><head><meta charset=\"utf-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\"><title>Magics - THE REVOLUTIONARY THIN DIAPER</title><meta name=\"description\" content=\"\"><meta name=\"viewport\" content=\"width=device-width\"><script>window.brunch = window.brunch || {};</script><link rel=\"stylesheet\" href=\"MyFontsWebfontsKit.css\"><link rel=\"stylesheet\" href=\"css/app.css\"></head><body><!-- Loading--><div class=\"loading\"><div class=\"page-center\"><div class=\"logo\"><img alt=\"Magics\" src=\"images/Magics-Logo.png\"></div><div class=\"circle\"><img alt=\"Magics\" src=\"images/Loading.gif\"></div><div class=\"claim\">The revolutionary thin diaper</div></div></div><!-- Products--><div class=\"products\"><div class=\"menu cf\"><img src=\"images/Menu-Magics-Logo.png\" class=\"menu-magics-logo\"><ul class=\"nav nav-pills\"><li class=\"products-link\"><a href=\"#Products\">Products</a></li><li class=\"about-link\"><a href=\"#About\">About</a></li><li class=\"contact-link\"><a href=\"#Contact\">Contact</a></li><li><a href=\"#\" class=\"longer\">Order Online</a></li></ul><a href=\"http://www.drylock.eu/\" class=\"menu-drylock-logo\"><img src=\"images/Menu-Drylock-Logo.png\"></a></div><div class=\"products-content\"><div class=\"row\"><div class=\"col-md-5 col-md-push-1\"><div class=\"row diapers-detail\"><div class=\"col-md-6\"><div class=\"diapers-info text-right\"><div class=\"title\">NEW BORN</div><div class=\"weight\">2–5 kg</div><div class=\"description\">36 ultra thin diapers</div></div></div><div class=\"col-md-1\"><div class=\"number-circle number-orange\">1</div></div><div class=\"col-md-5\"><img src=\"images/packshots/Magics_1_fin.png\"></div></div></div><div class=\"col-md-5 col-md-push-1 diapers-2\"><div class=\"row diapers-detail\"><div class=\"col-md-5\"><img src=\"images/packshots/Magics_2_fin.png\"></div><div class=\"col-md-1\"><div class=\"number-circle number-yellow\">2</div></div><div class=\"col-md-6 text-left\"><div class=\"diapers-info text-left\"><div class=\"title\">MINI</div><div class=\"weight\">3–6 kg</div><div class=\"description\">34 ultra thin diapers</div></div></div></div></div></div><div class=\"row\"><div class=\"col-md-5 col-md-push-1 diapers-3\"><div class=\"row diapers-detail\"><div class=\"col-md-5\"><img src=\"images/packshots/Magics_3_fin.png\"></div><div class=\"col-md-1\"><div class=\"number-circle number-yellow\">3</div></div><div class=\"col-md-6 text-left\"><div class=\"diapers-info text-left\"><div class=\"title\">MIDI</div><div class=\"weight\">4–9 kg</div><div class=\"description\">31 ultra thin diapers</div></div></div></div></div><div class=\"col-md-5 col-md-push-1 diapers-4\"><div class=\"row diapers-detail\"><div class=\"col-md-5\"><img src=\"images/packshots/Magics_4_fin.png\"></div><div class=\"col-md-1\"><div class=\"number-circle number-yellow\">4</div></div><div class=\"col-md-6 text-left\"><div class=\"diapers-info text-left\"><div class=\"title\">MAXI</div><div class=\"weight\">7–18 kg</div><div class=\"description\">29 ultra thin diapers</div></div></div></div></div></div><div class=\"row\"><div class=\"col-md-5 col-md-push-1 diapers-5\"><div class=\"row diapers-detail\"><div class=\"col-md-5\"><img src=\"images/packshots/Magics_5_fin.png\"></div><div class=\"col-md-1\"><div class=\"number-circle number-yellow\">5</div></div><div class=\"col-md-6 text-left\"><div class=\"diapers-info text-left\"><div class=\"title\">JUNIOR</div><div class=\"weight\">11–25 kg</div><div class=\"description\">27 ultra thin diapers</div></div></div></div></div><div class=\"col-md-5 col-md-push-1 diapers-6\"><div class=\"row diapers-detail\"><div class=\"col-md-5\"><img src=\"images/packshots/Magics_6_fin.png\"></div><div class=\"col-md-1\"><div class=\"number-circle number-yellow\">6</div></div><div class=\"col-md-6 text-left\"><div class=\"diapers-info text-left\"><div class=\"title\">XL</div><div class=\"weight\">16–30kg</div><div class=\"description\">25 ultra thin diapers</div></div></div></div></div></div><div class=\"row\"><div class=\"col-md-12\"><a href=\"http://www.youtube.com/watch?v=-HDieM32pts\"><img src=\"images/Video.png\"><span>Watch our videos!</span></a></div></div></div></div><!-- About--><div class=\"about\"><div class=\"menu cf\"><img src=\"images/Menu-Magics-Logo.png\" class=\"menu-magics-logo\"><ul class=\"nav nav-pills\"><li class=\"products-link\"><a href=\"#Products\">Products</a></li><li class=\"about-link\"><a href=\"#About\">About</a></li><li class=\"contact-link\"><a href=\"#Contact\">Contact</a></li><li><a href=\"#\" class=\"longer\">Order Online</a></li></ul><a href=\"http://www.drylock.eu/\" class=\"menu-drylock-logo\"><img src=\"images/Menu-Drylock-Logo.png\"></a></div><div class=\"about-content\"><h2>World class product innovation</h2><h3>Revolutionary Technology</h3></div></div><!-- Contact--><div class=\"contact\"><div class=\"menu cf\"><img src=\"images/Menu-Magics-Logo.png\" class=\"menu-magics-logo\"><ul class=\"nav nav-pills\"><li class=\"products-link\"><a href=\"#Products\">Products</a></li><li class=\"about-link\"><a href=\"#About\">About</a></li><li class=\"contact-link\"><a href=\"#Contact\">Contact</a></li><li><a href=\"#\" class=\"longer\">Order Online</a></li></ul><a href=\"http://www.drylock.eu/\" class=\"menu-drylock-logo\"><img src=\"images/Menu-Drylock-Logo.png\"></a></div></div><!-- Footer--><div class=\"footer cf\"><p>All Rights Reserved Drylock Technologies | 2013 -2014 Created by Wercajk</p></div><script src=\"js/app.js\" onload=\"require('initialize');\"></script><script>var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];\n(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];\ng.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';\ns.parentNode.insertBefore(g,s)}(document,'script'));</script></body></html>");;return buf.join("");
 };
 if (typeof define === 'function' && define.amd) {
   define([], function() {
@@ -15876,8 +15864,40 @@ imagesLoaded(document.body, function(instance) {
 
 });
 
-;!function(e){"object"==typeof exports?module.exports=e():"function"==typeof define&&define.amd?define(e):"undefined"!=typeof window?window.jade=e():"undefined"!=typeof global?global.jade=e():"undefined"!=typeof self&&(self.jade=e())}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-'use strict';
+;(function(e){if("function"==typeof bootstrap)bootstrap("jade",e);else if("object"==typeof exports)module.exports=e();else if("function"==typeof define&&define.amd)define(e);else if("undefined"!=typeof ses){if(!ses.ok())return;ses.makeJade=e}else"undefined"!=typeof window?window.jade=e():global.jade=e()})(function(){var define,ses,bootstrap,module,exports;
+return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+
+/*!
+ * Jade - runtime
+ * Copyright(c) 2010 TJ Holowaychuk <tj@vision-media.ca>
+ * MIT Licensed
+ */
+
+/**
+ * Lame Array.isArray() polyfill for now.
+ */
+
+if (!Array.isArray) {
+  Array.isArray = function(arr){
+    return '[object Array]' == Object.prototype.toString.call(arr);
+  };
+}
+
+/**
+ * Lame Object.keys() polyfill for now.
+ */
+
+if (!Object.keys) {
+  Object.keys = function(obj){
+    var arr = [];
+    for (var key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        arr.push(key);
+      }
+    }
+    return arr;
+  }
+}
 
 /**
  * Merge two attribute objects giving precedence
@@ -15892,13 +15912,6 @@ imagesLoaded(document.body, function(instance) {
  */
 
 exports.merge = function merge(a, b) {
-  if (arguments.length === 1) {
-    var attrs = a[0];
-    for (var i = 1; i < a.length; i++) {
-      attrs = merge(attrs, a[i]);
-    }
-    return attrs;
-  }
   var ac = a['class'];
   var bc = b['class'];
 
@@ -15936,60 +15949,12 @@ function nulls(val) {
  *
  * @param {*} val
  * @return {String}
+ * @api private
  */
-exports.joinClasses = joinClasses;
+
 function joinClasses(val) {
   return Array.isArray(val) ? val.map(joinClasses).filter(nulls).join(' ') : val;
 }
-
-/**
- * Render the given classes.
- *
- * @param {Array} classes
- * @param {Array.<Boolean>} escaped
- * @return {String}
- */
-exports.cls = function cls(classes, escaped) {
-  var buf = [];
-  for (var i = 0; i < classes.length; i++) {
-    if (escaped && escaped[i]) {
-      buf.push(exports.escape(joinClasses([classes[i]])));
-    } else {
-      buf.push(joinClasses(classes[i]));
-    }
-  }
-  var text = joinClasses(buf);
-  if (text.length) {
-    return ' class="' + text + '"';
-  } else {
-    return '';
-  }
-};
-
-/**
- * Render the given attribute.
- *
- * @param {String} key
- * @param {String} val
- * @param {Boolean} escaped
- * @param {Boolean} terse
- * @return {String}
- */
-exports.attr = function attr(key, val, escaped, terse) {
-  if ('boolean' == typeof val || null == val) {
-    if (val) {
-      return ' ' + (terse ? key : key + '="' + key + '"');
-    } else {
-      return '';
-    }
-  } else if (0 == key.indexOf('data') && 'string' != typeof val) {
-    return ' ' + key + "='" + JSON.stringify(val).replace(/'/g, '&apos;') + "'";
-  } else if (escaped) {
-    return ' ' + key + '="' + exports.escape(val) + '"';
-  } else {
-    return ' ' + key + '="' + val + '"';
-  }
-};
 
 /**
  * Render the given attributes object.
@@ -15997,28 +15962,50 @@ exports.attr = function attr(key, val, escaped, terse) {
  * @param {Object} obj
  * @param {Object} escaped
  * @return {String}
+ * @api private
  */
-exports.attrs = function attrs(obj, terse){
-  var buf = [];
 
-  var keys = Object.keys(obj);
+exports.attrs = function attrs(obj, escaped){
+  var buf = []
+    , terse = obj.terse;
 
-  if (keys.length) {
-    for (var i = 0; i < keys.length; ++i) {
+  delete obj.terse;
+  var keys = Object.keys(obj)
+    , len = keys.length;
+
+  if (len) {
+    buf.push('');
+    for (var i = 0; i < len; ++i) {
       var key = keys[i]
         , val = obj[key];
 
-      if ('class' == key) {
-        if (val = joinClasses(val)) {
-          buf.push(' ' + key + '="' + val + '"');
+      if ('boolean' == typeof val || null == val) {
+        if (val) {
+          terse
+            ? buf.push(key)
+            : buf.push(key + '="' + key + '"');
         }
+      } else if (0 == key.indexOf('data') && 'string' != typeof val) {
+        buf.push(key + "='" + JSON.stringify(val) + "'");
+      } else if ('class' == key) {
+        if (escaped && escaped[key]){
+          if (val = exports.escape(joinClasses(val))) {
+            buf.push(key + '="' + val + '"');
+          }
+        } else {
+          if (val = joinClasses(val)) {
+            buf.push(key + '="' + val + '"');
+          }
+        }
+      } else if (escaped && escaped[key]) {
+        buf.push(key + '="' + exports.escape(val) + '"');
       } else {
-        buf.push(exports.attr(key, val, false, terse));
+        buf.push(key + '="' + val + '"');
       }
     }
   }
 
-  return buf.join('');
+  return buf.join(' ');
 };
 
 /**
@@ -16080,9 +16067,11 @@ exports.rethrow = function rethrow(err, filename, lineno, str){
 };
 
 },{"fs":2}],2:[function(require,module,exports){
+// nothing to see here... no file methods for the browser
 
-},{}]},{},[1])
-(1)
+},{}]},{},[1])(1)
 });
+;
+
 ;
 //# sourceMappingURL=app.js.map
