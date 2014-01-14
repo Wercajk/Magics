@@ -855,37 +855,6 @@ body {
   height: 503px;
 }
 .contact .contact-form input,
-.contact .contact-form textarea {
-  position: absolute;
-}
-.contact .contact-form .name {
-  top: 20px;
-  left: 50px;
-}
-.footer {
-  width: 100%;
-  top: 300px;
-  position: absolute;
-  overflow: hidden;
-  top: 4680px;
-}
-
-.contact {
-  width: 100%;
-  top: 300px;
-  position: absolute;
-  overflow: hidden;
-  top: 3944px;
-}
-.contact .contact-form {
-  position: relative;
-  background: url("/images/Contact-Form-Background.png");
-  float: right;
-  margin-top: 68px;
-  width: 536px;
-  height: 503px;
-}
-.contact .contact-form input,
 .contact .contact-form textarea,
 .contact .contact-form button {
   position: absolute;
@@ -919,6 +888,64 @@ body {
 .contact .contact-form .send {
   top: 445px;
   left: 400px;
+}
+.footer {
+  width: 100%;
+  top: 300px;
+  position: absolute;
+  overflow: hidden;
+  top: 4680px;
+}
+
+.contact {
+  width: 100%;
+  top: 300px;
+  position: absolute;
+  overflow: hidden;
+  top: 3944px;
+}
+.contact .contact-form {
+  position: relative;
+  background: url("/images/Contact-Form-Background.png") no-repeat;
+  float: right;
+  margin-top: 68px;
+  width: 536px;
+  height: 530px;
+}
+.contact .contact-form input,
+.contact .contact-form textarea,
+.contact .contact-form button {
+  position: absolute;
+  background-color: transparent;
+  border: 0;
+}
+.contact .contact-form input:focus,
+.contact .contact-form select:focus,
+.contact .contact-form textarea:focus,
+.contact .contact-form button:focus {
+  outline: none;
+}
+.contact .contact-form .name {
+  top: 90px;
+  left: 180px;
+  width: 285px;
+}
+.contact .contact-form .email {
+  top: 131px;
+  left: 180px;
+  width: 285px;
+}
+.contact .contact-form .message {
+  top: 205px;
+  left: 180px;
+  width: 285px;
+  height: 185px;
+  line-height: 2.3;
+  resize: none;
+}
+.contact .contact-form .send {
+  top: 409px;
+  left: 380px;
 }
 
 .loading .logo {
