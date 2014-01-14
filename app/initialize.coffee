@@ -1,9 +1,2 @@
-# Load App Helpers
-require 'lib/helpers'
-
-# Initialize Router
-require 'routers/main'
-
-$ ->
-    # Initialize Backbone History
-    Backbone.history.start pushState: yes
+imagesLoaded document.body, (instance) ->
+    console.log "all images are loaded"
