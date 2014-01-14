@@ -10,8 +10,9 @@ imagesLoaded document.body, (instance) ->
 #             1 - p
 # )
 
-$ ->
-    $("*").each ->
-        if $(this).css('position') == 'absolute'
-            console.log this
-            $(this).draggable()
+# Mouse drag&drop design
+# $ ->
+#     $("*").each ->
+#         if $(this).css('position') == 'absolute'
+#             console.log this
+#             $(this).draggable()
