@@ -421,10 +421,43 @@ table {
   position: absolute;
   overflow: hidden;
   top: 2345px;
+  color: #fff;
 }
 .about .about-content {
   margin: 0 auto;
   width: 940px;
+}
+.about .about-content .dry-lock-description {
+  margin-top: 75px;
+  margin-left: 0px;
+}
+.about .about-content .dry-lock-description .description-text {
+  padding-top: 9px;
+  color: #fff;
+}
+.about .about-content .dry-lock-description .description-text p {
+  padding-bottom: 29px;
+}
+.about .about-content .ecology-description {
+  margin-top: 117px;
+  margin-left: -5px;
+}
+.about .about-content .ecology-description p {
+  color: #fff;
+  padding-bottom: 13px;
+}
+.about .about-content .product-reviews {
+  margin-top: 78px;
+  margin-left: 193px;
+}
+.about .about-content .product-reviews .product-reviews-content > .row {
+  margin-bottom: 52px;
+}
+.about .about-content .product-reviews .product-reviews-content > .row p,
+.about .about-content .product-reviews .product-reviews-content > .row em,
+.about .about-content .product-reviews .product-reviews-content > .row strong {
+  padding-bottom: 0px;
+  margin-bottom: 2px;
 }
 .about .about-content h2 {
   color: #d91369;
@@ -438,6 +471,15 @@ table {
   font-size: 27px;
   margin-top: 0px;
   margin-left: 46px;
+}
+.about .about-content h4 {
+  color: #fff;
+  font-size: 37px;
+}
+.about .about-content h5 {
+  color: #fff;
+  font-size: 27px;
+  font-weight: normal;
 }
 
 * {
@@ -573,15 +615,8 @@ body {
 }
 .products-content > .row {
   margin-top: 100px;
-}
-.diapers-1 .diapers-detail img {
-  position: relative;
-  top: -28px;
-  left: -6px;
-}
-.diapers-2 {
-  padding-top: 115px;
-  padding-left: 35px;
+  margin-left: 0;
+  margin-right: 0;
 }
 .diapers-detail .number-circle {
   position: relative;
@@ -614,6 +649,93 @@ body {
   text-align: center;
   font-weight: normal;
 }
+.diapers-1 .diapers-detail {
+  position: relative;
+  top: 3px;
+  left: 65px;
+}
+.diapers-1 .diapers-detail img {
+  position: relative;
+  top: -28px;
+  left: -6px;
+}
+.diapers-2 {
+  padding-top: 115px;
+  padding-left: 35px;
+}
+.diapers-3 .diapers-detail {
+  position: relative;
+  top: -130px;
+  left: -70px;
+}
+.diapers-3 .diapers-detail img {
+  position: relative;
+  top: -28px;
+  left: -6px;
+}
+.diapers-4 .diapers-detail {
+  position: relative;
+  top: -27px;
+  left: 72px;
+}
+.diapers-4 .diapers-detail img {
+  position: relative;
+  top: -28px;
+  left: -6px;
+}
+.diapers-5 .diapers-detail {
+  position: relative;
+  top: -171px;
+  left: -50px;
+}
+.diapers-5 .diapers-detail img {
+  position: relative;
+  top: -28px;
+  left: 7px;
+}
+.diapers-6 .diapers-detail {
+  position: relative;
+  top: 20px;
+  left: 31px;
+}
+.diapers-6 .diapers-detail img {
+  position: relative;
+  top: -15px;
+  left: -70px;
+}
+.wipes .diapers-detail {
+  position: relative;
+  top: -147px;
+  left: -29px;
+}
+.wipes .diapers-detail .diapers-info .description {
+  font-size: 27px;
+}
+.wipes .diapers-detail img {
+  position: relative;
+  top: 10px;
+  left: 5px;
+}
+.videos .videos-detail {
+  position: relative;
+  top: -36px;
+  left: -15px;
+}
+.videos .button {
+  font-size: 26px;
+  color: #fff;
+  font-family: FontoonCom;
+  font-style: roman;
+  background: #d91369;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  behavior: url("PIE.htc");
+  width: 220px;
+  margin: 0 auto;
+}
+.videos .button:hover {
+  text-decoration: none;
+}
 .number-orange {
   background: #ff8300;
 }
@@ -638,10 +760,55 @@ body {
   position: absolute;
   overflow: hidden;
   top: 2345px;
+  color: #fff;
 }
 .about .about-content {
   margin: 0 auto;
   width: 940px;
+}
+.about .about-content .dry-lock-description {
+  margin-top: 75px;
+  margin-left: 0px;
+}
+.about .about-content .dry-lock-description .description-text {
+  padding-top: 9px;
+  color: #fff;
+}
+.about .about-content .dry-lock-description .description-text p {
+  padding-bottom: 29px;
+}
+.about .about-content .ecology-description {
+  margin-top: 117px;
+  margin-left: -5px;
+}
+.about .about-content .ecology-description p {
+  color: #fff;
+  padding-bottom: 13px;
+}
+.about .about-content .product-reviews {
+  margin-top: 78px;
+  margin-left: 193px;
+}
+.about .about-content .product-reviews p,
+.about .about-content .product-reviews em,
+.about .about-content .product-reviews strong {
+  padding-bottom: 0px;
+  margin-bottom: 2px;
+  zoom: 1;
+}
+.about .about-content .product-reviews p:before,
+.about .about-content .product-reviews em:before,
+.about .about-content .product-reviews strong:before,
+.about .about-content .product-reviews p:after,
+.about .about-content .product-reviews em:after,
+.about .about-content .product-reviews strong:after {
+  content: "";
+  display: table;
+}
+.about .about-content .product-reviews p:after,
+.about .about-content .product-reviews em:after,
+.about .about-content .product-reviews strong:after {
+  clear: both;
 }
 .about .about-content h2 {
   color: #d91369;
@@ -659,6 +826,15 @@ body {
   margin-left: 46px;
   font-family: FontoonCom;
   font-style: roman;
+}
+.about .about-content h4 {
+  color: #fff;
+  font-size: 37px;
+}
+.about .about-content h5 {
+  color: #fff;
+  font-size: 27px;
+  font-weight: normal;
 }
 .contact {
   width: 100%;
