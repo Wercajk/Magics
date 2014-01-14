@@ -789,25 +789,28 @@ body {
   margin-top: 78px;
   margin-left: 193px;
 }
-.about .about-content .product-reviews p,
-.about .about-content .product-reviews em,
-.about .about-content .product-reviews strong {
+.about .about-content .product-reviews .product-reviews-content > .row {
+  margin-bottom: 52px;
+}
+.about .about-content .product-reviews .product-reviews-content > .row p,
+.about .about-content .product-reviews .product-reviews-content > .row em,
+.about .about-content .product-reviews .product-reviews-content > .row strong {
   padding-bottom: 0px;
   margin-bottom: 2px;
   zoom: 1;
 }
-.about .about-content .product-reviews p:before,
-.about .about-content .product-reviews em:before,
-.about .about-content .product-reviews strong:before,
-.about .about-content .product-reviews p:after,
-.about .about-content .product-reviews em:after,
-.about .about-content .product-reviews strong:after {
+.about .about-content .product-reviews .product-reviews-content > .row p:before,
+.about .about-content .product-reviews .product-reviews-content > .row em:before,
+.about .about-content .product-reviews .product-reviews-content > .row strong:before,
+.about .about-content .product-reviews .product-reviews-content > .row p:after,
+.about .about-content .product-reviews .product-reviews-content > .row em:after,
+.about .about-content .product-reviews .product-reviews-content > .row strong:after {
   content: "";
   display: table;
 }
-.about .about-content .product-reviews p:after,
-.about .about-content .product-reviews em:after,
-.about .about-content .product-reviews strong:after {
+.about .about-content .product-reviews .product-reviews-content > .row p:after,
+.about .about-content .product-reviews .product-reviews-content > .row em:after,
+.about .about-content .product-reviews .product-reviews-content > .row strong:after {
   clear: both;
 }
 .about .about-content h2 {
@@ -843,6 +846,22 @@ body {
   overflow: hidden;
   top: 3944px;
 }
+.contact .contact-form {
+  position: relative;
+  background: url("/images/Contact-Form-Background.png");
+  float: right;
+  margin-top: 68px;
+  width: 536px;
+  height: 503px;
+}
+.contact .contact-form input,
+.contact .contact-form textarea {
+  position: absolute;
+}
+.contact .contact-form .name {
+  top: 20px;
+  left: 50px;
+}
 .footer {
   width: 100%;
   top: 300px;
@@ -857,6 +876,49 @@ body {
   position: absolute;
   overflow: hidden;
   top: 3944px;
+}
+.contact .contact-form {
+  position: relative;
+  background: url("/images/Contact-Form-Background.png");
+  float: right;
+  margin-top: 68px;
+  width: 536px;
+  height: 503px;
+}
+.contact .contact-form input,
+.contact .contact-form textarea,
+.contact .contact-form button {
+  position: absolute;
+  background-color: transparent;
+  border: 0;
+}
+.contact .contact-form input:focus,
+.contact .contact-form select:focus,
+.contact .contact-form textarea:focus,
+.contact .contact-form button:focus {
+  outline: none;
+}
+.contact .contact-form .name {
+  top: 90px;
+  left: 180px;
+  width: 285px;
+}
+.contact .contact-form .email {
+  top: 131px;
+  left: 180px;
+  width: 285px;
+}
+.contact .contact-form .message {
+  top: 205px;
+  left: 180px;
+  width: 285px;
+  height: 185px;
+  line-height: 2.3;
+  resize: none;
+}
+.contact .contact-form .send {
+  top: 445px;
+  left: 400px;
 }
 
 .loading .logo {
