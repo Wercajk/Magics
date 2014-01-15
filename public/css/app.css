@@ -580,10 +580,46 @@ input {
   background-position: 50% 50%;
 }
 body {
+  background: url("/images/background.jpg");
   background: url("/images/master-color.jpg");
   background-position: 50% 0;
   background-repeat: no-repeat;
-  height: 4000px;
+  height: 100%;
+}
+.clouds {
+  position: relative;
+  margin: 0 auto;
+}
+.clouds img {
+  position: absolute;
+}
+.clouds .cloud-3 {
+  left: 109px;
+  top: 555px;
+  z-index: 20;
+}
+.clouds .cloud-4 {
+  left: 283px;
+  top: 517px;
+  z-index: 0;
+}
+.clouds .cloud-5 {
+  left: 449px;
+  top: 628px;
+}
+.clouds .cloud-7 {
+  left: 751px;
+  top: 525px;
+}
+.clouds .cloud-8 {
+  left: 1141px;
+  top: 520px;
+  z-index: 10;
+}
+.clouds .cloud-9 {
+  left: 1362px;
+  top: 539px;
+  z-index: 0;
 }
 .loading .logo {
   text-align: center;
@@ -722,16 +758,17 @@ body {
   left: -15px;
 }
 .videos .button {
-  font-size: 26px;
+  font-size: 23px;
   color: #fff;
   font-family: FontoonCom;
   font-style: roman;
   background: #d91369;
-  -webkit-border-radius: 5px;
-  border-radius: 5px;
+  -webkit-border-radius: 7px;
+  border-radius: 7px;
   behavior: url("PIE.htc");
-  width: 220px;
+  width: 240px;
   margin: 0 auto;
+  padding: 2px 3px;
 }
 .videos .button:hover {
   text-decoration: none;
@@ -789,25 +826,28 @@ body {
   margin-top: 78px;
   margin-left: 193px;
 }
-.about .about-content .product-reviews p,
-.about .about-content .product-reviews em,
-.about .about-content .product-reviews strong {
+.about .about-content .product-reviews .product-reviews-content > .row {
+  margin-bottom: 52px;
+}
+.about .about-content .product-reviews .product-reviews-content > .row p,
+.about .about-content .product-reviews .product-reviews-content > .row em,
+.about .about-content .product-reviews .product-reviews-content > .row strong {
   padding-bottom: 0px;
   margin-bottom: 2px;
   zoom: 1;
 }
-.about .about-content .product-reviews p:before,
-.about .about-content .product-reviews em:before,
-.about .about-content .product-reviews strong:before,
-.about .about-content .product-reviews p:after,
-.about .about-content .product-reviews em:after,
-.about .about-content .product-reviews strong:after {
+.about .about-content .product-reviews .product-reviews-content > .row p:before,
+.about .about-content .product-reviews .product-reviews-content > .row em:before,
+.about .about-content .product-reviews .product-reviews-content > .row strong:before,
+.about .about-content .product-reviews .product-reviews-content > .row p:after,
+.about .about-content .product-reviews .product-reviews-content > .row em:after,
+.about .about-content .product-reviews .product-reviews-content > .row strong:after {
   content: "";
   display: table;
 }
-.about .about-content .product-reviews p:after,
-.about .about-content .product-reviews em:after,
-.about .about-content .product-reviews strong:after {
+.about .about-content .product-reviews .product-reviews-content > .row p:after,
+.about .about-content .product-reviews .product-reviews-content > .row em:after,
+.about .about-content .product-reviews .product-reviews-content > .row strong:after {
   clear: both;
 }
 .about .about-content h2 {
@@ -843,6 +883,84 @@ body {
   overflow: hidden;
   top: 3944px;
 }
+.contact .contact-form {
+  position: relative;
+  background: url("/images/Contact-Form-Background.png") no-repeat;
+  float: right;
+  margin-top: 68px;
+  width: 536px;
+  height: 530px;
+}
+.contact .contact-form input,
+.contact .contact-form textarea,
+.contact .contact-form button {
+  position: absolute;
+  background-color: transparent;
+  border: 0;
+  color: #101151;
+  font-size: 23px;
+}
+.contact .contact-form input:focus,
+.contact .contact-form select:focus,
+.contact .contact-form textarea:focus,
+.contact .contact-form button:focus {
+  outline: none;
+}
+.contact .contact-form .name {
+  top: 90px;
+  left: 180px;
+  width: 285px;
+}
+.contact .contact-form .email {
+  top: 131px;
+  left: 180px;
+  width: 285px;
+}
+.contact .contact-form .message {
+  top: 205px;
+  left: 180px;
+  width: 285px;
+  height: 185px;
+  line-height: 1.4;
+  resize: none;
+}
+.contact .contact-form .send {
+  top: 409px;
+  left: 380px;
+}
+.contact h3 {
+  margin-bottom: 3px;
+}
+.contact .contact-address-belgium {
+  position: absolute;
+  left: 47px;
+  top: 105px;
+}
+.contact .contact-address-belgium .envelope {
+  position: absolute;
+  left: -28px;
+  top: 25px;
+}
+.contact .contact-address-belgium .arroba {
+  position: absolute;
+  left: -27px;
+  top: 131px;
+}
+.contact .contact-address-czech {
+  position: absolute;
+  left: 46px;
+  top: 279px;
+}
+.contact .contact-address-czech .envelope {
+  position: absolute;
+  left: -28px;
+  top: 25px;
+}
+.contact .contact-address-czech .arroba {
+  position: absolute;
+  left: -27px;
+  top: 149px;
+}
 .footer {
   width: 100%;
   top: 300px;
@@ -857,6 +975,124 @@ body {
   position: absolute;
   overflow: hidden;
   top: 3944px;
+}
+.contact .contact-form {
+  position: relative;
+  background: url("/images/Contact-Form-Background.png") no-repeat;
+  float: right;
+  margin-top: 68px;
+  width: 536px;
+  height: 530px;
+}
+.contact .contact-form input,
+.contact .contact-form textarea,
+.contact .contact-form button {
+  position: absolute;
+  background-color: transparent;
+  border: 0;
+  color: #101151;
+  font-size: 23px;
+}
+.contact .contact-form input:focus,
+.contact .contact-form select:focus,
+.contact .contact-form textarea:focus,
+.contact .contact-form button:focus {
+  outline: none;
+}
+.contact .contact-form .name {
+  top: 90px;
+  left: 180px;
+  width: 285px;
+}
+.contact .contact-form .email {
+  top: 131px;
+  left: 180px;
+  width: 285px;
+}
+.contact .contact-form .message {
+  top: 205px;
+  left: 180px;
+  width: 285px;
+  height: 185px;
+  line-height: 1.4;
+  resize: none;
+}
+.contact .contact-form .send {
+  top: 409px;
+  left: 380px;
+}
+.contact h3 {
+  margin-bottom: 3px;
+}
+.contact .contact-address-belgium {
+  position: absolute;
+  left: 47px;
+  top: 105px;
+}
+.contact .contact-address-belgium .envelope {
+  position: absolute;
+  left: -28px;
+  top: 25px;
+}
+.contact .contact-address-belgium .arroba {
+  position: absolute;
+  left: -27px;
+  top: 131px;
+}
+.contact .contact-address-czech {
+  position: absolute;
+  left: 46px;
+  top: 279px;
+}
+.contact .contact-address-czech .envelope {
+  position: absolute;
+  left: -28px;
+  top: 25px;
+}
+.contact .contact-address-czech .arroba {
+  position: absolute;
+  left: -27px;
+  top: 149px;
+}
+
+.clouds {
+  position: relative;
+  margin: 0 auto;
+}
+.clouds img {
+  position: absolute;
+}
+.clouds .cloud-1 {
+  left: -125px;
+  top: 573px;
+}
+.clouds .cloud-3 {
+  left: 109px;
+  top: 555px;
+  z-index: 20;
+}
+.clouds .cloud-4 {
+  left: 283px;
+  top: 517px;
+  z-index: 0;
+}
+.clouds .cloud-5 {
+  left: 449px;
+  top: 628px;
+}
+.clouds .cloud-7 {
+  left: 751px;
+  top: 525px;
+}
+.clouds .cloud-8 {
+  left: 1141px;
+  top: 520px;
+  z-index: 10;
+}
+.clouds .cloud-9 {
+  left: 1362px;
+  top: 539px;
+  z-index: 0;
 }
 
 .loading .logo {
@@ -996,13 +1232,14 @@ body {
   left: -15px;
 }
 .videos .button {
-  font-size: 26px;
+  font-size: 23px;
   color: #fff;
   background: #d91369;
-  border-radius: 5px;
+  border-radius: 7px;
   behavior: url("PIE.htc");
-  width: 220px;
+  width: 240px;
   margin: 0 auto;
+  padding: 2px 3px;
 }
 .videos .button:hover {
   text-decoration: none;
