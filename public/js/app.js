@@ -91,557 +91,6 @@
   globals.require.brunch = true;
 })();
 /*!
- * EventEmitter v4.2.7 - git.io/ee
- * Oliver Caldwell
- * MIT license
- * @preserve
- */
-
-(function () {
-	'use strict';
-
-	/**
-	 * Class for managing events.
-	 * Can be extended to provide event functionality in other classes.
-	 *
-	 * @class EventEmitter Manages event registering and emitting.
-	 */
-	function EventEmitter() {}
-
-	// Shortcuts to improve speed and size
-	var proto = EventEmitter.prototype;
-	var exports = this;
-	var originalGlobalValue = exports.EventEmitter;
-
-	/**
-	 * Finds the index of the listener for the event in it's storage array.
-	 *
-	 * @param {Function[]} listeners Array of listeners to search through.
-	 * @param {Function} listener Method to look for.
-	 * @return {Number} Index of the specified listener, -1 if not found
-	 * @api private
-	 */
-	function indexOfListener(listeners, listener) {
-		var i = listeners.length;
-		while (i--) {
-			if (listeners[i].listener === listener) {
-				return i;
-			}
-		}
-
-		return -1;
-	}
-
-	/**
-	 * Alias a method while keeping the context correct, to allow for overwriting of target method.
-	 *
-	 * @param {String} name The name of the target method.
-	 * @return {Function} The aliased method
-	 * @api private
-	 */
-	function alias(name) {
-		return function aliasClosure() {
-			return this[name].apply(this, arguments);
-		};
-	}
-
-	/**
-	 * Returns the listener array for the specified event.
-	 * Will initialise the event object and listener arrays if required.
-	 * Will return an object if you use a regex search. The object contains keys for each matched event. So /ba[rz]/ might return an object containing bar and baz. But only if you have either defined them with defineEvent or added some listeners to them.
-	 * Each property in the object response is an array of listener functions.
-	 *
-	 * @param {String|RegExp} evt Name of the event to return the listeners from.
-	 * @return {Function[]|Object} All listener functions for the event.
-	 */
-	proto.getListeners = function getListeners(evt) {
-		var events = this._getEvents();
-		var response;
-		var key;
-
-		// Return a concatenated array of all matching events if
-		// the selector is a regular expression.
-		if (evt instanceof RegExp) {
-			response = {};
-			for (key in events) {
-				if (events.hasOwnProperty(key) && evt.test(key)) {
-					response[key] = events[key];
-				}
-			}
-		}
-		else {
-			response = events[evt] || (events[evt] = []);
-		}
-
-		return response;
-	};
-
-	/**
-	 * Takes a list of listener objects and flattens it into a list of listener functions.
-	 *
-	 * @param {Object[]} listeners Raw listener objects.
-	 * @return {Function[]} Just the listener functions.
-	 */
-	proto.flattenListeners = function flattenListeners(listeners) {
-		var flatListeners = [];
-		var i;
-
-		for (i = 0; i < listeners.length; i += 1) {
-			flatListeners.push(listeners[i].listener);
-		}
-
-		return flatListeners;
-	};
-
-	/**
-	 * Fetches the requested listeners via getListeners but will always return the results inside an object. This is mainly for internal use but others may find it useful.
-	 *
-	 * @param {String|RegExp} evt Name of the event to return the listeners from.
-	 * @return {Object} All listener functions for an event in an object.
-	 */
-	proto.getListenersAsObject = function getListenersAsObject(evt) {
-		var listeners = this.getListeners(evt);
-		var response;
-
-		if (listeners instanceof Array) {
-			response = {};
-			response[evt] = listeners;
-		}
-
-		return response || listeners;
-	};
-
-	/**
-	 * Adds a listener function to the specified event.
-	 * The listener will not be added if it is a duplicate.
-	 * If the listener returns true then it will be removed after it is called.
-	 * If you pass a regular expression as the event name then the listener will be added to all events that match it.
-	 *
-	 * @param {String|RegExp} evt Name of the event to attach the listener to.
-	 * @param {Function} listener Method to be called when the event is emitted. If the function returns true then it will be removed after calling.
-	 * @return {Object} Current instance of EventEmitter for chaining.
-	 */
-	proto.addListener = function addListener(evt, listener) {
-		var listeners = this.getListenersAsObject(evt);
-		var listenerIsWrapped = typeof listener === 'object';
-		var key;
-
-		for (key in listeners) {
-			if (listeners.hasOwnProperty(key) && indexOfListener(listeners[key], listener) === -1) {
-				listeners[key].push(listenerIsWrapped ? listener : {
-					listener: listener,
-					once: false
-				});
-			}
-		}
-
-		return this;
-	};
-
-	/**
-	 * Alias of addListener
-	 */
-	proto.on = alias('addListener');
-
-	/**
-	 * Semi-alias of addListener. It will add a listener that will be
-	 * automatically removed after it's first execution.
-	 *
-	 * @param {String|RegExp} evt Name of the event to attach the listener to.
-	 * @param {Function} listener Method to be called when the event is emitted. If the function returns true then it will be removed after calling.
-	 * @return {Object} Current instance of EventEmitter for chaining.
-	 */
-	proto.addOnceListener = function addOnceListener(evt, listener) {
-		return this.addListener(evt, {
-			listener: listener,
-			once: true
-		});
-	};
-
-	/**
-	 * Alias of addOnceListener.
-	 */
-	proto.once = alias('addOnceListener');
-
-	/**
-	 * Defines an event name. This is required if you want to use a regex to add a listener to multiple events at once. If you don't do this then how do you expect it to know what event to add to? Should it just add to every possible match for a regex? No. That is scary and bad.
-	 * You need to tell it what event names should be matched by a regex.
-	 *
-	 * @param {String} evt Name of the event to create.
-	 * @return {Object} Current instance of EventEmitter for chaining.
-	 */
-	proto.defineEvent = function defineEvent(evt) {
-		this.getListeners(evt);
-		return this;
-	};
-
-	/**
-	 * Uses defineEvent to define multiple events.
-	 *
-	 * @param {String[]} evts An array of event names to define.
-	 * @return {Object} Current instance of EventEmitter for chaining.
-	 */
-	proto.defineEvents = function defineEvents(evts) {
-		for (var i = 0; i < evts.length; i += 1) {
-			this.defineEvent(evts[i]);
-		}
-		return this;
-	};
-
-	/**
-	 * Removes a listener function from the specified event.
-	 * When passed a regular expression as the event name, it will remove the listener from all events that match it.
-	 *
-	 * @param {String|RegExp} evt Name of the event to remove the listener from.
-	 * @param {Function} listener Method to remove from the event.
-	 * @return {Object} Current instance of EventEmitter for chaining.
-	 */
-	proto.removeListener = function removeListener(evt, listener) {
-		var listeners = this.getListenersAsObject(evt);
-		var index;
-		var key;
-
-		for (key in listeners) {
-			if (listeners.hasOwnProperty(key)) {
-				index = indexOfListener(listeners[key], listener);
-
-				if (index !== -1) {
-					listeners[key].splice(index, 1);
-				}
-			}
-		}
-
-		return this;
-	};
-
-	/**
-	 * Alias of removeListener
-	 */
-	proto.off = alias('removeListener');
-
-	/**
-	 * Adds listeners in bulk using the manipulateListeners method.
-	 * If you pass an object as the second argument you can add to multiple events at once. The object should contain key value pairs of events and listeners or listener arrays. You can also pass it an event name and an array of listeners to be added.
-	 * You can also pass it a regular expression to add the array of listeners to all events that match it.
-	 * Yeah, this function does quite a bit. That's probably a bad thing.
-	 *
-	 * @param {String|Object|RegExp} evt An event name if you will pass an array of listeners next. An object if you wish to add to multiple events at once.
-	 * @param {Function[]} [listeners] An optional array of listener functions to add.
-	 * @return {Object} Current instance of EventEmitter for chaining.
-	 */
-	proto.addListeners = function addListeners(evt, listeners) {
-		// Pass through to manipulateListeners
-		return this.manipulateListeners(false, evt, listeners);
-	};
-
-	/**
-	 * Removes listeners in bulk using the manipulateListeners method.
-	 * If you pass an object as the second argument you can remove from multiple events at once. The object should contain key value pairs of events and listeners or listener arrays.
-	 * You can also pass it an event name and an array of listeners to be removed.
-	 * You can also pass it a regular expression to remove the listeners from all events that match it.
-	 *
-	 * @param {String|Object|RegExp} evt An event name if you will pass an array of listeners next. An object if you wish to remove from multiple events at once.
-	 * @param {Function[]} [listeners] An optional array of listener functions to remove.
-	 * @return {Object} Current instance of EventEmitter for chaining.
-	 */
-	proto.removeListeners = function removeListeners(evt, listeners) {
-		// Pass through to manipulateListeners
-		return this.manipulateListeners(true, evt, listeners);
-	};
-
-	/**
-	 * Edits listeners in bulk. The addListeners and removeListeners methods both use this to do their job. You should really use those instead, this is a little lower level.
-	 * The first argument will determine if the listeners are removed (true) or added (false).
-	 * If you pass an object as the second argument you can add/remove from multiple events at once. The object should contain key value pairs of events and listeners or listener arrays.
-	 * You can also pass it an event name and an array of listeners to be added/removed.
-	 * You can also pass it a regular expression to manipulate the listeners of all events that match it.
-	 *
-	 * @param {Boolean} remove True if you want to remove listeners, false if you want to add.
-	 * @param {String|Object|RegExp} evt An event name if you will pass an array of listeners next. An object if you wish to add/remove from multiple events at once.
-	 * @param {Function[]} [listeners] An optional array of listener functions to add/remove.
-	 * @return {Object} Current instance of EventEmitter for chaining.
-	 */
-	proto.manipulateListeners = function manipulateListeners(remove, evt, listeners) {
-		var i;
-		var value;
-		var single = remove ? this.removeListener : this.addListener;
-		var multiple = remove ? this.removeListeners : this.addListeners;
-
-		// If evt is an object then pass each of it's properties to this method
-		if (typeof evt === 'object' && !(evt instanceof RegExp)) {
-			for (i in evt) {
-				if (evt.hasOwnProperty(i) && (value = evt[i])) {
-					// Pass the single listener straight through to the singular method
-					if (typeof value === 'function') {
-						single.call(this, i, value);
-					}
-					else {
-						// Otherwise pass back to the multiple function
-						multiple.call(this, i, value);
-					}
-				}
-			}
-		}
-		else {
-			// So evt must be a string
-			// And listeners must be an array of listeners
-			// Loop over it and pass each one to the multiple method
-			i = listeners.length;
-			while (i--) {
-				single.call(this, evt, listeners[i]);
-			}
-		}
-
-		return this;
-	};
-
-	/**
-	 * Removes all listeners from a specified event.
-	 * If you do not specify an event then all listeners will be removed.
-	 * That means every event will be emptied.
-	 * You can also pass a regex to remove all events that match it.
-	 *
-	 * @param {String|RegExp} [evt] Optional name of the event to remove all listeners for. Will remove from every event if not passed.
-	 * @return {Object} Current instance of EventEmitter for chaining.
-	 */
-	proto.removeEvent = function removeEvent(evt) {
-		var type = typeof evt;
-		var events = this._getEvents();
-		var key;
-
-		// Remove different things depending on the state of evt
-		if (type === 'string') {
-			// Remove all listeners for the specified event
-			delete events[evt];
-		}
-		else if (evt instanceof RegExp) {
-			// Remove all events matching the regex.
-			for (key in events) {
-				if (events.hasOwnProperty(key) && evt.test(key)) {
-					delete events[key];
-				}
-			}
-		}
-		else {
-			// Remove all listeners in all events
-			delete this._events;
-		}
-
-		return this;
-	};
-
-	/**
-	 * Alias of removeEvent.
-	 *
-	 * Added to mirror the node API.
-	 */
-	proto.removeAllListeners = alias('removeEvent');
-
-	/**
-	 * Emits an event of your choice.
-	 * When emitted, every listener attached to that event will be executed.
-	 * If you pass the optional argument array then those arguments will be passed to every listener upon execution.
-	 * Because it uses `apply`, your array of arguments will be passed as if you wrote them out separately.
-	 * So they will not arrive within the array on the other side, they will be separate.
-	 * You can also pass a regular expression to emit to all events that match it.
-	 *
-	 * @param {String|RegExp} evt Name of the event to emit and execute listeners for.
-	 * @param {Array} [args] Optional array of arguments to be passed to each listener.
-	 * @return {Object} Current instance of EventEmitter for chaining.
-	 */
-	proto.emitEvent = function emitEvent(evt, args) {
-		var listeners = this.getListenersAsObject(evt);
-		var listener;
-		var i;
-		var key;
-		var response;
-
-		for (key in listeners) {
-			if (listeners.hasOwnProperty(key)) {
-				i = listeners[key].length;
-
-				while (i--) {
-					// If the listener returns true then it shall be removed from the event
-					// The function is executed either with a basic call or an apply if there is an args array
-					listener = listeners[key][i];
-
-					if (listener.once === true) {
-						this.removeListener(evt, listener.listener);
-					}
-
-					response = listener.listener.apply(this, args || []);
-
-					if (response === this._getOnceReturnValue()) {
-						this.removeListener(evt, listener.listener);
-					}
-				}
-			}
-		}
-
-		return this;
-	};
-
-	/**
-	 * Alias of emitEvent
-	 */
-	proto.trigger = alias('emitEvent');
-
-	/**
-	 * Subtly different from emitEvent in that it will pass its arguments on to the listeners, as opposed to taking a single array of arguments to pass on.
-	 * As with emitEvent, you can pass a regex in place of the event name to emit to all events that match it.
-	 *
-	 * @param {String|RegExp} evt Name of the event to emit and execute listeners for.
-	 * @param {...*} Optional additional arguments to be passed to each listener.
-	 * @return {Object} Current instance of EventEmitter for chaining.
-	 */
-	proto.emit = function emit(evt) {
-		var args = Array.prototype.slice.call(arguments, 1);
-		return this.emitEvent(evt, args);
-	};
-
-	/**
-	 * Sets the current value to check against when executing listeners. If a
-	 * listeners return value matches the one set here then it will be removed
-	 * after execution. This value defaults to true.
-	 *
-	 * @param {*} value The new value to check for when executing listeners.
-	 * @return {Object} Current instance of EventEmitter for chaining.
-	 */
-	proto.setOnceReturnValue = function setOnceReturnValue(value) {
-		this._onceReturnValue = value;
-		return this;
-	};
-
-	/**
-	 * Fetches the current value to check against when executing listeners. If
-	 * the listeners return value matches this one then it should be removed
-	 * automatically. It will return true by default.
-	 *
-	 * @return {*|Boolean} The current value to check for or the default, true.
-	 * @api private
-	 */
-	proto._getOnceReturnValue = function _getOnceReturnValue() {
-		if (this.hasOwnProperty('_onceReturnValue')) {
-			return this._onceReturnValue;
-		}
-		else {
-			return true;
-		}
-	};
-
-	/**
-	 * Fetches the events object and creates one if required.
-	 *
-	 * @return {Object} The events storage object.
-	 * @api private
-	 */
-	proto._getEvents = function _getEvents() {
-		return this._events || (this._events = {});
-	};
-
-	/**
-	 * Reverts the global {@link EventEmitter} to its previous value and returns a reference to this version.
-	 *
-	 * @return {Function} Non conflicting EventEmitter class.
-	 */
-	EventEmitter.noConflict = function noConflict() {
-		exports.EventEmitter = originalGlobalValue;
-		return EventEmitter;
-	};
-
-	// Expose the class either via AMD, CommonJS or the global object
-	if (typeof define === 'function' && define.amd) {
-		define(function () {
-			return EventEmitter;
-		});
-	}
-	else if (typeof module === 'object' && module.exports){
-		module.exports = EventEmitter;
-	}
-	else {
-		this.EventEmitter = EventEmitter;
-	}
-}.call(this));
-
-;/*!
- * eventie v1.0.4
- * event binding helper
- *   eventie.bind( elem, 'click', myFn )
- *   eventie.unbind( elem, 'click', myFn )
- */
-
-/*jshint browser: true, undef: true, unused: true */
-/*global define: false */
-
-( function( window ) {
-
-'use strict';
-
-var docElem = document.documentElement;
-
-var bind = function() {};
-
-function getIEEvent( obj ) {
-  var event = window.event;
-  // add event.target
-  event.target = event.target || event.srcElement || obj;
-  return event;
-}
-
-if ( docElem.addEventListener ) {
-  bind = function( obj, type, fn ) {
-    obj.addEventListener( type, fn, false );
-  };
-} else if ( docElem.attachEvent ) {
-  bind = function( obj, type, fn ) {
-    obj[ type + fn ] = fn.handleEvent ?
-      function() {
-        var event = getIEEvent( obj );
-        fn.handleEvent.call( fn, event );
-      } :
-      function() {
-        var event = getIEEvent( obj );
-        fn.call( obj, event );
-      };
-    obj.attachEvent( "on" + type, obj[ type + fn ] );
-  };
-}
-
-var unbind = function() {};
-
-if ( docElem.removeEventListener ) {
-  unbind = function( obj, type, fn ) {
-    obj.removeEventListener( type, fn, false );
-  };
-} else if ( docElem.detachEvent ) {
-  unbind = function( obj, type, fn ) {
-    obj.detachEvent( "on" + type, obj[ type + fn ] );
-    try {
-      delete obj[ type + fn ];
-    } catch ( err ) {
-      // can't delete window object properties
-      obj[ type + fn ] = undefined;
-    }
-  };
-}
-
-var eventie = {
-  bind: bind,
-  unbind: unbind
-};
-
-// transport
-if ( typeof define === 'function' && define.amd ) {
-  // AMD
-  define( eventie );
-} else {
-  // browser global
-  window.eventie = eventie;
-}
-
-})( this );
-
-;/*!
  * jQuery JavaScript Library v2.0.3
  * http://jquery.com/
  *
@@ -9471,6 +8920,1184 @@ if ( typeof window === "object" && typeof window.document === "object" ) {
 
 })( window );
 
+;/*!
+ * jQuery.ScrollTo
+ * Copyright (c) 2007-2014 Ariel Flesler - aflesler<a>gmail<d>com | http://flesler.blogspot.com
+ * Licensed under MIT
+ * http://flesler.blogspot.com/2007/10/jqueryscrollto.html
+ * @projectDescription Easy element scrolling using jQuery.
+ * @author Ariel Flesler
+ * @version 1.4.9
+ */
+
+;(function (factory) {
+    // AMD Support
+    if (typeof define === 'function' && define.amd) {
+        define(['jquery'], factory);
+    } else {
+        factory(jQuery);
+    }
+}(function ($) {
+
+	var $scrollTo = $.scrollTo = function( target, duration, settings ) {
+		return $(window).scrollTo( target, duration, settings );
+	};
+
+	$scrollTo.defaults = {
+		axis:'xy',
+		duration: parseFloat($.fn.jquery) >= 1.3 ? 0 : 1,
+		limit:true
+	};
+
+	// Returns the element that needs to be animated to scroll the window.
+	// Kept for backwards compatibility (specially for localScroll & serialScroll)
+	$scrollTo.window = function( scope ) {
+		return $(window)._scrollable();
+	};
+
+	// Hack, hack, hack :)
+	// Returns the real elements to scroll (supports window/iframes, documents and regular nodes)
+	$.fn._scrollable = function() {
+		return this.map(function() {
+			var elem = this,
+				isWin = !elem.nodeName || $.inArray( elem.nodeName.toLowerCase(), ['iframe','#document','html','body'] ) != -1;
+
+				if (!isWin)
+					return elem;
+
+			var doc = (elem.contentWindow || elem).document || elem.ownerDocument || elem;
+
+			return /webkit/i.test(navigator.userAgent) || doc.compatMode == 'BackCompat' ?
+				doc.body :
+				doc.documentElement;
+		});
+	};
+
+	$.fn.scrollTo = function( target, duration, settings ) {
+		if (typeof duration == 'object') {
+			settings = duration;
+			duration = 0;
+		}
+		if (typeof settings == 'function')
+			settings = { onAfter:settings };
+
+		if (target == 'max')
+			target = 9e9;
+
+		settings = $.extend( {}, $scrollTo.defaults, settings );
+		// Speed is still recognized for backwards compatibility
+		duration = duration || settings.duration;
+		// Make sure the settings are given right
+		settings.queue = settings.queue && settings.axis.length > 1;
+
+		if (settings.queue)
+			// Let's keep the overall duration
+			duration /= 2;
+		settings.offset = both( settings.offset );
+		settings.over = both( settings.over );
+
+		return this._scrollable().each(function() {
+			// Null target yields nothing, just like jQuery does
+			if (target == null) return;
+
+			var elem = this,
+				$elem = $(elem),
+				targ = target, toff, attr = {},
+				win = $elem.is('html,body');
+
+			switch (typeof targ) {
+				// A number will pass the regex
+				case 'number':
+				case 'string':
+					if (/^([+-]=?)?\d+(\.\d+)?(px|%)?$/.test(targ)) {
+						targ = both( targ );
+						// We are done
+						break;
+					}
+					// Relative selector, no break!
+					targ = $(targ,this);
+					if (!targ.length) return;
+				case 'object':
+					// DOMElement / jQuery
+					if (targ.is || targ.style)
+						// Get the real position of the target
+						toff = (targ = $(targ)).offset();
+			}
+			
+			var offset = $.isFunction(settings.offset) && settings.offset(elem, targ) || settings.offset;
+			
+			$.each( settings.axis.split(''), function( i, axis ) {
+				var Pos	= axis == 'x' ? 'Left' : 'Top',
+					pos = Pos.toLowerCase(),
+					key = 'scroll' + Pos,
+					old = elem[key],
+					max = $scrollTo.max(elem, axis);
+
+				if (toff) {// jQuery / DOMElement
+					attr[key] = toff[pos] + ( win ? 0 : old - $elem.offset()[pos] );
+
+					// If it's a dom element, reduce the margin
+					if (settings.margin) {
+						attr[key] -= parseInt(targ.css('margin'+Pos)) || 0;
+						attr[key] -= parseInt(targ.css('border'+Pos+'Width')) || 0;
+					}
+
+					attr[key] += offset[pos] || 0;
+
+					if(settings.over[pos])
+						// Scroll to a fraction of its width/height
+						attr[key] += targ[axis=='x'?'width':'height']() * settings.over[pos];
+				} else {
+					var val = targ[pos];
+					// Handle percentage values
+					attr[key] = val.slice && val.slice(-1) == '%' ?
+						parseFloat(val) / 100 * max
+						: val;
+				}
+
+				// Number or 'number'
+				if (settings.limit && /^\d+$/.test(attr[key]))
+					// Check the limits
+					attr[key] = attr[key] <= 0 ? 0 : Math.min( attr[key], max );
+
+				// Queueing axes
+				if (!i && settings.queue) {
+					// Don't waste time animating, if there's no need.
+					if (old != attr[key])
+						// Intermediate animation
+						animate( settings.onAfterFirst );
+					// Don't animate this axis again in the next iteration.
+					delete attr[key];
+				}
+			});
+
+			animate( settings.onAfter );
+
+			function animate( callback ) {
+				$elem.animate( attr, duration, settings.easing, callback && function() {
+					callback.call(this, targ, settings);
+				});
+			};
+
+		}).end();
+	};
+
+	// Max scrolling position, works on quirks mode
+	// It only fails (not too badly) on IE, quirks mode.
+	$scrollTo.max = function( elem, axis ) {
+		var Dim = axis == 'x' ? 'Width' : 'Height',
+			scroll = 'scroll'+Dim;
+
+		if (!$(elem).is('html,body'))
+			return elem[scroll] - $(elem)[Dim.toLowerCase()]();
+
+		var size = 'client' + Dim,
+			html = elem.ownerDocument.documentElement,
+			body = elem.ownerDocument.body;
+
+		return Math.max( html[scroll], body[scroll] )
+			 - Math.min( html[size]  , body[size]   );
+	};
+
+	function both( val ) {
+		return $.isFunction(val) || typeof val == 'object' ? val : { top:val, left:val };
+	};
+
+    // AMD requirement
+    return $scrollTo;
+}));
+
+;/*!
+ * EventEmitter v4.2.7 - git.io/ee
+ * Oliver Caldwell
+ * MIT license
+ * @preserve
+ */
+
+(function () {
+	'use strict';
+
+	/**
+	 * Class for managing events.
+	 * Can be extended to provide event functionality in other classes.
+	 *
+	 * @class EventEmitter Manages event registering and emitting.
+	 */
+	function EventEmitter() {}
+
+	// Shortcuts to improve speed and size
+	var proto = EventEmitter.prototype;
+	var exports = this;
+	var originalGlobalValue = exports.EventEmitter;
+
+	/**
+	 * Finds the index of the listener for the event in it's storage array.
+	 *
+	 * @param {Function[]} listeners Array of listeners to search through.
+	 * @param {Function} listener Method to look for.
+	 * @return {Number} Index of the specified listener, -1 if not found
+	 * @api private
+	 */
+	function indexOfListener(listeners, listener) {
+		var i = listeners.length;
+		while (i--) {
+			if (listeners[i].listener === listener) {
+				return i;
+			}
+		}
+
+		return -1;
+	}
+
+	/**
+	 * Alias a method while keeping the context correct, to allow for overwriting of target method.
+	 *
+	 * @param {String} name The name of the target method.
+	 * @return {Function} The aliased method
+	 * @api private
+	 */
+	function alias(name) {
+		return function aliasClosure() {
+			return this[name].apply(this, arguments);
+		};
+	}
+
+	/**
+	 * Returns the listener array for the specified event.
+	 * Will initialise the event object and listener arrays if required.
+	 * Will return an object if you use a regex search. The object contains keys for each matched event. So /ba[rz]/ might return an object containing bar and baz. But only if you have either defined them with defineEvent or added some listeners to them.
+	 * Each property in the object response is an array of listener functions.
+	 *
+	 * @param {String|RegExp} evt Name of the event to return the listeners from.
+	 * @return {Function[]|Object} All listener functions for the event.
+	 */
+	proto.getListeners = function getListeners(evt) {
+		var events = this._getEvents();
+		var response;
+		var key;
+
+		// Return a concatenated array of all matching events if
+		// the selector is a regular expression.
+		if (evt instanceof RegExp) {
+			response = {};
+			for (key in events) {
+				if (events.hasOwnProperty(key) && evt.test(key)) {
+					response[key] = events[key];
+				}
+			}
+		}
+		else {
+			response = events[evt] || (events[evt] = []);
+		}
+
+		return response;
+	};
+
+	/**
+	 * Takes a list of listener objects and flattens it into a list of listener functions.
+	 *
+	 * @param {Object[]} listeners Raw listener objects.
+	 * @return {Function[]} Just the listener functions.
+	 */
+	proto.flattenListeners = function flattenListeners(listeners) {
+		var flatListeners = [];
+		var i;
+
+		for (i = 0; i < listeners.length; i += 1) {
+			flatListeners.push(listeners[i].listener);
+		}
+
+		return flatListeners;
+	};
+
+	/**
+	 * Fetches the requested listeners via getListeners but will always return the results inside an object. This is mainly for internal use but others may find it useful.
+	 *
+	 * @param {String|RegExp} evt Name of the event to return the listeners from.
+	 * @return {Object} All listener functions for an event in an object.
+	 */
+	proto.getListenersAsObject = function getListenersAsObject(evt) {
+		var listeners = this.getListeners(evt);
+		var response;
+
+		if (listeners instanceof Array) {
+			response = {};
+			response[evt] = listeners;
+		}
+
+		return response || listeners;
+	};
+
+	/**
+	 * Adds a listener function to the specified event.
+	 * The listener will not be added if it is a duplicate.
+	 * If the listener returns true then it will be removed after it is called.
+	 * If you pass a regular expression as the event name then the listener will be added to all events that match it.
+	 *
+	 * @param {String|RegExp} evt Name of the event to attach the listener to.
+	 * @param {Function} listener Method to be called when the event is emitted. If the function returns true then it will be removed after calling.
+	 * @return {Object} Current instance of EventEmitter for chaining.
+	 */
+	proto.addListener = function addListener(evt, listener) {
+		var listeners = this.getListenersAsObject(evt);
+		var listenerIsWrapped = typeof listener === 'object';
+		var key;
+
+		for (key in listeners) {
+			if (listeners.hasOwnProperty(key) && indexOfListener(listeners[key], listener) === -1) {
+				listeners[key].push(listenerIsWrapped ? listener : {
+					listener: listener,
+					once: false
+				});
+			}
+		}
+
+		return this;
+	};
+
+	/**
+	 * Alias of addListener
+	 */
+	proto.on = alias('addListener');
+
+	/**
+	 * Semi-alias of addListener. It will add a listener that will be
+	 * automatically removed after it's first execution.
+	 *
+	 * @param {String|RegExp} evt Name of the event to attach the listener to.
+	 * @param {Function} listener Method to be called when the event is emitted. If the function returns true then it will be removed after calling.
+	 * @return {Object} Current instance of EventEmitter for chaining.
+	 */
+	proto.addOnceListener = function addOnceListener(evt, listener) {
+		return this.addListener(evt, {
+			listener: listener,
+			once: true
+		});
+	};
+
+	/**
+	 * Alias of addOnceListener.
+	 */
+	proto.once = alias('addOnceListener');
+
+	/**
+	 * Defines an event name. This is required if you want to use a regex to add a listener to multiple events at once. If you don't do this then how do you expect it to know what event to add to? Should it just add to every possible match for a regex? No. That is scary and bad.
+	 * You need to tell it what event names should be matched by a regex.
+	 *
+	 * @param {String} evt Name of the event to create.
+	 * @return {Object} Current instance of EventEmitter for chaining.
+	 */
+	proto.defineEvent = function defineEvent(evt) {
+		this.getListeners(evt);
+		return this;
+	};
+
+	/**
+	 * Uses defineEvent to define multiple events.
+	 *
+	 * @param {String[]} evts An array of event names to define.
+	 * @return {Object} Current instance of EventEmitter for chaining.
+	 */
+	proto.defineEvents = function defineEvents(evts) {
+		for (var i = 0; i < evts.length; i += 1) {
+			this.defineEvent(evts[i]);
+		}
+		return this;
+	};
+
+	/**
+	 * Removes a listener function from the specified event.
+	 * When passed a regular expression as the event name, it will remove the listener from all events that match it.
+	 *
+	 * @param {String|RegExp} evt Name of the event to remove the listener from.
+	 * @param {Function} listener Method to remove from the event.
+	 * @return {Object} Current instance of EventEmitter for chaining.
+	 */
+	proto.removeListener = function removeListener(evt, listener) {
+		var listeners = this.getListenersAsObject(evt);
+		var index;
+		var key;
+
+		for (key in listeners) {
+			if (listeners.hasOwnProperty(key)) {
+				index = indexOfListener(listeners[key], listener);
+
+				if (index !== -1) {
+					listeners[key].splice(index, 1);
+				}
+			}
+		}
+
+		return this;
+	};
+
+	/**
+	 * Alias of removeListener
+	 */
+	proto.off = alias('removeListener');
+
+	/**
+	 * Adds listeners in bulk using the manipulateListeners method.
+	 * If you pass an object as the second argument you can add to multiple events at once. The object should contain key value pairs of events and listeners or listener arrays. You can also pass it an event name and an array of listeners to be added.
+	 * You can also pass it a regular expression to add the array of listeners to all events that match it.
+	 * Yeah, this function does quite a bit. That's probably a bad thing.
+	 *
+	 * @param {String|Object|RegExp} evt An event name if you will pass an array of listeners next. An object if you wish to add to multiple events at once.
+	 * @param {Function[]} [listeners] An optional array of listener functions to add.
+	 * @return {Object} Current instance of EventEmitter for chaining.
+	 */
+	proto.addListeners = function addListeners(evt, listeners) {
+		// Pass through to manipulateListeners
+		return this.manipulateListeners(false, evt, listeners);
+	};
+
+	/**
+	 * Removes listeners in bulk using the manipulateListeners method.
+	 * If you pass an object as the second argument you can remove from multiple events at once. The object should contain key value pairs of events and listeners or listener arrays.
+	 * You can also pass it an event name and an array of listeners to be removed.
+	 * You can also pass it a regular expression to remove the listeners from all events that match it.
+	 *
+	 * @param {String|Object|RegExp} evt An event name if you will pass an array of listeners next. An object if you wish to remove from multiple events at once.
+	 * @param {Function[]} [listeners] An optional array of listener functions to remove.
+	 * @return {Object} Current instance of EventEmitter for chaining.
+	 */
+	proto.removeListeners = function removeListeners(evt, listeners) {
+		// Pass through to manipulateListeners
+		return this.manipulateListeners(true, evt, listeners);
+	};
+
+	/**
+	 * Edits listeners in bulk. The addListeners and removeListeners methods both use this to do their job. You should really use those instead, this is a little lower level.
+	 * The first argument will determine if the listeners are removed (true) or added (false).
+	 * If you pass an object as the second argument you can add/remove from multiple events at once. The object should contain key value pairs of events and listeners or listener arrays.
+	 * You can also pass it an event name and an array of listeners to be added/removed.
+	 * You can also pass it a regular expression to manipulate the listeners of all events that match it.
+	 *
+	 * @param {Boolean} remove True if you want to remove listeners, false if you want to add.
+	 * @param {String|Object|RegExp} evt An event name if you will pass an array of listeners next. An object if you wish to add/remove from multiple events at once.
+	 * @param {Function[]} [listeners] An optional array of listener functions to add/remove.
+	 * @return {Object} Current instance of EventEmitter for chaining.
+	 */
+	proto.manipulateListeners = function manipulateListeners(remove, evt, listeners) {
+		var i;
+		var value;
+		var single = remove ? this.removeListener : this.addListener;
+		var multiple = remove ? this.removeListeners : this.addListeners;
+
+		// If evt is an object then pass each of it's properties to this method
+		if (typeof evt === 'object' && !(evt instanceof RegExp)) {
+			for (i in evt) {
+				if (evt.hasOwnProperty(i) && (value = evt[i])) {
+					// Pass the single listener straight through to the singular method
+					if (typeof value === 'function') {
+						single.call(this, i, value);
+					}
+					else {
+						// Otherwise pass back to the multiple function
+						multiple.call(this, i, value);
+					}
+				}
+			}
+		}
+		else {
+			// So evt must be a string
+			// And listeners must be an array of listeners
+			// Loop over it and pass each one to the multiple method
+			i = listeners.length;
+			while (i--) {
+				single.call(this, evt, listeners[i]);
+			}
+		}
+
+		return this;
+	};
+
+	/**
+	 * Removes all listeners from a specified event.
+	 * If you do not specify an event then all listeners will be removed.
+	 * That means every event will be emptied.
+	 * You can also pass a regex to remove all events that match it.
+	 *
+	 * @param {String|RegExp} [evt] Optional name of the event to remove all listeners for. Will remove from every event if not passed.
+	 * @return {Object} Current instance of EventEmitter for chaining.
+	 */
+	proto.removeEvent = function removeEvent(evt) {
+		var type = typeof evt;
+		var events = this._getEvents();
+		var key;
+
+		// Remove different things depending on the state of evt
+		if (type === 'string') {
+			// Remove all listeners for the specified event
+			delete events[evt];
+		}
+		else if (evt instanceof RegExp) {
+			// Remove all events matching the regex.
+			for (key in events) {
+				if (events.hasOwnProperty(key) && evt.test(key)) {
+					delete events[key];
+				}
+			}
+		}
+		else {
+			// Remove all listeners in all events
+			delete this._events;
+		}
+
+		return this;
+	};
+
+	/**
+	 * Alias of removeEvent.
+	 *
+	 * Added to mirror the node API.
+	 */
+	proto.removeAllListeners = alias('removeEvent');
+
+	/**
+	 * Emits an event of your choice.
+	 * When emitted, every listener attached to that event will be executed.
+	 * If you pass the optional argument array then those arguments will be passed to every listener upon execution.
+	 * Because it uses `apply`, your array of arguments will be passed as if you wrote them out separately.
+	 * So they will not arrive within the array on the other side, they will be separate.
+	 * You can also pass a regular expression to emit to all events that match it.
+	 *
+	 * @param {String|RegExp} evt Name of the event to emit and execute listeners for.
+	 * @param {Array} [args] Optional array of arguments to be passed to each listener.
+	 * @return {Object} Current instance of EventEmitter for chaining.
+	 */
+	proto.emitEvent = function emitEvent(evt, args) {
+		var listeners = this.getListenersAsObject(evt);
+		var listener;
+		var i;
+		var key;
+		var response;
+
+		for (key in listeners) {
+			if (listeners.hasOwnProperty(key)) {
+				i = listeners[key].length;
+
+				while (i--) {
+					// If the listener returns true then it shall be removed from the event
+					// The function is executed either with a basic call or an apply if there is an args array
+					listener = listeners[key][i];
+
+					if (listener.once === true) {
+						this.removeListener(evt, listener.listener);
+					}
+
+					response = listener.listener.apply(this, args || []);
+
+					if (response === this._getOnceReturnValue()) {
+						this.removeListener(evt, listener.listener);
+					}
+				}
+			}
+		}
+
+		return this;
+	};
+
+	/**
+	 * Alias of emitEvent
+	 */
+	proto.trigger = alias('emitEvent');
+
+	/**
+	 * Subtly different from emitEvent in that it will pass its arguments on to the listeners, as opposed to taking a single array of arguments to pass on.
+	 * As with emitEvent, you can pass a regex in place of the event name to emit to all events that match it.
+	 *
+	 * @param {String|RegExp} evt Name of the event to emit and execute listeners for.
+	 * @param {...*} Optional additional arguments to be passed to each listener.
+	 * @return {Object} Current instance of EventEmitter for chaining.
+	 */
+	proto.emit = function emit(evt) {
+		var args = Array.prototype.slice.call(arguments, 1);
+		return this.emitEvent(evt, args);
+	};
+
+	/**
+	 * Sets the current value to check against when executing listeners. If a
+	 * listeners return value matches the one set here then it will be removed
+	 * after execution. This value defaults to true.
+	 *
+	 * @param {*} value The new value to check for when executing listeners.
+	 * @return {Object} Current instance of EventEmitter for chaining.
+	 */
+	proto.setOnceReturnValue = function setOnceReturnValue(value) {
+		this._onceReturnValue = value;
+		return this;
+	};
+
+	/**
+	 * Fetches the current value to check against when executing listeners. If
+	 * the listeners return value matches this one then it should be removed
+	 * automatically. It will return true by default.
+	 *
+	 * @return {*|Boolean} The current value to check for or the default, true.
+	 * @api private
+	 */
+	proto._getOnceReturnValue = function _getOnceReturnValue() {
+		if (this.hasOwnProperty('_onceReturnValue')) {
+			return this._onceReturnValue;
+		}
+		else {
+			return true;
+		}
+	};
+
+	/**
+	 * Fetches the events object and creates one if required.
+	 *
+	 * @return {Object} The events storage object.
+	 * @api private
+	 */
+	proto._getEvents = function _getEvents() {
+		return this._events || (this._events = {});
+	};
+
+	/**
+	 * Reverts the global {@link EventEmitter} to its previous value and returns a reference to this version.
+	 *
+	 * @return {Function} Non conflicting EventEmitter class.
+	 */
+	EventEmitter.noConflict = function noConflict() {
+		exports.EventEmitter = originalGlobalValue;
+		return EventEmitter;
+	};
+
+	// Expose the class either via AMD, CommonJS or the global object
+	if (typeof define === 'function' && define.amd) {
+		define(function () {
+			return EventEmitter;
+		});
+	}
+	else if (typeof module === 'object' && module.exports){
+		module.exports = EventEmitter;
+	}
+	else {
+		this.EventEmitter = EventEmitter;
+	}
+}.call(this));
+
+;/*!
+ * eventie v1.0.4
+ * event binding helper
+ *   eventie.bind( elem, 'click', myFn )
+ *   eventie.unbind( elem, 'click', myFn )
+ */
+
+/*jshint browser: true, undef: true, unused: true */
+/*global define: false */
+
+( function( window ) {
+
+'use strict';
+
+var docElem = document.documentElement;
+
+var bind = function() {};
+
+function getIEEvent( obj ) {
+  var event = window.event;
+  // add event.target
+  event.target = event.target || event.srcElement || obj;
+  return event;
+}
+
+if ( docElem.addEventListener ) {
+  bind = function( obj, type, fn ) {
+    obj.addEventListener( type, fn, false );
+  };
+} else if ( docElem.attachEvent ) {
+  bind = function( obj, type, fn ) {
+    obj[ type + fn ] = fn.handleEvent ?
+      function() {
+        var event = getIEEvent( obj );
+        fn.handleEvent.call( fn, event );
+      } :
+      function() {
+        var event = getIEEvent( obj );
+        fn.call( obj, event );
+      };
+    obj.attachEvent( "on" + type, obj[ type + fn ] );
+  };
+}
+
+var unbind = function() {};
+
+if ( docElem.removeEventListener ) {
+  unbind = function( obj, type, fn ) {
+    obj.removeEventListener( type, fn, false );
+  };
+} else if ( docElem.detachEvent ) {
+  unbind = function( obj, type, fn ) {
+    obj.detachEvent( "on" + type, obj[ type + fn ] );
+    try {
+      delete obj[ type + fn ];
+    } catch ( err ) {
+      // can't delete window object properties
+      obj[ type + fn ] = undefined;
+    }
+  };
+}
+
+var eventie = {
+  bind: bind,
+  unbind: unbind
+};
+
+// transport
+if ( typeof define === 'function' && define.amd ) {
+  // AMD
+  define( eventie );
+} else {
+  // browser global
+  window.eventie = eventie;
+}
+
+})( this );
+
+;/**
+ * Copyright (c) 2007-2014 Ariel Flesler - aflesler<a>gmail<d>com | http://flesler.blogspot.com
+ * Licensed under MIT
+ * @author Ariel Flesler
+ * @version 1.4.9
+ */
+;(function(a){if(typeof define==='function'&&define.amd){define(['jquery'],a)}else{a(jQuery)}}(function($){var j=$.scrollTo=function(a,b,c){return $(window).scrollTo(a,b,c)};j.defaults={axis:'xy',duration:parseFloat($.fn.jquery)>=1.3?0:1,limit:true};j.window=function(a){return $(window)._scrollable()};$.fn._scrollable=function(){return this.map(function(){var a=this,isWin=!a.nodeName||$.inArray(a.nodeName.toLowerCase(),['iframe','#document','html','body'])!=-1;if(!isWin)return a;var b=(a.contentWindow||a).document||a.ownerDocument||a;return/webkit/i.test(navigator.userAgent)||b.compatMode=='BackCompat'?b.body:b.documentElement})};$.fn.scrollTo=function(f,g,h){if(typeof g=='object'){h=g;g=0}if(typeof h=='function')h={onAfter:h};if(f=='max')f=9e9;h=$.extend({},j.defaults,h);g=g||h.duration;h.queue=h.queue&&h.axis.length>1;if(h.queue)g/=2;h.offset=both(h.offset);h.over=both(h.over);return this._scrollable().each(function(){if(f==null)return;var d=this,$elem=$(d),targ=f,toff,attr={},win=$elem.is('html,body');switch(typeof targ){case'number':case'string':if(/^([+-]=?)?\d+(\.\d+)?(px|%)?$/.test(targ)){targ=both(targ);break}targ=$(targ,this);if(!targ.length)return;case'object':if(targ.is||targ.style)toff=(targ=$(targ)).offset()}var e=$.isFunction(h.offset)&&h.offset(d,targ)||h.offset;$.each(h.axis.split(''),function(i,a){var b=a=='x'?'Left':'Top',pos=b.toLowerCase(),key='scroll'+b,old=d[key],max=j.max(d,a);if(toff){attr[key]=toff[pos]+(win?0:old-$elem.offset()[pos]);if(h.margin){attr[key]-=parseInt(targ.css('margin'+b))||0;attr[key]-=parseInt(targ.css('border'+b+'Width'))||0}attr[key]+=e[pos]||0;if(h.over[pos])attr[key]+=targ[a=='x'?'width':'height']()*h.over[pos]}else{var c=targ[pos];attr[key]=c.slice&&c.slice(-1)=='%'?parseFloat(c)/100*max:c}if(h.limit&&/^\d+$/.test(attr[key]))attr[key]=attr[key]<=0?0:Math.min(attr[key],max);if(!i&&h.queue){if(old!=attr[key])animate(h.onAfterFirst);delete attr[key]}});animate(h.onAfter);function animate(a){$elem.animate(attr,g,h.easing,a&&function(){a.call(this,targ,h)})}}).end()};j.max=function(a,b){var c=b=='x'?'Width':'Height',scroll='scroll'+c;if(!$(a).is('html,body'))return a[scroll]-$(a)[c.toLowerCase()]();var d='client'+c,html=a.ownerDocument.documentElement,body=a.ownerDocument.body;return Math.max(html[scroll],body[scroll])-Math.min(html[d],body[d])};function both(a){return $.isFunction(a)||typeof a=='object'?a:{top:a,left:a}};return j}));
+
+;/*!
+ * jQuery.localScroll
+ * Copyright (c) 2007-2013 Ariel Flesler - aflesler<a>gmail<d>com | http://flesler.blogspot.com
+ * Licensed under MIT
+ * http://flesler.blogspot.com/2007/10/jquerylocalscroll-10.html
+ * @author Ariel Flesler
+ * @version 1.3.1
+ */
+;(function( $ ){
+	var URI = location.href.replace(/#.*/,''); // local url without hash
+
+	var $localScroll = $.localScroll = function( settings ){
+		$('body').localScroll( settings );
+	};
+
+	// Many of these defaults, belong to jQuery.ScrollTo, check it's demo for an example of each option.
+	// @see http://flesler.demos.com/jquery/scrollTo/
+	// The defaults are public and can be overriden.
+	$localScroll.defaults = {
+		duration:1000, // How long to animate.
+		axis:'y', // Which of top and left should be modified.
+		event:'click', // On which event to react.
+		stop:true, // Avoid queuing animations 
+		target: window // What to scroll (selector or element). The whole window by default.
+		/*
+		lock:false, // ignore events if already animating
+		lazy:false, // if true, links can be added later, and will still work.
+		filter:null, // filter some anchors out of the matched elements.
+		hash: false // if true, the hash of the selected link, will appear on the address bar.
+		*/
+	};
+
+	$.fn.localScroll = function( settings ){
+		settings = $.extend( {}, $localScroll.defaults, settings );
+
+		if (settings.hash && location.hash) {
+			if (settings.target) window.scrollTo(0, 0);
+			scroll(0, location, settings);
+		}
+
+		return settings.lazy ?
+			// use event delegation, more links can be added later.		
+			this.bind( settings.event, function( e ){
+				// Could use closest(), but that would leave out jQuery -1.3.x
+				var a = $([e.target, e.target.parentNode]).filter(filter)[0];
+				// if a valid link was clicked
+				if( a )
+					scroll( e, a, settings ); // do scroll.
+			}) :
+			// bind concretely, to each matching link
+			this.find('a,area')
+				.filter( filter ).bind( settings.event, function(e){
+					scroll( e, this, settings );
+				}).end()
+			.end();
+
+		function filter(){// is this a link that points to an anchor and passes a possible filter ? href is checked to avoid a bug in FF.
+			return !!this.href && !!this.hash && this.href.replace(this.hash,'') == URI && (!settings.filter || $(this).is( settings.filter ));
+		};
+	};
+
+	// Not needed anymore, kept for backwards compatibility
+	$localScroll.hash = function() {}
+
+	function scroll( e, link, settings ){
+		var id = link.hash.slice(1),
+			elem = document.getElementById(id) || document.getElementsByName(id)[0];
+
+		if ( !elem )
+			return;
+
+		if( e )
+			e.preventDefault();
+
+		var $target = $( settings.target );
+
+		if( settings.lock && $target.is(':animated') ||
+			settings.onBefore && settings.onBefore(e, elem, $target) === false ) 
+			return;
+
+		if( settings.stop )
+			$target._scrollable().stop(true); // remove all its animations
+
+		if( settings.hash ) {
+			var offset = settings.offset;
+			offset = offset && offset.top || offset || 0;
+			var attr = elem.id == id ? 'id' : 'name',
+				$a = $('<a> </a>').attr(attr, id).css({
+					position:'absolute',
+					top: $(window).scrollTop() + offset,
+					left: $(window).scrollLeft()
+				});
+
+			elem[attr] = '';
+			$('body').prepend($a);
+			location = link.hash;
+			$a.remove();
+			elem[attr] = id;
+		}
+			
+		$target
+			.scrollTo( elem, settings ) // do scroll
+			.trigger('notify.serialScroll',[elem]); // notify serialScroll about this change
+	};
+
+})( jQuery );
+;/*!
+ * imagesLoaded v3.1.0
+ * JavaScript is all like "You images are done yet or what?"
+ * MIT License
+ */
+
+( function( window ) {
+
+'use strict';
+
+var $ = window.jQuery;
+var console = window.console;
+var hasConsole = typeof console !== 'undefined';
+
+// -------------------------- helpers -------------------------- //
+
+// extend objects
+function extend( a, b ) {
+  for ( var prop in b ) {
+    a[ prop ] = b[ prop ];
+  }
+  return a;
+}
+
+var objToString = Object.prototype.toString;
+function isArray( obj ) {
+  return objToString.call( obj ) === '[object Array]';
+}
+
+// turn element or nodeList into an array
+function makeArray( obj ) {
+  var ary = [];
+  if ( isArray( obj ) ) {
+    // use object if already an array
+    ary = obj;
+  } else if ( typeof obj.length === 'number' ) {
+    // convert nodeList to array
+    for ( var i=0, len = obj.length; i < len; i++ ) {
+      ary.push( obj[i] );
+    }
+  } else {
+    // array of single index
+    ary.push( obj );
+  }
+  return ary;
+}
+
+// --------------------------  -------------------------- //
+
+function defineImagesLoaded( EventEmitter, eventie ) {
+
+  /**
+   * @param {Array, Element, NodeList, String} elem
+   * @param {Object or Function} options - if function, use as callback
+   * @param {Function} onAlways - callback function
+   */
+  function ImagesLoaded( elem, options, onAlways ) {
+    // coerce ImagesLoaded() without new, to be new ImagesLoaded()
+    if ( !( this instanceof ImagesLoaded ) ) {
+      return new ImagesLoaded( elem, options );
+    }
+    // use elem as selector string
+    if ( typeof elem === 'string' ) {
+      elem = document.querySelectorAll( elem );
+    }
+
+    this.elements = makeArray( elem );
+    this.options = extend( {}, this.options );
+
+    if ( typeof options === 'function' ) {
+      onAlways = options;
+    } else {
+      extend( this.options, options );
+    }
+
+    if ( onAlways ) {
+      this.on( 'always', onAlways );
+    }
+
+    this.getImages();
+
+    if ( $ ) {
+      // add jQuery Deferred object
+      this.jqDeferred = new $.Deferred();
+    }
+
+    // HACK check async to allow time to bind listeners
+    var _this = this;
+    setTimeout( function() {
+      _this.check();
+    });
+  }
+
+  ImagesLoaded.prototype = new EventEmitter();
+
+  ImagesLoaded.prototype.options = {};
+
+  ImagesLoaded.prototype.getImages = function() {
+    this.images = [];
+
+    // filter & find items if we have an item selector
+    for ( var i=0, len = this.elements.length; i < len; i++ ) {
+      var elem = this.elements[i];
+      // filter siblings
+      if ( elem.nodeName === 'IMG' ) {
+        this.addImage( elem );
+      }
+      // find children
+      var childElems = elem.querySelectorAll('img');
+      // concat childElems to filterFound array
+      for ( var j=0, jLen = childElems.length; j < jLen; j++ ) {
+        var img = childElems[j];
+        this.addImage( img );
+      }
+    }
+  };
+
+  /**
+   * @param {Image} img
+   */
+  ImagesLoaded.prototype.addImage = function( img ) {
+    var loadingImage = new LoadingImage( img );
+    this.images.push( loadingImage );
+  };
+
+  ImagesLoaded.prototype.check = function() {
+    var _this = this;
+    var checkedCount = 0;
+    var length = this.images.length;
+    this.hasAnyBroken = false;
+    // complete if no images
+    if ( !length ) {
+      this.complete();
+      return;
+    }
+
+    function onConfirm( image, message ) {
+      if ( _this.options.debug && hasConsole ) {
+        console.log( 'confirm', image, message );
+      }
+
+      _this.progress( image );
+      checkedCount++;
+      if ( checkedCount === length ) {
+        _this.complete();
+      }
+      return true; // bind once
+    }
+
+    for ( var i=0; i < length; i++ ) {
+      var loadingImage = this.images[i];
+      loadingImage.on( 'confirm', onConfirm );
+      loadingImage.check();
+    }
+  };
+
+  ImagesLoaded.prototype.progress = function( image ) {
+    this.hasAnyBroken = this.hasAnyBroken || !image.isLoaded;
+    // HACK - Chrome triggers event before object properties have changed. #83
+    var _this = this;
+    setTimeout( function() {
+      _this.emit( 'progress', _this, image );
+      if ( _this.jqDeferred ) {
+        _this.jqDeferred.notify( _this, image );
+      }
+    });
+  };
+
+  ImagesLoaded.prototype.complete = function() {
+    var eventName = this.hasAnyBroken ? 'fail' : 'done';
+    this.isComplete = true;
+    var _this = this;
+    // HACK - another setTimeout so that confirm happens after progress
+    setTimeout( function() {
+      _this.emit( eventName, _this );
+      _this.emit( 'always', _this );
+      if ( _this.jqDeferred ) {
+        var jqMethod = _this.hasAnyBroken ? 'reject' : 'resolve';
+        _this.jqDeferred[ jqMethod ]( _this );
+      }
+    });
+  };
+
+  // -------------------------- jquery -------------------------- //
+
+  if ( $ ) {
+    $.fn.imagesLoaded = function( options, callback ) {
+      var instance = new ImagesLoaded( this, options, callback );
+      return instance.jqDeferred.promise( $(this) );
+    };
+  }
+
+
+  // --------------------------  -------------------------- //
+
+  function LoadingImage( img ) {
+    this.img = img;
+  }
+
+  LoadingImage.prototype = new EventEmitter();
+
+  LoadingImage.prototype.check = function() {
+    // first check cached any previous images that have same src
+    var resource = cache[ this.img.src ] || new Resource( this.img.src );
+    if ( resource.isConfirmed ) {
+      this.confirm( resource.isLoaded, 'cached was confirmed' );
+      return;
+    }
+
+    // If complete is true and browser supports natural sizes,
+    // try to check for image status manually.
+    if ( this.img.complete && this.img.naturalWidth !== undefined ) {
+      // report based on naturalWidth
+      this.confirm( this.img.naturalWidth !== 0, 'naturalWidth' );
+      return;
+    }
+
+    // If none of the checks above matched, simulate loading on detached element.
+    var _this = this;
+    resource.on( 'confirm', function( resrc, message ) {
+      _this.confirm( resrc.isLoaded, message );
+      return true;
+    });
+
+    resource.check();
+  };
+
+  LoadingImage.prototype.confirm = function( isLoaded, message ) {
+    this.isLoaded = isLoaded;
+    this.emit( 'confirm', this, message );
+  };
+
+  // -------------------------- Resource -------------------------- //
+
+  // Resource checks each src, only once
+  // separate class from LoadingImage to prevent memory leaks. See #115
+
+  var cache = {};
+
+  function Resource( src ) {
+    this.src = src;
+    // add to cache
+    cache[ src ] = this;
+  }
+
+  Resource.prototype = new EventEmitter();
+
+  Resource.prototype.check = function() {
+    // only trigger checking once
+    if ( this.isChecked ) {
+      return;
+    }
+    // simulate loading on detached element
+    var proxyImage = new Image();
+    eventie.bind( proxyImage, 'load', this );
+    eventie.bind( proxyImage, 'error', this );
+    proxyImage.src = this.src;
+    // set flag
+    this.isChecked = true;
+  };
+
+  // ----- events ----- //
+
+  // trigger specified handler for event type
+  Resource.prototype.handleEvent = function( event ) {
+    var method = 'on' + event.type;
+    if ( this[ method ] ) {
+      this[ method ]( event );
+    }
+  };
+
+  Resource.prototype.onload = function( event ) {
+    this.confirm( true, 'onload' );
+    this.unbindProxyEvents( event );
+  };
+
+  Resource.prototype.onerror = function( event ) {
+    this.confirm( false, 'onerror' );
+    this.unbindProxyEvents( event );
+  };
+
+  // ----- confirm ----- //
+
+  Resource.prototype.confirm = function( isLoaded, message ) {
+    this.isConfirmed = true;
+    this.isLoaded = isLoaded;
+    this.emit( 'confirm', this, message );
+  };
+
+  Resource.prototype.unbindProxyEvents = function( event ) {
+    eventie.unbind( event.target, 'load', this );
+    eventie.unbind( event.target, 'error', this );
+  };
+
+  // -----  ----- //
+
+  return ImagesLoaded;
+}
+
+// -------------------------- transport -------------------------- //
+
+if ( typeof define === 'function' && define.amd ) {
+  // AMD
+  define( [
+      'eventEmitter/EventEmitter',
+      'eventie/eventie'
+    ],
+    defineImagesLoaded );
+} else {
+  // browser global
+  window.imagesLoaded = defineImagesLoaded(
+    window.EventEmitter,
+    window.eventie
+  );
+}
+
+})( window );
+
+;jQuery.easing["jswing"]=jQuery.easing["swing"];jQuery.extend(jQuery.easing,{def:"easeOutQuad",swing:function(x,t,b,c,d){return jQuery.easing[jQuery.easing.def](x,t,b,c,d)},easeInQuad:function(x,t,b,c,d){return c*(t/=d)*t+b},easeOutQuad:function(x,t,b,c,d){return-c*(t/=d)*(t-2)+b},easeInOutQuad:function(x,t,b,c,d){if((t/=d/2)<1)return c/2*t*t+b;return-c/2*(--t*(t-2)-1)+b},easeInCubic:function(x,t,b,c,d){return c*(t/=d)*t*t+b},easeOutCubic:function(x,t,b,c,d){return c*((t=t/d-1)*t*t+1)+b},easeInOutCubic:function(x,t,b,c,d){if((t/=d/2)<1)return c/2*t*t*t+b;return c/2*((t-=2)*t*t+2)+b},easeInQuart:function(x,t,b,c,d){return c*(t/=d)*t*t*t+b},easeOutQuart:function(x,t,b,c,d){return-c*((t=t/d-1)*t*t*t-1)+b},easeInOutQuart:function(x,t,b,c,d){if((t/=d/2)<1)return c/2*t*t*t*t+b;return-c/2*((t-=2)*t*t*t-2)+b},easeInQuint:function(x,t,b,c,d){return c*(t/=d)*t*t*t*t+b},easeOutQuint:function(x,t,b,c,d){return c*((t=t/d-1)*t*t*t*t+1)+b},easeInOutQuint:function(x,t,b,c,d){if((t/=d/2)<1)return c/2*t*t*t*t*t+b;return c/2*((t-=2)*t*t*t*t+2)+b},easeInSine:function(x,t,b,c,d){return-c*Math.cos(t/d*(Math.PI/2))+c+b},easeOutSine:function(x,t,b,c,d){return c*Math.sin(t/d*(Math.PI/2))+b},easeInOutSine:function(x,t,b,c,d){return-c/2*(Math.cos(Math.PI*t/d)-1)+b},easeInExpo:function(x,t,b,c,d){return t==0?b:c*Math.pow(2,10*(t/d-1))+b},easeOutExpo:function(x,t,b,c,d){return t==d?b+c:c*(-Math.pow(2,-10*t/d)+1)+b},easeInOutExpo:function(x,t,b,c,d){if(t==0)return b;if(t==d)return b+c;if((t/=d/2)<1)return c/2*Math.pow(2,10*(t-1))+b;return c/2*(-Math.pow(2,-10*--t)+2)+b},easeInCirc:function(x,t,b,c,d){return-c*(Math.sqrt(1-(t/=d)*t)-1)+b},easeOutCirc:function(x,t,b,c,d){return c*Math.sqrt(1-(t=t/d-1)*t)+b},easeInOutCirc:function(x,t,b,c,d){if((t/=d/2)<1)return-c/2*(Math.sqrt(1-t*t)-1)+b;return c/2*(Math.sqrt(1-(t-=2)*t)+1)+b},easeInElastic:function(x,t,b,c,d){var s=1.70158;var p=0;var a=c;if(t==0)return b;if((t/=d)==1)return b+c;if(!p)p=d*.3;if(a<Math.abs(c)){a=c;var s=p/4}else var s=p/(2*Math.PI)*Math.asin(c/a);return-(a*Math.pow(2,10*(t-=1))*Math.sin((t*d-s)*2*Math.PI/p))+b},easeOutElastic:function(x,t,b,c,d){var s=1.70158;var p=0;var a=c;if(t==0)return b;if((t/=d)==1)return b+c;if(!p)p=d*.3;if(a<Math.abs(c)){a=c;var s=p/4}else var s=p/(2*Math.PI)*Math.asin(c/a);return a*Math.pow(2,-10*t)*Math.sin((t*d-s)*2*Math.PI/p)+c+b},easeInOutElastic:function(x,t,b,c,d){var s=1.70158;var p=0;var a=c;if(t==0)return b;if((t/=d/2)==2)return b+c;if(!p)p=d*.3*1.5;if(a<Math.abs(c)){a=c;var s=p/4}else var s=p/(2*Math.PI)*Math.asin(c/a);if(t<1)return-.5*a*Math.pow(2,10*(t-=1))*Math.sin((t*d-s)*2*Math.PI/p)+b;return a*Math.pow(2,-10*(t-=1))*Math.sin((t*d-s)*2*Math.PI/p)*.5+c+b},easeInBack:function(x,t,b,c,d,s){if(s==undefined)s=1.70158;return c*(t/=d)*t*((s+1)*t-s)+b},easeOutBack:function(x,t,b,c,d,s){if(s==undefined)s=1.70158;return c*((t=t/d-1)*t*((s+1)*t+s)+1)+b},easeInOutBack:function(x,t,b,c,d,s){if(s==undefined)s=1.70158;if((t/=d/2)<1)return c/2*t*t*(((s*=1.525)+1)*t-s)+b;return c/2*((t-=2)*t*(((s*=1.525)+1)*t+s)+2)+b},easeInBounce:function(x,t,b,c,d){return c-jQuery.easing.easeOutBounce(x,d-t,0,c,d)+b},easeOutBounce:function(x,t,b,c,d){if((t/=d)<1/2.75){return c*7.5625*t*t+b}else if(t<2/2.75){return c*(7.5625*(t-=1.5/2.75)*t+.75)+b}else if(t<2.5/2.75){return c*(7.5625*(t-=2.25/2.75)*t+.9375)+b}else{return c*(7.5625*(t-=2.625/2.75)*t+.984375)+b}},easeInOutBounce:function(x,t,b,c,d){if(t<d/2)return jQuery.easing.easeInBounce(x,t*2,0,c,d)*.5+b;return jQuery.easing.easeOutBounce(x,t*2-d,0,c,d)*.5+c*.5+b}});
+;/**
+ * Copyright (c) 2007-2013 Ariel Flesler - aflesler<a>gmail<d>com | http://flesler.blogspot.com
+ * Licensed under MIT
+ * @author Ariel Flesler
+ * @version 1.3.1
+ */
+;(function($){var h=location.href.replace(/#.*/,'');var i=$.localScroll=function(a){$('body').localScroll(a)};i.defaults={duration:1000,axis:'y',event:'click',stop:true,target:window};i.hash=function(a){if(location.hash){a=$.extend({},i.defaults,a);a.hash=false;if(a.reset){var d=a.duration;delete a.duration;$(a.target).scrollTo(0,a);a.duration=d}scroll(0,location,a)}};$.fn.localScroll=function(b){b=$.extend({},i.defaults,b);return b.lazy?this.bind(b.event,function(e){var a=$([e.target,e.target.parentNode]).filter(filter)[0];if(a)scroll(e,a,b)}):this.find('a,area').filter(filter).bind(b.event,function(e){scroll(e,this,b)}).end().end();function filter(){return!!this.href&&!!this.hash&&this.href.replace(this.hash,'')==h&&(!b.filter||$(this).is(b.filter))}};function scroll(e,a,b){var c=a.hash.slice(1),elem=document.getElementById(c)||document.getElementsByName(c)[0];if(!elem)return;if(e)e.preventDefault();var d=$(b.target);if(b.lock&&d.is(':animated')||b.onBefore&&b.onBefore(e,elem,d)===false)return;if(b.stop)d._scrollable().stop(true);if(b.hash){var f=b.offset;f=f&&f.top||f||0;var g=elem.id==c?'id':'name',$a=$('<a> </a>').attr(g,c).css({position:'absolute',top:$(window).scrollTop()+f,left:$(window).scrollLeft()});elem[g]='';$('body').prepend($a);location=a.hash;$a.remove();elem[g]=c}d.scrollTo(elem,b).trigger('notify.serialScroll',[elem])}})(jQuery);
 ;/*! jQuery UI - v1.10.3 - 2013-05-03
 * http://jqueryui.com
 * Includes: jquery.ui.core.js, jquery.ui.widget.js, jquery.ui.mouse.js, jquery.ui.draggable.js, jquery.ui.droppable.js, jquery.ui.resizable.js, jquery.ui.selectable.js, jquery.ui.sortable.js, jquery.ui.effect.js, jquery.ui.accordion.js, jquery.ui.autocomplete.js, jquery.ui.button.js, jquery.ui.datepicker.js, jquery.ui.dialog.js, jquery.ui.effect-blind.js, jquery.ui.effect-bounce.js, jquery.ui.effect-clip.js, jquery.ui.effect-drop.js, jquery.ui.effect-explode.js, jquery.ui.effect-fade.js, jquery.ui.effect-fold.js, jquery.ui.effect-highlight.js, jquery.ui.effect-pulsate.js, jquery.ui.effect-scale.js, jquery.ui.effect-shake.js, jquery.ui.effect-slide.js, jquery.ui.effect-transfer.js, jquery.ui.menu.js, jquery.ui.position.js, jquery.ui.progressbar.js, jquery.ui.slider.js, jquery.ui.spinner.js, jquery.ui.tabs.js, jquery.ui.tooltip.js
@@ -24475,324 +25102,6 @@ $.widget( "ui.tooltip", {
 
 }( jQuery ) );
 
-;/*!
- * imagesLoaded v3.1.0
- * JavaScript is all like "You images are done yet or what?"
- * MIT License
- */
-
-( function( window ) {
-
-'use strict';
-
-var $ = window.jQuery;
-var console = window.console;
-var hasConsole = typeof console !== 'undefined';
-
-// -------------------------- helpers -------------------------- //
-
-// extend objects
-function extend( a, b ) {
-  for ( var prop in b ) {
-    a[ prop ] = b[ prop ];
-  }
-  return a;
-}
-
-var objToString = Object.prototype.toString;
-function isArray( obj ) {
-  return objToString.call( obj ) === '[object Array]';
-}
-
-// turn element or nodeList into an array
-function makeArray( obj ) {
-  var ary = [];
-  if ( isArray( obj ) ) {
-    // use object if already an array
-    ary = obj;
-  } else if ( typeof obj.length === 'number' ) {
-    // convert nodeList to array
-    for ( var i=0, len = obj.length; i < len; i++ ) {
-      ary.push( obj[i] );
-    }
-  } else {
-    // array of single index
-    ary.push( obj );
-  }
-  return ary;
-}
-
-// --------------------------  -------------------------- //
-
-function defineImagesLoaded( EventEmitter, eventie ) {
-
-  /**
-   * @param {Array, Element, NodeList, String} elem
-   * @param {Object or Function} options - if function, use as callback
-   * @param {Function} onAlways - callback function
-   */
-  function ImagesLoaded( elem, options, onAlways ) {
-    // coerce ImagesLoaded() without new, to be new ImagesLoaded()
-    if ( !( this instanceof ImagesLoaded ) ) {
-      return new ImagesLoaded( elem, options );
-    }
-    // use elem as selector string
-    if ( typeof elem === 'string' ) {
-      elem = document.querySelectorAll( elem );
-    }
-
-    this.elements = makeArray( elem );
-    this.options = extend( {}, this.options );
-
-    if ( typeof options === 'function' ) {
-      onAlways = options;
-    } else {
-      extend( this.options, options );
-    }
-
-    if ( onAlways ) {
-      this.on( 'always', onAlways );
-    }
-
-    this.getImages();
-
-    if ( $ ) {
-      // add jQuery Deferred object
-      this.jqDeferred = new $.Deferred();
-    }
-
-    // HACK check async to allow time to bind listeners
-    var _this = this;
-    setTimeout( function() {
-      _this.check();
-    });
-  }
-
-  ImagesLoaded.prototype = new EventEmitter();
-
-  ImagesLoaded.prototype.options = {};
-
-  ImagesLoaded.prototype.getImages = function() {
-    this.images = [];
-
-    // filter & find items if we have an item selector
-    for ( var i=0, len = this.elements.length; i < len; i++ ) {
-      var elem = this.elements[i];
-      // filter siblings
-      if ( elem.nodeName === 'IMG' ) {
-        this.addImage( elem );
-      }
-      // find children
-      var childElems = elem.querySelectorAll('img');
-      // concat childElems to filterFound array
-      for ( var j=0, jLen = childElems.length; j < jLen; j++ ) {
-        var img = childElems[j];
-        this.addImage( img );
-      }
-    }
-  };
-
-  /**
-   * @param {Image} img
-   */
-  ImagesLoaded.prototype.addImage = function( img ) {
-    var loadingImage = new LoadingImage( img );
-    this.images.push( loadingImage );
-  };
-
-  ImagesLoaded.prototype.check = function() {
-    var _this = this;
-    var checkedCount = 0;
-    var length = this.images.length;
-    this.hasAnyBroken = false;
-    // complete if no images
-    if ( !length ) {
-      this.complete();
-      return;
-    }
-
-    function onConfirm( image, message ) {
-      if ( _this.options.debug && hasConsole ) {
-        console.log( 'confirm', image, message );
-      }
-
-      _this.progress( image );
-      checkedCount++;
-      if ( checkedCount === length ) {
-        _this.complete();
-      }
-      return true; // bind once
-    }
-
-    for ( var i=0; i < length; i++ ) {
-      var loadingImage = this.images[i];
-      loadingImage.on( 'confirm', onConfirm );
-      loadingImage.check();
-    }
-  };
-
-  ImagesLoaded.prototype.progress = function( image ) {
-    this.hasAnyBroken = this.hasAnyBroken || !image.isLoaded;
-    // HACK - Chrome triggers event before object properties have changed. #83
-    var _this = this;
-    setTimeout( function() {
-      _this.emit( 'progress', _this, image );
-      if ( _this.jqDeferred ) {
-        _this.jqDeferred.notify( _this, image );
-      }
-    });
-  };
-
-  ImagesLoaded.prototype.complete = function() {
-    var eventName = this.hasAnyBroken ? 'fail' : 'done';
-    this.isComplete = true;
-    var _this = this;
-    // HACK - another setTimeout so that confirm happens after progress
-    setTimeout( function() {
-      _this.emit( eventName, _this );
-      _this.emit( 'always', _this );
-      if ( _this.jqDeferred ) {
-        var jqMethod = _this.hasAnyBroken ? 'reject' : 'resolve';
-        _this.jqDeferred[ jqMethod ]( _this );
-      }
-    });
-  };
-
-  // -------------------------- jquery -------------------------- //
-
-  if ( $ ) {
-    $.fn.imagesLoaded = function( options, callback ) {
-      var instance = new ImagesLoaded( this, options, callback );
-      return instance.jqDeferred.promise( $(this) );
-    };
-  }
-
-
-  // --------------------------  -------------------------- //
-
-  function LoadingImage( img ) {
-    this.img = img;
-  }
-
-  LoadingImage.prototype = new EventEmitter();
-
-  LoadingImage.prototype.check = function() {
-    // first check cached any previous images that have same src
-    var resource = cache[ this.img.src ] || new Resource( this.img.src );
-    if ( resource.isConfirmed ) {
-      this.confirm( resource.isLoaded, 'cached was confirmed' );
-      return;
-    }
-
-    // If complete is true and browser supports natural sizes,
-    // try to check for image status manually.
-    if ( this.img.complete && this.img.naturalWidth !== undefined ) {
-      // report based on naturalWidth
-      this.confirm( this.img.naturalWidth !== 0, 'naturalWidth' );
-      return;
-    }
-
-    // If none of the checks above matched, simulate loading on detached element.
-    var _this = this;
-    resource.on( 'confirm', function( resrc, message ) {
-      _this.confirm( resrc.isLoaded, message );
-      return true;
-    });
-
-    resource.check();
-  };
-
-  LoadingImage.prototype.confirm = function( isLoaded, message ) {
-    this.isLoaded = isLoaded;
-    this.emit( 'confirm', this, message );
-  };
-
-  // -------------------------- Resource -------------------------- //
-
-  // Resource checks each src, only once
-  // separate class from LoadingImage to prevent memory leaks. See #115
-
-  var cache = {};
-
-  function Resource( src ) {
-    this.src = src;
-    // add to cache
-    cache[ src ] = this;
-  }
-
-  Resource.prototype = new EventEmitter();
-
-  Resource.prototype.check = function() {
-    // only trigger checking once
-    if ( this.isChecked ) {
-      return;
-    }
-    // simulate loading on detached element
-    var proxyImage = new Image();
-    eventie.bind( proxyImage, 'load', this );
-    eventie.bind( proxyImage, 'error', this );
-    proxyImage.src = this.src;
-    // set flag
-    this.isChecked = true;
-  };
-
-  // ----- events ----- //
-
-  // trigger specified handler for event type
-  Resource.prototype.handleEvent = function( event ) {
-    var method = 'on' + event.type;
-    if ( this[ method ] ) {
-      this[ method ]( event );
-    }
-  };
-
-  Resource.prototype.onload = function( event ) {
-    this.confirm( true, 'onload' );
-    this.unbindProxyEvents( event );
-  };
-
-  Resource.prototype.onerror = function( event ) {
-    this.confirm( false, 'onerror' );
-    this.unbindProxyEvents( event );
-  };
-
-  // ----- confirm ----- //
-
-  Resource.prototype.confirm = function( isLoaded, message ) {
-    this.isConfirmed = true;
-    this.isLoaded = isLoaded;
-    this.emit( 'confirm', this, message );
-  };
-
-  Resource.prototype.unbindProxyEvents = function( event ) {
-    eventie.unbind( event.target, 'load', this );
-    eventie.unbind( event.target, 'error', this );
-  };
-
-  // -----  ----- //
-
-  return ImagesLoaded;
-}
-
-// -------------------------- transport -------------------------- //
-
-if ( typeof define === 'function' && define.amd ) {
-  // AMD
-  define( [
-      'eventEmitter/EventEmitter',
-      'eventie/eventie'
-    ],
-    defineImagesLoaded );
-} else {
-  // browser global
-  window.imagesLoaded = defineImagesLoaded(
-    window.EventEmitter,
-    window.eventie
-  );
-}
-
-})( window );
-
 ;/**
  * @license
  * Lo-Dash 1.3.1 (Custom Build) <http://lodash.com/>
@@ -30772,6 +31081,24 @@ if (typeof define === 'function' && define.amd) {
 }
 });
 
+;require.register("includes/clouds", function(exports, require, module) {
+var __templateData = function template(locals) {
+var buf = [];
+var jade_mixins = {};
+
+buf.push("<div class=\"clouds\"><img src=\"images/elements/cloud_01.png\" class=\"cloud-1\"/><img src=\"images/elements/cloud_03.png\" class=\"cloud-3\"/><img src=\"images/elements/cloud_04.png\" class=\"cloud-4\"/><img src=\"images/elements/cloud_05.png\" class=\"cloud-5\"/><img src=\"images/elements/cloud_07.png\" class=\"cloud-7\"/><img src=\"images/elements/cloud_08.png\" class=\"cloud-8\"/><img src=\"images/elements/cloud_09.png\" class=\"cloud-9\"/></div>");;return buf.join("");
+};
+if (typeof define === 'function' && define.amd) {
+  define([], function() {
+    return __templateData;
+  });
+} else if (typeof module === 'object' && module && module.exports) {
+  module.exports = __templateData;
+} else {
+  __templateData;
+}
+});
+
 ;require.register("includes/contact", function(exports, require, module) {
 var __templateData = function template(locals) {
 var buf = [];
@@ -30849,7 +31176,7 @@ var __templateData = function template(locals) {
 var buf = [];
 var jade_mixins = {};
 
-buf.push("<!DOCTYPE html><!--if lt IE 7<html class=\"no-js lt-ie9 lt-ie8 lt-ie7\">--><!--if IE 7<html class=\"no-js lt-ie9 lt-ie8\">--><!--if IE 8<html class=\"no-js lt-ie9\">--><!-- [if gt IE 8] <!--><html lang=\"en\" class=\"no-js\"><!-- <![endif]--><head><meta charset=\"utf-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\"><title>Magics - THE REVOLUTIONARY THIN DIAPER</title><meta name=\"description\" content=\"\"><meta name=\"viewport\" content=\"width=device-width\"><script>window.brunch = window.brunch || {};</script><link rel=\"stylesheet\" href=\"MyFontsWebfontsKit.css\"><link rel=\"stylesheet\" href=\"css/app.css\"></head><body><!-- Loading--><div class=\"loading\"><div class=\"page-center\"><div class=\"logo\"><img alt=\"Magics\" src=\"images/Magics-Logo.png\"></div><div class=\"circle\"><img alt=\"Magics\" src=\"images/Loading.gif\"></div><div class=\"claim\">The revolutionary thin diaper</div></div></div><!-- Products--><div class=\"products\"><div class=\"menu cf\"><img src=\"images/Menu-Magics-Logo.png\" class=\"menu-magics-logo\"><ul class=\"nav nav-pills\"><li class=\"products-link\"><a href=\"#Products\">Products</a></li><li class=\"about-link\"><a href=\"#About\">About</a></li><li class=\"contact-link\"><a href=\"#Contact\">Contact</a></li><li><a href=\"#\" class=\"longer\">Order Online</a></li></ul><a href=\"http://www.drylock.eu/\" class=\"menu-drylock-logo\"><img src=\"images/Menu-Drylock-Logo.png\"></a></div><div class=\"products-content\"><div class=\"row\"><div class=\"col-md-6 diapers-1\"><div class=\"row diapers-detail\"><div class=\"col-md-6\"><div class=\"diapers-info text-right\"><div class=\"title\">NEW BORN</div><div class=\"weight\">2–5 kg</div><div class=\"description\">36 ultra thin diapers</div></div></div><div class=\"col-md-1\"><div class=\"number-circle number-orange\">1</div></div><div class=\"col-md-5\"><img src=\"images/packshots/Magics_1_fin.png\"></div></div></div><div class=\"col-md-6 diapers-2\"><div class=\"row diapers-detail\"><div class=\"col-md-6\"><img src=\"images/packshots/Magics_2_fin.png\"></div><div class=\"col-md-1\"><div class=\"number-circle number-yellow\">2</div></div><div class=\"col-md-5 text-left\"><div class=\"diapers-info text-left\"><div class=\"title\">MINI</div><div class=\"weight\">3–6 kg</div><div class=\"description\">34 ultra thin diapers</div></div></div></div></div></div><div class=\"row\"><div class=\"col-md-5 col-md-push-1 diapers-3\"><div class=\"row diapers-detail\"><div class=\"col-md-5\"><img src=\"images/packshots/Magics_3_fin.png\"></div><div class=\"col-md-1\"><div class=\"number-circle number-green\">3</div></div><div class=\"col-md-6 text-left\"><div class=\"diapers-info text-left\"><div class=\"title\">MIDI</div><div class=\"weight\">4–9 kg</div><div class=\"description\">31 ultra thin diapers</div></div></div></div></div><div class=\"col-md-5 col-md-push-1 diapers-4\"><div class=\"row diapers-detail\"><div class=\"col-md-6 text-right\"><div class=\"diapers-info text-right\"><div class=\"title\">MAXI</div><div class=\"weight\">7–18 kg</div><div class=\"description\">29 ultra thin diapers</div></div></div><div class=\"col-md-1\"><div class=\"number-circle number-pink\">4</div></div><div class=\"col-md-5\"><img src=\"images/packshots/Magics_4_fin.png\"></div></div></div></div><div class=\"row\"><div class=\"col-md-5 col-md-push-1 diapers-5\"><div class=\"row diapers-detail\"><div class=\"col-md-6 text-right\"><div class=\"diapers-info text-right\"><div class=\"title\">JUNIOR</div><div class=\"weight\">11–25 kg</div><div class=\"description\">27 ultra thin diapers</div></div></div><div class=\"col-md-1\"><div class=\"number-circle number-blue\">5</div></div><div class=\"col-md-5\"><img src=\"images/packshots/Magics_5_fin.png\"></div></div></div><div class=\"col-md-5 col-md-push-1 diapers-6\"><div class=\"row diapers-detail\"><div class=\"col-md-5\"><img src=\"images/packshots/Magics_6_fin.png\"></div><div class=\"col-md-1\"><div class=\"number-circle number-violet\">6</div></div><div class=\"col-md-6 text-left\"><div class=\"diapers-info text-left\"><div class=\"title\">XL</div><div class=\"weight\">16–30kg</div><div class=\"description\">25 ultra thin diapers</div></div></div></div></div></div><div class=\"row\"><div class=\"col-md-5 col-md-push-1 wipes\"><div class=\"row diapers-detail\"><div class=\"col-md-12 text-center\"><div class=\"diapers-info text-center\"><div class=\"title\">BABY WIPES</div><div class=\"description\">64 ultra soft sheets</div></div><img src=\"images/packshots/Magics_wipes.png\"></div></div></div><div class=\"col-md-4 col-md-push-2 text-center videos\"><div class=\"videos-detail text-center\"><a href=\"http://www.youtube.com/watch?v=-HDieM32pts\"><img src=\"images/Video.png\"><div class=\"button\">Watch our videos!</div></a></div></div></div></div></div><!-- About--><div class=\"about\"><div class=\"menu cf\"><img src=\"images/Menu-Magics-Logo.png\" class=\"menu-magics-logo\"><ul class=\"nav nav-pills\"><li class=\"products-link\"><a href=\"#Products\">Products</a></li><li class=\"about-link\"><a href=\"#About\">About</a></li><li class=\"contact-link\"><a href=\"#Contact\">Contact</a></li><li><a href=\"#\" class=\"longer\">Order Online</a></li></ul><a href=\"http://www.drylock.eu/\" class=\"menu-drylock-logo\"><img src=\"images/Menu-Drylock-Logo.png\"></a></div><div class=\"about-content\"><h2>World class product innovation</h2><h3>Revolutionary Technology</h3><div class=\"row dry-lock-description\"><div class=\"col-md-12\"><div class=\"row\"><div class=\"col-md-8 col-md-push-4\"><div class=\"row\"><div class=\"col-md-12 text-left\"><h4>Drylock</h4><h5>original fluffless technology</h5></div></div><div class=\"row\"><div class=\"col-md-3\"><img src=\"images/About-Diaper.png\"></div><div class=\"col-md-7 description-text\"><p>Allows for thin, comfortable and highly absorbent products.</p><p>The thinnest and fastest performance diaper on the market. Products with integrated fluid management system. The product interacts with and responds to the liquid.</p><p>Breakthrough engineering and product know-how.</p><h4>All sizes available</h4></div></div></div></div></div></div><div class=\"row ecology-description\"><div class=\"col-md-12\"><div class=\"row\"><div class=\"col-md-8\"><div class=\"row\"><div class=\"col-md-12 text-left\"><h4>Ecological Benefits</h4></div></div><div class=\"row\"><div class=\"col-md-4\"><img src=\"images/Product-Recycle.png\"></div><div class=\"col-md-7 description-text\"><h5>Fluffless diaper:</h5><p>eliminating cellulose saves millions of trees each year.</p><h5>Glueless core:</h5><p>elimination of glue saves tons of chemicals each year.</p><h5>Compactness of diaper:</h5><p>saves packaging material and reduces transportation and warehousing requirements.</p></div></div></div></div></div></div><div class=\"row product-reviews\"><div class=\"col-md-12\"><div class=\"row\"><div class=\"col-md-8 col-md-push-4 product-reviews-content\"><div class=\"row\"><div class=\"col-md-1\"><img src=\"images/Apostrophes.png\"></div><div class=\"col-md-11\"><em>A perfect score. In terms of overall performance, Drylock is superior to all US made diapers.</em><strong>Carlos Richer</strong><p>(2012 STUDY COMPARING DRYLOCK WITH ALL MAIN US BRANDS)</p></div></div><div class=\"row\"><div class=\"col-md-1\"><img src=\"images/Apostrophes.png\"></div><div class=\"col-md-11\"><em>Saugt mehr und schneller als herkömmliche Produkte.</em><strong>Hy-TecHygiene Consulting</strong></div></div><div class=\"row\"><div class=\"col-md-1\"><img src=\"images/Apostrophes.png\"></div><div class=\"col-md-11\"><em>Very good in dryness and absorption.</em><strong>Courtray Consulting Labservice</strong></div></div></div></div></div></div></div></div><!-- Contact--><div class=\"contact\"><div class=\"menu cf\"><img src=\"images/Menu-Magics-Logo.png\" class=\"menu-magics-logo\"><ul class=\"nav nav-pills\"><li class=\"products-link\"><a href=\"#Products\">Products</a></li><li class=\"about-link\"><a href=\"#About\">About</a></li><li class=\"contact-link\"><a href=\"#Contact\">Contact</a></li><li><a href=\"#\" class=\"longer\">Order Online</a></li></ul><a href=\"http://www.drylock.eu/\" class=\"menu-drylock-logo\"><img src=\"images/Menu-Drylock-Logo.png\"></a></div><div class=\"contact-content\"><div class=\"row\"><div class=\"col-md-7\"><div class=\"contact-form\"><form><input type=\"text\" name=\"name\" class=\"name\"><input type=\"email\" name=\"email\" class=\"email\"><textarea name=\"message\" rows=\"6\" class=\"message\"></textarea><button type=\"submit\" class=\"send\"><img src=\"/images/Contact-Form-Submit.png\"></button></form></div></div><div class=\"col-md-5\"><div class=\"contact-address-belgium\"><h3>Drylock Technologies NV</h3><span>Spinnerijstraat 14</span><span>9240 Zele</span><span>Belgium</span><a href=\"mailto:info@drylock.eu\">info@drylock.eu</a></div></div></div></div></div><!-- Footer--><div class=\"footer cf\"><p>All Rights Reserved Drylock Technologies | 2013 -2014 Created by Wercajk</p></div><script src=\"js/app.js\" onload=\"require('initialize');\"></script><script>var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];\n(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];\ng.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';\ns.parentNode.insertBefore(g,s)}(document,'script'));</script></body></html>");;return buf.join("");
+buf.push("<!DOCTYPE html><!--if lt IE 7<html class=\"no-js lt-ie9 lt-ie8 lt-ie7\">--><!--if IE 7<html class=\"no-js lt-ie9 lt-ie8\">--><!--if IE 8<html class=\"no-js lt-ie9\">--><!-- [if gt IE 8] <!--><html lang=\"en\" class=\"no-js\"><!-- <![endif]--><head><meta charset=\"utf-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\"><title>Magics - THE REVOLUTIONARY THIN DIAPER</title><meta name=\"description\" content=\"\"><meta name=\"viewport\" content=\"width=device-width\"><script>window.brunch = window.brunch || {};</script><link rel=\"stylesheet\" href=\"MyFontsWebfontsKit.css\"><link rel=\"stylesheet\" href=\"css/app.css\"></head><body><div class=\"content\"><div class=\"clouds\"><img src=\"images/elements/cloud_03.png\" class=\"cloud-3\"><img src=\"images/elements/cloud_04.png\" class=\"cloud-4\"><img src=\"images/elements/cloud_05.png\" class=\"cloud-5\"><img src=\"images/elements/cloud_07.png\" class=\"cloud-7\"><img src=\"images/elements/cloud_08.png\" class=\"cloud-8\"><img src=\"images/elements/cloud_09.png\" class=\"cloud-9\"></div><!-- Loading--><div class=\"loading\"><div class=\"page-center\"><div class=\"logo\"><img alt=\"Magics\" src=\"images/Magics-Logo.png\"></div><div class=\"circle\"><img alt=\"Magics\" src=\"images/Loading.gif\"></div><div class=\"claim\">The revolutionary thin diaper</div></div></div><!-- Products--><div class=\"products\"><div class=\"menu cf\"><img src=\"images/Menu-Magics-Logo.png\" class=\"menu-magics-logo\"><ul class=\"nav nav-pills\"><li class=\"products-link\"><a href=\"#Products\">Products</a></li><li class=\"about-link\"><a href=\"#About\">About</a></li><li class=\"contact-link\"><a href=\"#Contact\">Contact</a></li><li><a href=\"#\" class=\"longer\">Order Online</a></li></ul><a href=\"http://www.drylock.eu/\" class=\"menu-drylock-logo\"><img src=\"images/Menu-Drylock-Logo.png\"></a></div><div class=\"products-content\"><div class=\"row\"><div class=\"col-md-6 diapers-1\"><div class=\"row diapers-detail\"><div class=\"col-md-6\"><div class=\"diapers-info text-right\"><div class=\"title\">NEW BORN</div><div class=\"weight\">2–5 kg</div><div class=\"description\">36 ultra thin diapers</div></div></div><div class=\"col-md-1\"><div class=\"number-circle number-orange\">1</div></div><div class=\"col-md-5\"><img src=\"images/packshots/Magics_1_fin.png\"></div></div></div><div class=\"col-md-6 diapers-2\"><div class=\"row diapers-detail\"><div class=\"col-md-6\"><img src=\"images/packshots/Magics_2_fin.png\"></div><div class=\"col-md-1\"><div class=\"number-circle number-yellow\">2</div></div><div class=\"col-md-5 text-left\"><div class=\"diapers-info text-left\"><div class=\"title\">MINI</div><div class=\"weight\">3–6 kg</div><div class=\"description\">34 ultra thin diapers</div></div></div></div></div></div><div class=\"row\"><div class=\"col-md-5 col-md-push-1 diapers-3\"><div class=\"row diapers-detail\"><div class=\"col-md-5\"><img src=\"images/packshots/Magics_3_fin.png\"></div><div class=\"col-md-1\"><div class=\"number-circle number-green\">3</div></div><div class=\"col-md-6 text-left\"><div class=\"diapers-info text-left\"><div class=\"title\">MIDI</div><div class=\"weight\">4–9 kg</div><div class=\"description\">31 ultra thin diapers</div></div></div></div></div><div class=\"col-md-5 col-md-push-1 diapers-4\"><div class=\"row diapers-detail\"><div class=\"col-md-6 text-right\"><div class=\"diapers-info text-right\"><div class=\"title\">MAXI</div><div class=\"weight\">7–18 kg</div><div class=\"description\">29 ultra thin diapers</div></div></div><div class=\"col-md-1\"><div class=\"number-circle number-pink\">4</div></div><div class=\"col-md-5\"><img src=\"images/packshots/Magics_4_fin.png\"></div></div></div></div><div class=\"row\"><div class=\"col-md-5 col-md-push-1 diapers-5\"><div class=\"row diapers-detail\"><div class=\"col-md-6 text-right\"><div class=\"diapers-info text-right\"><div class=\"title\">JUNIOR</div><div class=\"weight\">11–25 kg</div><div class=\"description\">27 ultra thin diapers</div></div></div><div class=\"col-md-1\"><div class=\"number-circle number-blue\">5</div></div><div class=\"col-md-5\"><img src=\"images/packshots/Magics_5_fin.png\"></div></div></div><div class=\"col-md-5 col-md-push-1 diapers-6\"><div class=\"row diapers-detail\"><div class=\"col-md-5\"><img src=\"images/packshots/Magics_6_fin.png\"></div><div class=\"col-md-1\"><div class=\"number-circle number-violet\">6</div></div><div class=\"col-md-6 text-left\"><div class=\"diapers-info text-left\"><div class=\"title\">XL</div><div class=\"weight\">16–30kg</div><div class=\"description\">25 ultra thin diapers</div></div></div></div></div></div><div class=\"row\"><div class=\"col-md-5 col-md-push-1 wipes\"><div class=\"row diapers-detail\"><div class=\"col-md-12 text-center\"><div class=\"diapers-info text-center\"><div class=\"title\">BABY WIPES</div><div class=\"description\">64 ultra soft sheets</div></div><img src=\"images/packshots/Magics_wipes.png\"></div></div></div><div class=\"col-md-4 col-md-push-2 text-center videos\"><div class=\"videos-detail text-center\"><a href=\"http://www.youtube.com/watch?v=-HDieM32pts\"><img src=\"images/Video.png\"><div class=\"button\">Watch our videos!</div></a></div></div></div></div></div><!-- About--><div class=\"about\"><div class=\"menu cf\"><img src=\"images/Menu-Magics-Logo.png\" class=\"menu-magics-logo\"><ul class=\"nav nav-pills\"><li class=\"products-link\"><a href=\"#Products\">Products</a></li><li class=\"about-link\"><a href=\"#About\">About</a></li><li class=\"contact-link\"><a href=\"#Contact\">Contact</a></li><li><a href=\"#\" class=\"longer\">Order Online</a></li></ul><a href=\"http://www.drylock.eu/\" class=\"menu-drylock-logo\"><img src=\"images/Menu-Drylock-Logo.png\"></a></div><div class=\"about-content\"><h2>World class product innovation</h2><h3>Revolutionary Technology</h3><div class=\"row dry-lock-description\"><div class=\"col-md-12\"><div class=\"row\"><div class=\"col-md-8 col-md-push-4\"><div class=\"row\"><div class=\"col-md-12 text-left\"><h4>Drylock</h4><h5>original fluffless technology</h5></div></div><div class=\"row\"><div class=\"col-md-3\"><img src=\"images/About-Diaper.png\"></div><div class=\"col-md-7 description-text\"><p>Allows for thin, comfortable and highly absorbent products.</p><p>The thinnest and fastest performance diaper on the market. Products with integrated fluid management system. The product interacts with and responds to the liquid.</p><p>Breakthrough engineering and product know-how.</p><h4>All sizes available</h4></div></div></div></div></div></div><div class=\"row ecology-description\"><div class=\"col-md-12\"><div class=\"row\"><div class=\"col-md-8\"><div class=\"row\"><div class=\"col-md-12 text-left\"><h4>Ecological Benefits</h4></div></div><div class=\"row\"><div class=\"col-md-4\"><img src=\"images/Product-Recycle.png\"></div><div class=\"col-md-7 description-text\"><h5>Fluffless diaper:</h5><p>eliminating cellulose saves millions of trees each year.</p><h5>Glueless core:</h5><p>elimination of glue saves tons of chemicals each year.</p><h5>Compactness of diaper:</h5><p>saves packaging material and reduces transportation and warehousing requirements.</p></div></div></div></div></div></div><div class=\"row product-reviews\"><div class=\"col-md-12\"><div class=\"row\"><div class=\"col-md-8 col-md-push-4 product-reviews-content\"><div class=\"row\"><div class=\"col-md-1\"><img src=\"images/Apostrophes.png\"></div><div class=\"col-md-11\"><em>A perfect score. In terms of overall performance, Drylock is superior to all US made diapers.</em><strong>Carlos Richer</strong><p>(2012 STUDY COMPARING DRYLOCK WITH ALL MAIN US BRANDS)</p></div></div><div class=\"row\"><div class=\"col-md-1\"><img src=\"images/Apostrophes.png\"></div><div class=\"col-md-11\"><em>Saugt mehr und schneller als herkömmliche Produkte.</em><strong>Hy-TecHygiene Consulting</strong></div></div><div class=\"row\"><div class=\"col-md-1\"><img src=\"images/Apostrophes.png\"></div><div class=\"col-md-11\"><em>Very good in dryness and absorption.</em><strong>Courtray Consulting Labservice</strong></div></div></div></div></div></div></div></div><!-- Contact--><div class=\"contact\"><div class=\"menu cf\"><img src=\"images/Menu-Magics-Logo.png\" class=\"menu-magics-logo\"><ul class=\"nav nav-pills\"><li class=\"products-link\"><a href=\"#Products\">Products</a></li><li class=\"about-link\"><a href=\"#About\">About</a></li><li class=\"contact-link\"><a href=\"#Contact\">Contact</a></li><li><a href=\"#\" class=\"longer\">Order Online</a></li></ul><a href=\"http://www.drylock.eu/\" class=\"menu-drylock-logo\"><img src=\"images/Menu-Drylock-Logo.png\"></a></div><div class=\"contact-content\"><div class=\"row\"><div class=\"col-md-7\"><div class=\"contact-form\"><form><input type=\"text\" name=\"name\" class=\"name\"><input type=\"email\" name=\"email\" class=\"email\"><textarea name=\"message\" rows=\"6\" class=\"message\"></textarea><button type=\"submit\" class=\"send\"><img src=\"/images/Contact-Form-Submit.png\"></button></form></div></div><div class=\"col-md-5\"><div class=\"contact-address-belgium\"><img src=\"/images/Contact-Envelope.png\" class=\"envelope\"><img src=\"/images/Contact-Arroba.png\" class=\"arroba\"><h3>Drylock Technologies NV</h3><div>Spinnerijstraat 14</div><div>9240 Zele</div><strong>Belgium</strong><br><br><a href=\"mailto:info@drylock.eu\">info@drylock.eu</a></div><div class=\"contact-address-czech\"><img src=\"/images/Contact-Envelope.png\" class=\"envelope\"><img src=\"/images/Contact-Arroba.png\" class=\"arroba\"><h3>Drylock Technologies, s.r.o.</h3><div>Vlámská 801</div><div>Hrádek nad Nisou</div><div>463 34</div><strong>Czech Republic</strong><br><br><a href=\"mailto:info.cz@drylock.eu\">info.cz@drylock.eu</a></div></div></div></div></div><!-- Footer--><div class=\"footer cf\"><p>All Rights Reserved Drylock Technologies | 2013 -2014 Created by Wercajk</p></div></div><script src=\"js/app.js\" onload=\"require('initialize');\"></script><script>var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];\n(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];\ng.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';\ns.parentNode.insertBefore(g,s)}(document,'script'));</script></body></html>");;return buf.join("");
 };
 if (typeof define === 'function' && define.amd) {
   define([], function() {
@@ -30863,9 +31190,552 @@ if (typeof define === 'function' && define.amd) {
 });
 
 ;require.register("initialize", function(exports, require, module) {
-imagesLoaded(document.body, function(instance) {
-  return console.log("all images are loaded");
+var s;
+
+require('lib/skrollr');
+
+s = skrollr.init({
+  edgeStrategy: "set",
+  easing: {
+    WTF: Math.random,
+    inverted: function(p) {
+      return 1 - p;
+    }
+  }
 });
+
+$(function() {
+  return $("*").each(function() {
+    if ($(this).css('position') === 'absolute') {
+      console.log(this);
+      return $(this).draggable();
+    }
+  });
+});
+});
+
+;require.register("lib/jquery.parallax", function(exports, require, module) {
+
+// jquery.parallax.js
+// 2.0
+// Stephen Band
+//
+// Project and documentation site:
+// webdev.stephband.info/jparallax/
+//
+// Repository:
+// github.com/stephband/jparallax
+
+(function(jQuery, undefined) {
+	// VAR
+	var debug = true,
+
+	    options = {
+	    	mouseport:     'body',  // jQuery object or selector of DOM node to use as mouseport
+	    	xparallax:     true,    // boolean | 0-1 | 'npx' | 'n%'
+	    	yparallax:     true,    //
+	    	xorigin:       0.5,     // 0-1 - Sets default alignment. Only has effect when parallax values are something other than 1 (or true, or '100%')
+	    	yorigin:       0.5,     //
+	    	decay:         0.66,    // 0-1 (0 instant, 1 forever) - Sets rate of decay curve for catching up with target mouse position
+	    	frameDuration: 30,      // Int (milliseconds)
+	    	freezeClass:   'freeze' // String - Class added to layer when frozen
+	    },
+
+	    value = {
+	    	left: 0,
+	    	top: 0,
+	    	middle: 0.5,
+	    	center: 0.5,
+	    	right: 1,
+	    	bottom: 1
+	    },
+
+	    rpx = /^\d+\s?px$/,
+	    rpercent = /^\d+\s?%$/,
+
+	    win = jQuery(window),
+	    doc = jQuery(document),
+	    mouse = [0, 0];
+
+	var Timer = (function(){
+		var debug = false;
+
+		// Shim for requestAnimationFrame, falling back to timer. See:
+		// see http://paulirish.com/2011/requestanimationframe-for-smart-animating/
+		var requestFrame = (function(){
+		    	return (
+		    		window.requestAnimationFrame ||
+		    		window.webkitRequestAnimationFrame ||
+		    		window.mozRequestAnimationFrame ||
+		    		window.oRequestAnimationFrame ||
+		    		window.msRequestAnimationFrame ||
+		    		function(fn, node){
+		    			return window.setTimeout(function(){
+		    				fn();
+		    			}, 25);
+		    		}
+		    	);
+		    })();
+
+		function Timer() {
+			var callbacks = [],
+				nextFrame;
+
+			function noop() {}
+
+			function frame(){
+				var cbs = callbacks.slice(0),
+				    l = cbs.length,
+				    i = -1;
+
+				if (debug) { console.log('timer frame()', l); }
+
+				while(++i < l) { cbs[i].call(this); }
+				requestFrame(nextFrame);
+			}
+
+			function start() {
+				if (debug) { console.log('timer start()'); }
+				this.start = noop;
+				this.stop = stop;
+				nextFrame = frame;
+				requestFrame(nextFrame);
+			}
+
+			function stop() {
+				if (debug) { console.log('timer stop()'); }
+				this.start = start;
+				this.stop = noop;
+				nextFrame = noop;
+			}
+
+			this.callbacks = callbacks;
+			this.start = start;
+			this.stop = stop;
+		}
+
+		Timer.prototype = {
+			add: function(fn) {
+				var callbacks = this.callbacks,
+				    l = callbacks.length;
+
+				// Check to see if this callback is already in the list.
+				// Don't add it twice.
+				while (l--) {
+					if (callbacks[l] === fn) { return; }
+				}
+
+				this.callbacks.push(fn);
+				if (debug) { console.log('timer add()', this.callbacks.length); }
+			},
+
+			remove: function(fn) {
+				var callbacks = this.callbacks,
+				    l = callbacks.length;
+
+				// Remove all instances of this callback.
+				while (l--) {
+					if (callbacks[l] === fn) { callbacks.splice(l, 1); }
+				}
+
+				if (debug) { console.log('timer remove()', this.callbacks.length); }
+
+				if (callbacks.length === 0) { this.stop(); }
+			}
+		};
+
+		return Timer;
+	})();
+
+	function parseCoord(x) {
+		return (rpercent.exec(x)) ? parseFloat(x)/100 : x;
+	}
+
+	function parseBool(x) {
+		return typeof x === "boolean" ? x : !!( parseFloat(x) ) ;
+	}
+
+	function portData(port) {
+		var events = {
+		    	'mouseenter.parallax': mouseenter,
+		    	'mouseleave.parallax': mouseleave
+		    },
+		    winEvents = {
+		    	'resize.parallax': resize
+		    },
+		    data = {
+		    	elem: port,
+		    	events: events,
+		    	winEvents: winEvents,
+		    	timer: new Timer()
+		    },
+		    layers, size, offset;
+
+		function updatePointer() {
+			data.pointer = getPointer(mouse, [true, true], offset, size);
+		}
+
+		function resize() {
+			size = getSize(port);
+			offset = getOffset(port);
+			data.threshold = getThreshold(size);
+		}
+
+		function mouseenter() {
+			data.timer.add(updatePointer);
+		}
+
+		function mouseleave(e) {
+			data.timer.remove(updatePointer);
+			data.pointer = getPointer([e.pageX, e.pageY], [true, true], offset, size);
+		}
+
+		win.on(winEvents);
+		port.on(events);
+
+		resize();
+
+		return data;
+	}
+
+	function getData(elem, name, fn) {
+		var data = elem.data(name);
+
+		if (!data) {
+			data = fn ? fn(elem) : {} ;
+			elem.data(name, data);
+		}
+
+		return data;
+	}
+
+	function getPointer(mouse, parallax, offset, size){
+		var pointer = [],
+		    x = 2;
+
+		while (x--) {
+			pointer[x] = (mouse[x] - offset[x]) / size[x] ;
+			pointer[x] = pointer[x] < 0 ? 0 : pointer[x] > 1 ? 1 : pointer[x] ;
+		}
+
+		return pointer;
+	}
+
+	function getSize(elem) {
+		return [elem.width(), elem.height()];
+	}
+
+	function getOffset(elem) {
+		var offset = elem.offset() || {left: 0, top: 0},
+			borderLeft = elem.css('borderLeftStyle') === 'none' ? 0 : parseInt(elem.css('borderLeftWidth'), 10),
+			borderTop = elem.css('borderTopStyle') === 'none' ? 0 : parseInt(elem.css('borderTopWidth'), 10),
+			paddingLeft = parseInt(elem.css('paddingLeft'), 10),
+			paddingTop = parseInt(elem.css('paddingTop'), 10);
+
+		return [offset.left + borderLeft + paddingLeft, offset.top + borderTop + paddingTop];
+	}
+
+	function getThreshold(size) {
+		return [1/size[0], 1/size[1]];
+	}
+
+	function layerSize(elem, x, y) {
+		return [x || elem.outerWidth(), y || elem.outerHeight()];
+	}
+
+	function layerOrigin(xo, yo) {
+		var o = [xo, yo],
+			i = 2,
+			origin = [];
+
+		while (i--) {
+			origin[i] = typeof o[i] === 'string' ?
+				o[i] === undefined ?
+					1 :
+					value[origin[i]] || parseCoord(origin[i]) :
+				o[i] ;
+		}
+
+		return origin;
+	}
+
+	function layerPx(xp, yp) {
+		return [rpx.test(xp), rpx.test(yp)];
+	}
+
+	function layerParallax(xp, yp, px) {
+		var p = [xp, yp],
+		    i = 2,
+		    parallax = [];
+
+		while (i--) {
+			parallax[i] = px[i] ?
+				parseInt(p[i], 10) :
+				parallax[i] = p[i] === true ? 1 : parseCoord(p[i]) ;
+		}
+
+		return parallax;
+	}
+
+	function layerOffset(parallax, px, origin, size) {
+		var i = 2,
+		    offset = [];
+
+		while (i--) {
+			offset[i] = px[i] ?
+				origin[i] * (size[i] - parallax[i]) :
+				parallax[i] ? origin[i] * ( 1 - parallax[i] ) : 0 ;
+		}
+
+		return offset;
+	}
+
+	function layerPosition(px, origin) {
+		var i = 2,
+		    position = [];
+
+		while (i--) {
+			if (px[i]) {
+				// Set css position constant
+				position[i] = origin[i] * 100 + '%';
+			}
+			else {
+
+			}
+		}
+
+		return position;
+	}
+
+	function layerPointer(elem, parallax, px, offset, size) {
+		var viewport = elem.offsetParent(),
+			pos = elem.position(),
+			position = [],
+			pointer = [],
+			i = 2;
+
+		// Reverse calculate ratio from elem's current position
+		while (i--) {
+			position[i] = px[i] ?
+				// TODO: reverse calculation for pixel case
+				0 :
+				pos[i === 0 ? 'left' : 'top'] / (viewport[i === 0 ? 'outerWidth' : 'outerHeight']() - size[i]) ;
+
+			pointer[i] = (position[i] - offset[i]) / parallax[i] ;
+		}
+
+		return pointer;
+	}
+
+	function layerCss(parallax, px, offset, size, position, pointer) {
+		var pos = [],
+		    cssPosition,
+		    cssMargin,
+		    x = 2,
+		    css = {};
+
+		while (x--) {
+			if (parallax[x]) {
+				pos[x] = parallax[x] * pointer[x] + offset[x];
+
+				// We're working in pixels
+				if (px[x]) {
+					cssPosition = position[x];
+					cssMargin = pos[x] * -1;
+				}
+				// We're working by ratio
+				else {
+					cssPosition = pos[x] * 100 + '%';
+					cssMargin = pos[x] * size[x] * -1;
+				}
+
+				// Fill in css object
+				if (x === 0) {
+					css.left = cssPosition;
+					css.marginLeft = cssMargin;
+				}
+				else {
+					css.top = cssPosition;
+					css.marginTop = cssMargin;
+				}
+			}
+		}
+
+		return css;
+	}
+
+	function pointerOffTarget(targetPointer, prevPointer, threshold, decay, parallax, targetFn, updateFn) {
+		var pointer, x;
+
+		if ((!parallax[0] || Math.abs(targetPointer[0] - prevPointer[0]) < threshold[0]) &&
+		    (!parallax[1] || Math.abs(targetPointer[1] - prevPointer[1]) < threshold[1])) {
+		    // Pointer has hit the target
+		    if (targetFn) { targetFn(); }
+		    return updateFn(targetPointer);
+		}
+
+		// Pointer is nowhere near the target
+		pointer = [];
+		x = 2;
+
+		while (x--) {
+			if (parallax[x]) {
+				pointer[x] = targetPointer[x] + decay * (prevPointer[x] - targetPointer[x]);
+			}
+		}
+
+		return updateFn(pointer);
+	}
+
+	function pointerOnTarget(targetPointer, prevPointer, threshold, decay, parallax, targetFn, updateFn) {
+		// Don't bother updating if the pointer hasn't changed.
+		if (targetPointer[0] === prevPointer[0] && targetPointer[1] === prevPointer[1]) {
+			return;
+		}
+
+		return updateFn(targetPointer);
+	}
+
+	function unport(elem, events, winEvents) {
+		elem.off(events).removeData('parallax_port');
+		win.off(winEvents);
+	}
+
+	function unparallax(node, port, events) {
+		port.elem.off(events);
+
+		// Remove this node from layers
+		port.layers = port.layers.not(node);
+
+		// If port.layers is empty, destroy the port
+		if (port.layers.length === 0) {
+			unport(port.elem, port.events, port.winEvents);
+		}
+	}
+
+	function unstyle(parallax) {
+		var css = {};
+
+		if (parallax[0]) {
+			css.left = '';
+			css.marginLeft = '';
+		}
+
+		if (parallax[1]) {
+			css.top = '';
+			css.marginTop = '';
+		}
+
+		elem.css(css);
+	}
+
+	jQuery.fn.parallax = function(o){
+		var options = jQuery.extend({}, jQuery.fn.parallax.options, o),
+		    args = arguments,
+		    elem = options.mouseport instanceof jQuery ?
+		    	options.mouseport :
+		    	jQuery(options.mouseport) ,
+		    port = getData(elem, 'parallax_port', portData),
+		    timer = port.timer;
+
+		return this.each(function(i) {
+			var node      = this,
+			    elem      = jQuery(this),
+			    opts      = args[i + 1] ? jQuery.extend({}, options, args[i + 1]) : options,
+			    decay     = opts.decay,
+			    size      = layerSize(elem, opts.width, opts.height),
+			    origin    = layerOrigin(opts.xorigin, opts.yorigin),
+			    px        = layerPx(opts.xparallax, opts.yparallax),
+			    parallax  = layerParallax(opts.xparallax, opts.yparallax, px),
+			    offset    = layerOffset(parallax, px, origin, size),
+			    position  = layerPosition(px, origin),
+			    pointer   = layerPointer(elem, parallax, px, offset, size),
+			    pointerFn = pointerOffTarget,
+			    targetFn  = targetInside,
+			    events = {
+			    	'mouseenter.parallax': function mouseenter(e) {
+			    		pointerFn = pointerOffTarget;
+			    		targetFn = targetInside;
+			    		timer.add(frame);
+			    		timer.start();
+			    	},
+			    	'mouseleave.parallax': function mouseleave(e) {
+			    		// Make the layer come to rest at it's limit with inertia
+			    		pointerFn = pointerOffTarget;
+			    		// Stop the timer when the the pointer hits target
+			    		targetFn = targetOutside;
+			    	}
+			    };
+
+			function updateCss(newPointer) {
+				var css = layerCss(parallax, px, offset, size, position, newPointer);
+				elem.css(css);
+				pointer = newPointer;
+			}
+
+			function frame() {
+				pointerFn(port.pointer, pointer, port.threshold, decay, parallax, targetFn, updateCss);
+			}
+
+			function targetInside() {
+				// Pointer hits the target pointer inside the port
+				pointerFn = pointerOnTarget;
+			}
+
+			function targetOutside() {
+				// Pointer hits the target pointer outside the port
+				timer.remove(frame);
+			}
+
+
+			if (jQuery.data(node, 'parallax')) {
+				elem.unparallax();
+			}
+
+			jQuery.data(node, 'parallax', {
+				port: port,
+				events: events,
+				parallax: parallax
+			});
+
+			port.elem.on(events);
+			port.layers = port.layers? port.layers.add(node): jQuery(node);
+
+			/*function freeze() {
+				freeze = true;
+			}
+
+			function unfreeze() {
+				freeze = false;
+			}*/
+
+			/*jQuery.event.add(this, 'freeze.parallax', freeze);
+			jQuery.event.add(this, 'unfreeze.parallax', unfreeze);*/
+		});
+	};
+
+	jQuery.fn.unparallax = function(bool) {
+		return this.each(function() {
+			var data = jQuery.data(this, 'parallax');
+
+			// This elem is not parallaxed
+			if (!data) { return; }
+
+			jQuery.removeData(this, 'parallax');
+			unparallax(this, data.port, data.events);
+			if (bool) { unstyle(data.parallax); }
+		});
+	};
+
+	jQuery.fn.parallax.options = options;
+
+	// Pick up and store mouse position on document: IE does not register
+	// mousemove on window.
+	doc.on('mousemove.parallax', function(e){
+		mouse = [e.pageX, e.pageY];
+	});
+}(jQuery));
+
 });
 
 ;require.register("lib/skrollr", function(exports, require, module) {

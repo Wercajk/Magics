@@ -581,9 +581,45 @@ input {
 }
 body {
   background: url("/images/background.jpg");
+  background: url("/images/master-color.jpg");
   background-position: 50% 0;
   background-repeat: no-repeat;
-  height: 4000px;
+  height: 100%;
+}
+.clouds {
+  position: relative;
+  margin: 0 auto;
+}
+.clouds img {
+  position: absolute;
+}
+.clouds .cloud-3 {
+  left: 109px;
+  top: 555px;
+  z-index: 20;
+}
+.clouds .cloud-4 {
+  left: 283px;
+  top: 517px;
+  z-index: 0;
+}
+.clouds .cloud-5 {
+  left: 449px;
+  top: 628px;
+}
+.clouds .cloud-7 {
+  left: 751px;
+  top: 525px;
+}
+.clouds .cloud-8 {
+  left: 1141px;
+  top: 520px;
+  z-index: 10;
+}
+.clouds .cloud-9 {
+  left: 1362px;
+  top: 539px;
+  z-index: 0;
 }
 .loading .logo {
   text-align: center;
@@ -1017,6 +1053,46 @@ body {
   position: absolute;
   left: -27px;
   top: 149px;
+}
+
+.clouds {
+  position: relative;
+  margin: 0 auto;
+}
+.clouds img {
+  position: absolute;
+}
+.clouds .cloud-1 {
+  left: -125px;
+  top: 573px;
+}
+.clouds .cloud-3 {
+  left: 109px;
+  top: 555px;
+  z-index: 20;
+}
+.clouds .cloud-4 {
+  left: 283px;
+  top: 517px;
+  z-index: 0;
+}
+.clouds .cloud-5 {
+  left: 449px;
+  top: 628px;
+}
+.clouds .cloud-7 {
+  left: 751px;
+  top: 525px;
+}
+.clouds .cloud-8 {
+  left: 1141px;
+  top: 520px;
+  z-index: 10;
+}
+.clouds .cloud-9 {
+  left: 1362px;
+  top: 539px;
+  z-index: 0;
 }
 
 .loading .logo {
