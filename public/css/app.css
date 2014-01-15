@@ -437,6 +437,7 @@ table {
 }
 .about .about-content .dry-lock-description .description-text p {
   padding-bottom: 29px;
+  font-size: 16px;
 }
 .about .about-content .ecology-description {
   margin-top: 117px;
@@ -445,6 +446,7 @@ table {
 .about .about-content .ecology-description p {
   color: #fff;
   padding-bottom: 13px;
+  font-size: 16px;
 }
 .about .about-content .product-reviews {
   margin-top: 78px;
@@ -582,6 +584,7 @@ input {
 }
 body {
   background: url("/images/background.jpg");
+  background: url("/images/master-color.jpg");
   background-position: 50% 0;
   background-repeat: no-repeat;
   height: 100%;

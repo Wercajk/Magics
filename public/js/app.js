@@ -31741,9 +31741,10 @@ imagesLoaded(document.body, function(instance) {
 $(window).stellar();
 
 $('.menu ul a').click(function() {
-  return $('html, body').animate({
+  $('html, body').animate({
     scrollTop: $(this.hash).offset().top
   }, 2000, 'easeInOutQuart');
+  return false;
 });
 });
 

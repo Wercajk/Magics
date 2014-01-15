@@ -30,6 +30,7 @@ $('.menu ul a').click ->
     $('html, body').animate({
         scrollTop: $( this.hash ).offset().top
     }, 2000, 'easeInOutQuart')
+    return false
 
 
 
