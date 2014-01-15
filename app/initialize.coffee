@@ -12,7 +12,7 @@ imagesLoaded document.body, (instance) ->
         $(document.body)
         .css('overflow-y', 'auto')
         .css('overflow-x', 'hidden')
-        .scrollTo(850, 3000)
+        # .scrollTo(850, 3000)
     , 1000)
 
 
