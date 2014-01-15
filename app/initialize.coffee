@@ -23,13 +23,19 @@ imagesLoaded document.body, (instance) ->
 #             console.log this
 #             $(this).draggable()
 
-# Parallax effect
-$(window).stellar()
+# Parallax effect for non mobile platforms
+if !window.navigatorDetect.isMobile()
+    $(window).stellar()
 
 $('.menu ul a').click ->
-    $('html, body').animate({
-        scrollTop: $( this.hash ).offset().top
-    }, 2000, 'easeInOutQuart')
+    if !window.navigatorDetect.isMobile()
+        $(document.body).animate({
+            scrollTop: $( this.hash ).offset().top
+        }, 2000, 'easeInOutQuart')
+    else
+        $(document.body).animate({
+            scrollTop: $( this.hash ).offset().top
+        }, 0)
     return false
 
 
