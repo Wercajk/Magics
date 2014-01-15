@@ -29,23 +29,24 @@ html(class="no-js", lang="en")
         include includes/loading
 
       // Products
-      .products
+
+      #Products.products.hide-during-load
         include includes/menu
         include includes/products
 
       // About
-      .about
+      #About.about.hide-during-load
         include includes/menu
         include includes/about
 
 
       // Contact
-      .contact
+      #Contact.contact.hide-during-load
         include includes/menu
         include includes/contact
 
       // Footer
-      .footer.cf
+      .footer.cf.hide-during-load
         //- p All Rights Reserved Drylock Technologies | 2013 -2014 Created by Wercajk
 
     script(src='js/app.js', onload='require(\'initialize\');')
