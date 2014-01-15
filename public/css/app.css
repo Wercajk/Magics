@@ -7544,7 +7544,7 @@ table {
   color: #fff;
 }
 .about .about-content .dry-lock-description .description-text p {
-  padding-bottom: 29px;
+  padding-bottom: 13px;
   font-size: 16px;
 }
 .about .about-content .ecology-description {
@@ -7561,7 +7561,7 @@ table {
   margin-left: 193px;
 }
 .about .about-content .product-reviews .product-reviews-content > .row {
-  margin-bottom: 52px;
+  margin-bottom: 32px;
 }
 .about .about-content .product-reviews .product-reviews-content > .row p,
 .about .about-content .product-reviews .product-reviews-content > .row em,
@@ -8003,7 +8003,7 @@ body {
   color: #fff;
 }
 .about .about-content .dry-lock-description .description-text p {
-  padding-bottom: 29px;
+  padding-bottom: 13px;
   font-size: 16px;
 }
 .about .about-content .ecology-description {
@@ -8020,7 +8020,7 @@ body {
   margin-left: 193px;
 }
 .about .about-content .product-reviews .product-reviews-content > .row {
-  margin-bottom: 52px;
+  margin-bottom: 32px;
 }
 .about .about-content .product-reviews .product-reviews-content > .row p,
 .about .about-content .product-reviews .product-reviews-content > .row em,
@@ -8158,10 +8158,17 @@ body {
 }
 .footer {
   width: 100%;
-  top: 300px;
   position: absolute;
   overflow: hidden;
   top: 4680px;
+  color: #141a62;
+}
+.footer-content {
+  width: 940px;
+  margin: 0 auto;
+}
+.footer-content .wercajk-link {
+  margin-left: 4px;
 }
 
 .contact {
@@ -8359,6 +8366,21 @@ body {
 .elements .space .space-content .space-1 {
   top: 200px;
   left: 200px;
+}
+
+.footer {
+  width: 100%;
+  position: absolute;
+  overflow: hidden;
+  top: 4680px;
+  color: #141a62;
+}
+.footer-content {
+  width: 940px;
+  margin: 0 auto;
+}
+.footer-content .wercajk-link {
+  margin-left: 4px;
 }
 
 .loading .logo {

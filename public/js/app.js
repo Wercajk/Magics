@@ -91,557 +91,6 @@
   globals.require.brunch = true;
 })();
 /*!
- * eventie v1.0.4
- * event binding helper
- *   eventie.bind( elem, 'click', myFn )
- *   eventie.unbind( elem, 'click', myFn )
- */
-
-/*jshint browser: true, undef: true, unused: true */
-/*global define: false */
-
-( function( window ) {
-
-'use strict';
-
-var docElem = document.documentElement;
-
-var bind = function() {};
-
-function getIEEvent( obj ) {
-  var event = window.event;
-  // add event.target
-  event.target = event.target || event.srcElement || obj;
-  return event;
-}
-
-if ( docElem.addEventListener ) {
-  bind = function( obj, type, fn ) {
-    obj.addEventListener( type, fn, false );
-  };
-} else if ( docElem.attachEvent ) {
-  bind = function( obj, type, fn ) {
-    obj[ type + fn ] = fn.handleEvent ?
-      function() {
-        var event = getIEEvent( obj );
-        fn.handleEvent.call( fn, event );
-      } :
-      function() {
-        var event = getIEEvent( obj );
-        fn.call( obj, event );
-      };
-    obj.attachEvent( "on" + type, obj[ type + fn ] );
-  };
-}
-
-var unbind = function() {};
-
-if ( docElem.removeEventListener ) {
-  unbind = function( obj, type, fn ) {
-    obj.removeEventListener( type, fn, false );
-  };
-} else if ( docElem.detachEvent ) {
-  unbind = function( obj, type, fn ) {
-    obj.detachEvent( "on" + type, obj[ type + fn ] );
-    try {
-      delete obj[ type + fn ];
-    } catch ( err ) {
-      // can't delete window object properties
-      obj[ type + fn ] = undefined;
-    }
-  };
-}
-
-var eventie = {
-  bind: bind,
-  unbind: unbind
-};
-
-// transport
-if ( typeof define === 'function' && define.amd ) {
-  // AMD
-  define( eventie );
-} else {
-  // browser global
-  window.eventie = eventie;
-}
-
-})( this );
-
-;/*!
- * EventEmitter v4.2.7 - git.io/ee
- * Oliver Caldwell
- * MIT license
- * @preserve
- */
-
-(function () {
-	'use strict';
-
-	/**
-	 * Class for managing events.
-	 * Can be extended to provide event functionality in other classes.
-	 *
-	 * @class EventEmitter Manages event registering and emitting.
-	 */
-	function EventEmitter() {}
-
-	// Shortcuts to improve speed and size
-	var proto = EventEmitter.prototype;
-	var exports = this;
-	var originalGlobalValue = exports.EventEmitter;
-
-	/**
-	 * Finds the index of the listener for the event in it's storage array.
-	 *
-	 * @param {Function[]} listeners Array of listeners to search through.
-	 * @param {Function} listener Method to look for.
-	 * @return {Number} Index of the specified listener, -1 if not found
-	 * @api private
-	 */
-	function indexOfListener(listeners, listener) {
-		var i = listeners.length;
-		while (i--) {
-			if (listeners[i].listener === listener) {
-				return i;
-			}
-		}
-
-		return -1;
-	}
-
-	/**
-	 * Alias a method while keeping the context correct, to allow for overwriting of target method.
-	 *
-	 * @param {String} name The name of the target method.
-	 * @return {Function} The aliased method
-	 * @api private
-	 */
-	function alias(name) {
-		return function aliasClosure() {
-			return this[name].apply(this, arguments);
-		};
-	}
-
-	/**
-	 * Returns the listener array for the specified event.
-	 * Will initialise the event object and listener arrays if required.
-	 * Will return an object if you use a regex search. The object contains keys for each matched event. So /ba[rz]/ might return an object containing bar and baz. But only if you have either defined them with defineEvent or added some listeners to them.
-	 * Each property in the object response is an array of listener functions.
-	 *
-	 * @param {String|RegExp} evt Name of the event to return the listeners from.
-	 * @return {Function[]|Object} All listener functions for the event.
-	 */
-	proto.getListeners = function getListeners(evt) {
-		var events = this._getEvents();
-		var response;
-		var key;
-
-		// Return a concatenated array of all matching events if
-		// the selector is a regular expression.
-		if (evt instanceof RegExp) {
-			response = {};
-			for (key in events) {
-				if (events.hasOwnProperty(key) && evt.test(key)) {
-					response[key] = events[key];
-				}
-			}
-		}
-		else {
-			response = events[evt] || (events[evt] = []);
-		}
-
-		return response;
-	};
-
-	/**
-	 * Takes a list of listener objects and flattens it into a list of listener functions.
-	 *
-	 * @param {Object[]} listeners Raw listener objects.
-	 * @return {Function[]} Just the listener functions.
-	 */
-	proto.flattenListeners = function flattenListeners(listeners) {
-		var flatListeners = [];
-		var i;
-
-		for (i = 0; i < listeners.length; i += 1) {
-			flatListeners.push(listeners[i].listener);
-		}
-
-		return flatListeners;
-	};
-
-	/**
-	 * Fetches the requested listeners via getListeners but will always return the results inside an object. This is mainly for internal use but others may find it useful.
-	 *
-	 * @param {String|RegExp} evt Name of the event to return the listeners from.
-	 * @return {Object} All listener functions for an event in an object.
-	 */
-	proto.getListenersAsObject = function getListenersAsObject(evt) {
-		var listeners = this.getListeners(evt);
-		var response;
-
-		if (listeners instanceof Array) {
-			response = {};
-			response[evt] = listeners;
-		}
-
-		return response || listeners;
-	};
-
-	/**
-	 * Adds a listener function to the specified event.
-	 * The listener will not be added if it is a duplicate.
-	 * If the listener returns true then it will be removed after it is called.
-	 * If you pass a regular expression as the event name then the listener will be added to all events that match it.
-	 *
-	 * @param {String|RegExp} evt Name of the event to attach the listener to.
-	 * @param {Function} listener Method to be called when the event is emitted. If the function returns true then it will be removed after calling.
-	 * @return {Object} Current instance of EventEmitter for chaining.
-	 */
-	proto.addListener = function addListener(evt, listener) {
-		var listeners = this.getListenersAsObject(evt);
-		var listenerIsWrapped = typeof listener === 'object';
-		var key;
-
-		for (key in listeners) {
-			if (listeners.hasOwnProperty(key) && indexOfListener(listeners[key], listener) === -1) {
-				listeners[key].push(listenerIsWrapped ? listener : {
-					listener: listener,
-					once: false
-				});
-			}
-		}
-
-		return this;
-	};
-
-	/**
-	 * Alias of addListener
-	 */
-	proto.on = alias('addListener');
-
-	/**
-	 * Semi-alias of addListener. It will add a listener that will be
-	 * automatically removed after it's first execution.
-	 *
-	 * @param {String|RegExp} evt Name of the event to attach the listener to.
-	 * @param {Function} listener Method to be called when the event is emitted. If the function returns true then it will be removed after calling.
-	 * @return {Object} Current instance of EventEmitter for chaining.
-	 */
-	proto.addOnceListener = function addOnceListener(evt, listener) {
-		return this.addListener(evt, {
-			listener: listener,
-			once: true
-		});
-	};
-
-	/**
-	 * Alias of addOnceListener.
-	 */
-	proto.once = alias('addOnceListener');
-
-	/**
-	 * Defines an event name. This is required if you want to use a regex to add a listener to multiple events at once. If you don't do this then how do you expect it to know what event to add to? Should it just add to every possible match for a regex? No. That is scary and bad.
-	 * You need to tell it what event names should be matched by a regex.
-	 *
-	 * @param {String} evt Name of the event to create.
-	 * @return {Object} Current instance of EventEmitter for chaining.
-	 */
-	proto.defineEvent = function defineEvent(evt) {
-		this.getListeners(evt);
-		return this;
-	};
-
-	/**
-	 * Uses defineEvent to define multiple events.
-	 *
-	 * @param {String[]} evts An array of event names to define.
-	 * @return {Object} Current instance of EventEmitter for chaining.
-	 */
-	proto.defineEvents = function defineEvents(evts) {
-		for (var i = 0; i < evts.length; i += 1) {
-			this.defineEvent(evts[i]);
-		}
-		return this;
-	};
-
-	/**
-	 * Removes a listener function from the specified event.
-	 * When passed a regular expression as the event name, it will remove the listener from all events that match it.
-	 *
-	 * @param {String|RegExp} evt Name of the event to remove the listener from.
-	 * @param {Function} listener Method to remove from the event.
-	 * @return {Object} Current instance of EventEmitter for chaining.
-	 */
-	proto.removeListener = function removeListener(evt, listener) {
-		var listeners = this.getListenersAsObject(evt);
-		var index;
-		var key;
-
-		for (key in listeners) {
-			if (listeners.hasOwnProperty(key)) {
-				index = indexOfListener(listeners[key], listener);
-
-				if (index !== -1) {
-					listeners[key].splice(index, 1);
-				}
-			}
-		}
-
-		return this;
-	};
-
-	/**
-	 * Alias of removeListener
-	 */
-	proto.off = alias('removeListener');
-
-	/**
-	 * Adds listeners in bulk using the manipulateListeners method.
-	 * If you pass an object as the second argument you can add to multiple events at once. The object should contain key value pairs of events and listeners or listener arrays. You can also pass it an event name and an array of listeners to be added.
-	 * You can also pass it a regular expression to add the array of listeners to all events that match it.
-	 * Yeah, this function does quite a bit. That's probably a bad thing.
-	 *
-	 * @param {String|Object|RegExp} evt An event name if you will pass an array of listeners next. An object if you wish to add to multiple events at once.
-	 * @param {Function[]} [listeners] An optional array of listener functions to add.
-	 * @return {Object} Current instance of EventEmitter for chaining.
-	 */
-	proto.addListeners = function addListeners(evt, listeners) {
-		// Pass through to manipulateListeners
-		return this.manipulateListeners(false, evt, listeners);
-	};
-
-	/**
-	 * Removes listeners in bulk using the manipulateListeners method.
-	 * If you pass an object as the second argument you can remove from multiple events at once. The object should contain key value pairs of events and listeners or listener arrays.
-	 * You can also pass it an event name and an array of listeners to be removed.
-	 * You can also pass it a regular expression to remove the listeners from all events that match it.
-	 *
-	 * @param {String|Object|RegExp} evt An event name if you will pass an array of listeners next. An object if you wish to remove from multiple events at once.
-	 * @param {Function[]} [listeners] An optional array of listener functions to remove.
-	 * @return {Object} Current instance of EventEmitter for chaining.
-	 */
-	proto.removeListeners = function removeListeners(evt, listeners) {
-		// Pass through to manipulateListeners
-		return this.manipulateListeners(true, evt, listeners);
-	};
-
-	/**
-	 * Edits listeners in bulk. The addListeners and removeListeners methods both use this to do their job. You should really use those instead, this is a little lower level.
-	 * The first argument will determine if the listeners are removed (true) or added (false).
-	 * If you pass an object as the second argument you can add/remove from multiple events at once. The object should contain key value pairs of events and listeners or listener arrays.
-	 * You can also pass it an event name and an array of listeners to be added/removed.
-	 * You can also pass it a regular expression to manipulate the listeners of all events that match it.
-	 *
-	 * @param {Boolean} remove True if you want to remove listeners, false if you want to add.
-	 * @param {String|Object|RegExp} evt An event name if you will pass an array of listeners next. An object if you wish to add/remove from multiple events at once.
-	 * @param {Function[]} [listeners] An optional array of listener functions to add/remove.
-	 * @return {Object} Current instance of EventEmitter for chaining.
-	 */
-	proto.manipulateListeners = function manipulateListeners(remove, evt, listeners) {
-		var i;
-		var value;
-		var single = remove ? this.removeListener : this.addListener;
-		var multiple = remove ? this.removeListeners : this.addListeners;
-
-		// If evt is an object then pass each of it's properties to this method
-		if (typeof evt === 'object' && !(evt instanceof RegExp)) {
-			for (i in evt) {
-				if (evt.hasOwnProperty(i) && (value = evt[i])) {
-					// Pass the single listener straight through to the singular method
-					if (typeof value === 'function') {
-						single.call(this, i, value);
-					}
-					else {
-						// Otherwise pass back to the multiple function
-						multiple.call(this, i, value);
-					}
-				}
-			}
-		}
-		else {
-			// So evt must be a string
-			// And listeners must be an array of listeners
-			// Loop over it and pass each one to the multiple method
-			i = listeners.length;
-			while (i--) {
-				single.call(this, evt, listeners[i]);
-			}
-		}
-
-		return this;
-	};
-
-	/**
-	 * Removes all listeners from a specified event.
-	 * If you do not specify an event then all listeners will be removed.
-	 * That means every event will be emptied.
-	 * You can also pass a regex to remove all events that match it.
-	 *
-	 * @param {String|RegExp} [evt] Optional name of the event to remove all listeners for. Will remove from every event if not passed.
-	 * @return {Object} Current instance of EventEmitter for chaining.
-	 */
-	proto.removeEvent = function removeEvent(evt) {
-		var type = typeof evt;
-		var events = this._getEvents();
-		var key;
-
-		// Remove different things depending on the state of evt
-		if (type === 'string') {
-			// Remove all listeners for the specified event
-			delete events[evt];
-		}
-		else if (evt instanceof RegExp) {
-			// Remove all events matching the regex.
-			for (key in events) {
-				if (events.hasOwnProperty(key) && evt.test(key)) {
-					delete events[key];
-				}
-			}
-		}
-		else {
-			// Remove all listeners in all events
-			delete this._events;
-		}
-
-		return this;
-	};
-
-	/**
-	 * Alias of removeEvent.
-	 *
-	 * Added to mirror the node API.
-	 */
-	proto.removeAllListeners = alias('removeEvent');
-
-	/**
-	 * Emits an event of your choice.
-	 * When emitted, every listener attached to that event will be executed.
-	 * If you pass the optional argument array then those arguments will be passed to every listener upon execution.
-	 * Because it uses `apply`, your array of arguments will be passed as if you wrote them out separately.
-	 * So they will not arrive within the array on the other side, they will be separate.
-	 * You can also pass a regular expression to emit to all events that match it.
-	 *
-	 * @param {String|RegExp} evt Name of the event to emit and execute listeners for.
-	 * @param {Array} [args] Optional array of arguments to be passed to each listener.
-	 * @return {Object} Current instance of EventEmitter for chaining.
-	 */
-	proto.emitEvent = function emitEvent(evt, args) {
-		var listeners = this.getListenersAsObject(evt);
-		var listener;
-		var i;
-		var key;
-		var response;
-
-		for (key in listeners) {
-			if (listeners.hasOwnProperty(key)) {
-				i = listeners[key].length;
-
-				while (i--) {
-					// If the listener returns true then it shall be removed from the event
-					// The function is executed either with a basic call or an apply if there is an args array
-					listener = listeners[key][i];
-
-					if (listener.once === true) {
-						this.removeListener(evt, listener.listener);
-					}
-
-					response = listener.listener.apply(this, args || []);
-
-					if (response === this._getOnceReturnValue()) {
-						this.removeListener(evt, listener.listener);
-					}
-				}
-			}
-		}
-
-		return this;
-	};
-
-	/**
-	 * Alias of emitEvent
-	 */
-	proto.trigger = alias('emitEvent');
-
-	/**
-	 * Subtly different from emitEvent in that it will pass its arguments on to the listeners, as opposed to taking a single array of arguments to pass on.
-	 * As with emitEvent, you can pass a regex in place of the event name to emit to all events that match it.
-	 *
-	 * @param {String|RegExp} evt Name of the event to emit and execute listeners for.
-	 * @param {...*} Optional additional arguments to be passed to each listener.
-	 * @return {Object} Current instance of EventEmitter for chaining.
-	 */
-	proto.emit = function emit(evt) {
-		var args = Array.prototype.slice.call(arguments, 1);
-		return this.emitEvent(evt, args);
-	};
-
-	/**
-	 * Sets the current value to check against when executing listeners. If a
-	 * listeners return value matches the one set here then it will be removed
-	 * after execution. This value defaults to true.
-	 *
-	 * @param {*} value The new value to check for when executing listeners.
-	 * @return {Object} Current instance of EventEmitter for chaining.
-	 */
-	proto.setOnceReturnValue = function setOnceReturnValue(value) {
-		this._onceReturnValue = value;
-		return this;
-	};
-
-	/**
-	 * Fetches the current value to check against when executing listeners. If
-	 * the listeners return value matches this one then it should be removed
-	 * automatically. It will return true by default.
-	 *
-	 * @return {*|Boolean} The current value to check for or the default, true.
-	 * @api private
-	 */
-	proto._getOnceReturnValue = function _getOnceReturnValue() {
-		if (this.hasOwnProperty('_onceReturnValue')) {
-			return this._onceReturnValue;
-		}
-		else {
-			return true;
-		}
-	};
-
-	/**
-	 * Fetches the events object and creates one if required.
-	 *
-	 * @return {Object} The events storage object.
-	 * @api private
-	 */
-	proto._getEvents = function _getEvents() {
-		return this._events || (this._events = {});
-	};
-
-	/**
-	 * Reverts the global {@link EventEmitter} to its previous value and returns a reference to this version.
-	 *
-	 * @return {Function} Non conflicting EventEmitter class.
-	 */
-	EventEmitter.noConflict = function noConflict() {
-		exports.EventEmitter = originalGlobalValue;
-		return EventEmitter;
-	};
-
-	// Expose the class either via AMD, CommonJS or the global object
-	if (typeof define === 'function' && define.amd) {
-		define(function () {
-			return EventEmitter;
-		});
-	}
-	else if (typeof module === 'object' && module.exports){
-		module.exports = EventEmitter;
-	}
-	else {
-		this.EventEmitter = EventEmitter;
-	}
-}.call(this));
-
-;/*!
  * jQuery JavaScript Library v2.0.3
  * http://jquery.com/
  *
@@ -9470,6 +8919,557 @@ if ( typeof window === "object" && typeof window.document === "object" ) {
 }
 
 })( window );
+
+;/*!
+ * EventEmitter v4.2.7 - git.io/ee
+ * Oliver Caldwell
+ * MIT license
+ * @preserve
+ */
+
+(function () {
+	'use strict';
+
+	/**
+	 * Class for managing events.
+	 * Can be extended to provide event functionality in other classes.
+	 *
+	 * @class EventEmitter Manages event registering and emitting.
+	 */
+	function EventEmitter() {}
+
+	// Shortcuts to improve speed and size
+	var proto = EventEmitter.prototype;
+	var exports = this;
+	var originalGlobalValue = exports.EventEmitter;
+
+	/**
+	 * Finds the index of the listener for the event in it's storage array.
+	 *
+	 * @param {Function[]} listeners Array of listeners to search through.
+	 * @param {Function} listener Method to look for.
+	 * @return {Number} Index of the specified listener, -1 if not found
+	 * @api private
+	 */
+	function indexOfListener(listeners, listener) {
+		var i = listeners.length;
+		while (i--) {
+			if (listeners[i].listener === listener) {
+				return i;
+			}
+		}
+
+		return -1;
+	}
+
+	/**
+	 * Alias a method while keeping the context correct, to allow for overwriting of target method.
+	 *
+	 * @param {String} name The name of the target method.
+	 * @return {Function} The aliased method
+	 * @api private
+	 */
+	function alias(name) {
+		return function aliasClosure() {
+			return this[name].apply(this, arguments);
+		};
+	}
+
+	/**
+	 * Returns the listener array for the specified event.
+	 * Will initialise the event object and listener arrays if required.
+	 * Will return an object if you use a regex search. The object contains keys for each matched event. So /ba[rz]/ might return an object containing bar and baz. But only if you have either defined them with defineEvent or added some listeners to them.
+	 * Each property in the object response is an array of listener functions.
+	 *
+	 * @param {String|RegExp} evt Name of the event to return the listeners from.
+	 * @return {Function[]|Object} All listener functions for the event.
+	 */
+	proto.getListeners = function getListeners(evt) {
+		var events = this._getEvents();
+		var response;
+		var key;
+
+		// Return a concatenated array of all matching events if
+		// the selector is a regular expression.
+		if (evt instanceof RegExp) {
+			response = {};
+			for (key in events) {
+				if (events.hasOwnProperty(key) && evt.test(key)) {
+					response[key] = events[key];
+				}
+			}
+		}
+		else {
+			response = events[evt] || (events[evt] = []);
+		}
+
+		return response;
+	};
+
+	/**
+	 * Takes a list of listener objects and flattens it into a list of listener functions.
+	 *
+	 * @param {Object[]} listeners Raw listener objects.
+	 * @return {Function[]} Just the listener functions.
+	 */
+	proto.flattenListeners = function flattenListeners(listeners) {
+		var flatListeners = [];
+		var i;
+
+		for (i = 0; i < listeners.length; i += 1) {
+			flatListeners.push(listeners[i].listener);
+		}
+
+		return flatListeners;
+	};
+
+	/**
+	 * Fetches the requested listeners via getListeners but will always return the results inside an object. This is mainly for internal use but others may find it useful.
+	 *
+	 * @param {String|RegExp} evt Name of the event to return the listeners from.
+	 * @return {Object} All listener functions for an event in an object.
+	 */
+	proto.getListenersAsObject = function getListenersAsObject(evt) {
+		var listeners = this.getListeners(evt);
+		var response;
+
+		if (listeners instanceof Array) {
+			response = {};
+			response[evt] = listeners;
+		}
+
+		return response || listeners;
+	};
+
+	/**
+	 * Adds a listener function to the specified event.
+	 * The listener will not be added if it is a duplicate.
+	 * If the listener returns true then it will be removed after it is called.
+	 * If you pass a regular expression as the event name then the listener will be added to all events that match it.
+	 *
+	 * @param {String|RegExp} evt Name of the event to attach the listener to.
+	 * @param {Function} listener Method to be called when the event is emitted. If the function returns true then it will be removed after calling.
+	 * @return {Object} Current instance of EventEmitter for chaining.
+	 */
+	proto.addListener = function addListener(evt, listener) {
+		var listeners = this.getListenersAsObject(evt);
+		var listenerIsWrapped = typeof listener === 'object';
+		var key;
+
+		for (key in listeners) {
+			if (listeners.hasOwnProperty(key) && indexOfListener(listeners[key], listener) === -1) {
+				listeners[key].push(listenerIsWrapped ? listener : {
+					listener: listener,
+					once: false
+				});
+			}
+		}
+
+		return this;
+	};
+
+	/**
+	 * Alias of addListener
+	 */
+	proto.on = alias('addListener');
+
+	/**
+	 * Semi-alias of addListener. It will add a listener that will be
+	 * automatically removed after it's first execution.
+	 *
+	 * @param {String|RegExp} evt Name of the event to attach the listener to.
+	 * @param {Function} listener Method to be called when the event is emitted. If the function returns true then it will be removed after calling.
+	 * @return {Object} Current instance of EventEmitter for chaining.
+	 */
+	proto.addOnceListener = function addOnceListener(evt, listener) {
+		return this.addListener(evt, {
+			listener: listener,
+			once: true
+		});
+	};
+
+	/**
+	 * Alias of addOnceListener.
+	 */
+	proto.once = alias('addOnceListener');
+
+	/**
+	 * Defines an event name. This is required if you want to use a regex to add a listener to multiple events at once. If you don't do this then how do you expect it to know what event to add to? Should it just add to every possible match for a regex? No. That is scary and bad.
+	 * You need to tell it what event names should be matched by a regex.
+	 *
+	 * @param {String} evt Name of the event to create.
+	 * @return {Object} Current instance of EventEmitter for chaining.
+	 */
+	proto.defineEvent = function defineEvent(evt) {
+		this.getListeners(evt);
+		return this;
+	};
+
+	/**
+	 * Uses defineEvent to define multiple events.
+	 *
+	 * @param {String[]} evts An array of event names to define.
+	 * @return {Object} Current instance of EventEmitter for chaining.
+	 */
+	proto.defineEvents = function defineEvents(evts) {
+		for (var i = 0; i < evts.length; i += 1) {
+			this.defineEvent(evts[i]);
+		}
+		return this;
+	};
+
+	/**
+	 * Removes a listener function from the specified event.
+	 * When passed a regular expression as the event name, it will remove the listener from all events that match it.
+	 *
+	 * @param {String|RegExp} evt Name of the event to remove the listener from.
+	 * @param {Function} listener Method to remove from the event.
+	 * @return {Object} Current instance of EventEmitter for chaining.
+	 */
+	proto.removeListener = function removeListener(evt, listener) {
+		var listeners = this.getListenersAsObject(evt);
+		var index;
+		var key;
+
+		for (key in listeners) {
+			if (listeners.hasOwnProperty(key)) {
+				index = indexOfListener(listeners[key], listener);
+
+				if (index !== -1) {
+					listeners[key].splice(index, 1);
+				}
+			}
+		}
+
+		return this;
+	};
+
+	/**
+	 * Alias of removeListener
+	 */
+	proto.off = alias('removeListener');
+
+	/**
+	 * Adds listeners in bulk using the manipulateListeners method.
+	 * If you pass an object as the second argument you can add to multiple events at once. The object should contain key value pairs of events and listeners or listener arrays. You can also pass it an event name and an array of listeners to be added.
+	 * You can also pass it a regular expression to add the array of listeners to all events that match it.
+	 * Yeah, this function does quite a bit. That's probably a bad thing.
+	 *
+	 * @param {String|Object|RegExp} evt An event name if you will pass an array of listeners next. An object if you wish to add to multiple events at once.
+	 * @param {Function[]} [listeners] An optional array of listener functions to add.
+	 * @return {Object} Current instance of EventEmitter for chaining.
+	 */
+	proto.addListeners = function addListeners(evt, listeners) {
+		// Pass through to manipulateListeners
+		return this.manipulateListeners(false, evt, listeners);
+	};
+
+	/**
+	 * Removes listeners in bulk using the manipulateListeners method.
+	 * If you pass an object as the second argument you can remove from multiple events at once. The object should contain key value pairs of events and listeners or listener arrays.
+	 * You can also pass it an event name and an array of listeners to be removed.
+	 * You can also pass it a regular expression to remove the listeners from all events that match it.
+	 *
+	 * @param {String|Object|RegExp} evt An event name if you will pass an array of listeners next. An object if you wish to remove from multiple events at once.
+	 * @param {Function[]} [listeners] An optional array of listener functions to remove.
+	 * @return {Object} Current instance of EventEmitter for chaining.
+	 */
+	proto.removeListeners = function removeListeners(evt, listeners) {
+		// Pass through to manipulateListeners
+		return this.manipulateListeners(true, evt, listeners);
+	};
+
+	/**
+	 * Edits listeners in bulk. The addListeners and removeListeners methods both use this to do their job. You should really use those instead, this is a little lower level.
+	 * The first argument will determine if the listeners are removed (true) or added (false).
+	 * If you pass an object as the second argument you can add/remove from multiple events at once. The object should contain key value pairs of events and listeners or listener arrays.
+	 * You can also pass it an event name and an array of listeners to be added/removed.
+	 * You can also pass it a regular expression to manipulate the listeners of all events that match it.
+	 *
+	 * @param {Boolean} remove True if you want to remove listeners, false if you want to add.
+	 * @param {String|Object|RegExp} evt An event name if you will pass an array of listeners next. An object if you wish to add/remove from multiple events at once.
+	 * @param {Function[]} [listeners] An optional array of listener functions to add/remove.
+	 * @return {Object} Current instance of EventEmitter for chaining.
+	 */
+	proto.manipulateListeners = function manipulateListeners(remove, evt, listeners) {
+		var i;
+		var value;
+		var single = remove ? this.removeListener : this.addListener;
+		var multiple = remove ? this.removeListeners : this.addListeners;
+
+		// If evt is an object then pass each of it's properties to this method
+		if (typeof evt === 'object' && !(evt instanceof RegExp)) {
+			for (i in evt) {
+				if (evt.hasOwnProperty(i) && (value = evt[i])) {
+					// Pass the single listener straight through to the singular method
+					if (typeof value === 'function') {
+						single.call(this, i, value);
+					}
+					else {
+						// Otherwise pass back to the multiple function
+						multiple.call(this, i, value);
+					}
+				}
+			}
+		}
+		else {
+			// So evt must be a string
+			// And listeners must be an array of listeners
+			// Loop over it and pass each one to the multiple method
+			i = listeners.length;
+			while (i--) {
+				single.call(this, evt, listeners[i]);
+			}
+		}
+
+		return this;
+	};
+
+	/**
+	 * Removes all listeners from a specified event.
+	 * If you do not specify an event then all listeners will be removed.
+	 * That means every event will be emptied.
+	 * You can also pass a regex to remove all events that match it.
+	 *
+	 * @param {String|RegExp} [evt] Optional name of the event to remove all listeners for. Will remove from every event if not passed.
+	 * @return {Object} Current instance of EventEmitter for chaining.
+	 */
+	proto.removeEvent = function removeEvent(evt) {
+		var type = typeof evt;
+		var events = this._getEvents();
+		var key;
+
+		// Remove different things depending on the state of evt
+		if (type === 'string') {
+			// Remove all listeners for the specified event
+			delete events[evt];
+		}
+		else if (evt instanceof RegExp) {
+			// Remove all events matching the regex.
+			for (key in events) {
+				if (events.hasOwnProperty(key) && evt.test(key)) {
+					delete events[key];
+				}
+			}
+		}
+		else {
+			// Remove all listeners in all events
+			delete this._events;
+		}
+
+		return this;
+	};
+
+	/**
+	 * Alias of removeEvent.
+	 *
+	 * Added to mirror the node API.
+	 */
+	proto.removeAllListeners = alias('removeEvent');
+
+	/**
+	 * Emits an event of your choice.
+	 * When emitted, every listener attached to that event will be executed.
+	 * If you pass the optional argument array then those arguments will be passed to every listener upon execution.
+	 * Because it uses `apply`, your array of arguments will be passed as if you wrote them out separately.
+	 * So they will not arrive within the array on the other side, they will be separate.
+	 * You can also pass a regular expression to emit to all events that match it.
+	 *
+	 * @param {String|RegExp} evt Name of the event to emit and execute listeners for.
+	 * @param {Array} [args] Optional array of arguments to be passed to each listener.
+	 * @return {Object} Current instance of EventEmitter for chaining.
+	 */
+	proto.emitEvent = function emitEvent(evt, args) {
+		var listeners = this.getListenersAsObject(evt);
+		var listener;
+		var i;
+		var key;
+		var response;
+
+		for (key in listeners) {
+			if (listeners.hasOwnProperty(key)) {
+				i = listeners[key].length;
+
+				while (i--) {
+					// If the listener returns true then it shall be removed from the event
+					// The function is executed either with a basic call or an apply if there is an args array
+					listener = listeners[key][i];
+
+					if (listener.once === true) {
+						this.removeListener(evt, listener.listener);
+					}
+
+					response = listener.listener.apply(this, args || []);
+
+					if (response === this._getOnceReturnValue()) {
+						this.removeListener(evt, listener.listener);
+					}
+				}
+			}
+		}
+
+		return this;
+	};
+
+	/**
+	 * Alias of emitEvent
+	 */
+	proto.trigger = alias('emitEvent');
+
+	/**
+	 * Subtly different from emitEvent in that it will pass its arguments on to the listeners, as opposed to taking a single array of arguments to pass on.
+	 * As with emitEvent, you can pass a regex in place of the event name to emit to all events that match it.
+	 *
+	 * @param {String|RegExp} evt Name of the event to emit and execute listeners for.
+	 * @param {...*} Optional additional arguments to be passed to each listener.
+	 * @return {Object} Current instance of EventEmitter for chaining.
+	 */
+	proto.emit = function emit(evt) {
+		var args = Array.prototype.slice.call(arguments, 1);
+		return this.emitEvent(evt, args);
+	};
+
+	/**
+	 * Sets the current value to check against when executing listeners. If a
+	 * listeners return value matches the one set here then it will be removed
+	 * after execution. This value defaults to true.
+	 *
+	 * @param {*} value The new value to check for when executing listeners.
+	 * @return {Object} Current instance of EventEmitter for chaining.
+	 */
+	proto.setOnceReturnValue = function setOnceReturnValue(value) {
+		this._onceReturnValue = value;
+		return this;
+	};
+
+	/**
+	 * Fetches the current value to check against when executing listeners. If
+	 * the listeners return value matches this one then it should be removed
+	 * automatically. It will return true by default.
+	 *
+	 * @return {*|Boolean} The current value to check for or the default, true.
+	 * @api private
+	 */
+	proto._getOnceReturnValue = function _getOnceReturnValue() {
+		if (this.hasOwnProperty('_onceReturnValue')) {
+			return this._onceReturnValue;
+		}
+		else {
+			return true;
+		}
+	};
+
+	/**
+	 * Fetches the events object and creates one if required.
+	 *
+	 * @return {Object} The events storage object.
+	 * @api private
+	 */
+	proto._getEvents = function _getEvents() {
+		return this._events || (this._events = {});
+	};
+
+	/**
+	 * Reverts the global {@link EventEmitter} to its previous value and returns a reference to this version.
+	 *
+	 * @return {Function} Non conflicting EventEmitter class.
+	 */
+	EventEmitter.noConflict = function noConflict() {
+		exports.EventEmitter = originalGlobalValue;
+		return EventEmitter;
+	};
+
+	// Expose the class either via AMD, CommonJS or the global object
+	if (typeof define === 'function' && define.amd) {
+		define(function () {
+			return EventEmitter;
+		});
+	}
+	else if (typeof module === 'object' && module.exports){
+		module.exports = EventEmitter;
+	}
+	else {
+		this.EventEmitter = EventEmitter;
+	}
+}.call(this));
+
+;/*!
+ * eventie v1.0.4
+ * event binding helper
+ *   eventie.bind( elem, 'click', myFn )
+ *   eventie.unbind( elem, 'click', myFn )
+ */
+
+/*jshint browser: true, undef: true, unused: true */
+/*global define: false */
+
+( function( window ) {
+
+'use strict';
+
+var docElem = document.documentElement;
+
+var bind = function() {};
+
+function getIEEvent( obj ) {
+  var event = window.event;
+  // add event.target
+  event.target = event.target || event.srcElement || obj;
+  return event;
+}
+
+if ( docElem.addEventListener ) {
+  bind = function( obj, type, fn ) {
+    obj.addEventListener( type, fn, false );
+  };
+} else if ( docElem.attachEvent ) {
+  bind = function( obj, type, fn ) {
+    obj[ type + fn ] = fn.handleEvent ?
+      function() {
+        var event = getIEEvent( obj );
+        fn.handleEvent.call( fn, event );
+      } :
+      function() {
+        var event = getIEEvent( obj );
+        fn.call( obj, event );
+      };
+    obj.attachEvent( "on" + type, obj[ type + fn ] );
+  };
+}
+
+var unbind = function() {};
+
+if ( docElem.removeEventListener ) {
+  unbind = function( obj, type, fn ) {
+    obj.removeEventListener( type, fn, false );
+  };
+} else if ( docElem.detachEvent ) {
+  unbind = function( obj, type, fn ) {
+    obj.detachEvent( "on" + type, obj[ type + fn ] );
+    try {
+      delete obj[ type + fn ];
+    } catch ( err ) {
+      // can't delete window object properties
+      obj[ type + fn ] = undefined;
+    }
+  };
+}
+
+var eventie = {
+  bind: bind,
+  unbind: unbind
+};
+
+// transport
+if ( typeof define === 'function' && define.amd ) {
+  // AMD
+  define( eventie );
+} else {
+  // browser global
+  window.eventie = eventie;
+}
+
+})( this );
 
 ;/*!
  * Bootstrap v3.0.3 (http://getbootstrap.com)
@@ -33900,7 +33900,23 @@ if (typeof define === 'function' && define.amd) {
 ;require.register("includes/elements", function(exports, require, module) {
 var __templateData = function anonymous(locals) {
 var buf = [];
-buf.push("<div class=\"elements\"><div class=\"clouds\"><div class=\"clouds-content\"><img src=\"images/elements/cloud_01.png\" data-stellar-ratio=\"0.7\" class=\"cloud-1\"/><img src=\"images/elements/cloud_02.png\" data-stellar-ratio=\"0.71\" class=\"cloud-2\"/><img src=\"images/elements/cloud_03.png\" data-stellar-ratio=\"0.73\" class=\"cloud-3\"/><img src=\"images/elements/cloud_04.png\" data-stellar-ratio=\"0.78\" class=\"cloud-4\"/><img src=\"images/elements/cloud_05.png\" data-stellar-ratio=\"0.75\" class=\"cloud-5\"/><img src=\"images/elements/cloud_06.png\" data-stellar-ratio=\"0.74\" class=\"cloud-6\"/><img src=\"images/elements/cloud_07.png\" data-stellar-ratio=\"0.7\" class=\"cloud-7\"/><img src=\"images/elements/cloud_08.png\" data-stellar-ratio=\"0.79\" class=\"cloud-8\"/><img src=\"images/elements/cloud_09.png\" data-stellar-ratio=\"0.73\" class=\"cloud-9\"/><img src=\"images/elements/sun_01.png\" data-stellar-ratio=\"1.1\" class=\"sun-1\"/></div></div><div class=\"bubbles\"><div class=\"bubbles-content\"><img src=\"images/elements/bubbles_01.png\" data-stellar-ratio=\"1.1\" class=\"bubble-1\"/><img src=\"images/elements/bubbles_02.png\" data-stellar-ratio=\"1.2\" class=\"bubble-2\"/><img src=\"images/elements/bubbles_03.png\" data-stellar-ratio=\"1.1\" class=\"bubble-3\"/></div></div><div class=\"space\"><div class=\"space-content\"><img src=\"images/elements/space_01.png\" data-stellar-ratio=\"0.90\" class=\"space-1\"/></div></div></div>");;return buf.join("");
+buf.push("<div class=\"elements\"><div class=\"clouds\"><div class=\"clouds-content\"><img src=\"images/elements/cloud_01.png\" data-stellar-ratio=\"0.7\" class=\"cloud-1\"/><img src=\"images/elements/cloud_02.png\" data-stellar-ratio=\"0.71\" class=\"cloud-2\"/><img src=\"images/elements/cloud_03.png\" data-stellar-ratio=\"0.73\" class=\"cloud-3\"/><img src=\"images/elements/cloud_04.png\" data-stellar-ratio=\"0.78\" class=\"cloud-4\"/><img src=\"images/elements/cloud_05.png\" data-stellar-ratio=\"0.75\" class=\"cloud-5\"/><img src=\"images/elements/cloud_06.png\" data-stellar-ratio=\"0.74\" class=\"cloud-6\"/><img src=\"images/elements/cloud_07.png\" data-stellar-ratio=\"0.7\" class=\"cloud-7\"/><img src=\"images/elements/cloud_08.png\" data-stellar-ratio=\"0.79\" class=\"cloud-8\"/><img src=\"images/elements/cloud_09.png\" data-stellar-ratio=\"0.73\" class=\"cloud-9\"/></div></div><div class=\"bubbles\"><div class=\"bubbles-content\"><img src=\"images/elements/bubbles_01.png\" data-stellar-ratio=\"1.1\" class=\"bubble-1\"/><img src=\"images/elements/bubbles_02.png\" data-stellar-ratio=\"1.2\" class=\"bubble-2\"/><img src=\"images/elements/bubbles_03.png\" data-stellar-ratio=\"1.1\" class=\"bubble-3\"/></div></div><div class=\"space\"><div class=\"space-content\"><img src=\"images/elements/space_01.png\" data-stellar-ratio=\"0.90\" class=\"space-1\"/></div></div></div>");;return buf.join("");
+};
+if (typeof define === 'function' && define.amd) {
+  define([], function() {
+    return __templateData;
+  });
+} else if (typeof module === 'object' && module && module.exports) {
+  module.exports = __templateData;
+} else {
+  __templateData;
+}
+});
+
+;require.register("includes/footer", function(exports, require, module) {
+var __templateData = function anonymous(locals) {
+var buf = [];
+buf.push("<div class=\"footer-content\"><span>All Rights Reserved Drylock Technologies | 2013 -2014</span><br/><span>Created by<a href=\"http://www.wercajk.com\" class=\"wercajk-link\">Wercajk</a></span></div>");;return buf.join("");
 };
 if (typeof define === 'function' && define.amd) {
   define([], function() {
@@ -33964,7 +33980,7 @@ if (typeof define === 'function' && define.amd) {
 ;require.register("index", function(exports, require, module) {
 var __templateData = function anonymous(locals) {
 var buf = [];
-buf.push("<!DOCTYPE html><!--[if lt IE 7]><html class=\"no-js lt-ie9 lt-ie8 lt-ie7\"><![endif]--><!--[if IE 7]><html class=\"no-js lt-ie9 lt-ie8\"><![endif]--><!--[if IE 8]><html class=\"no-js lt-ie9\"><![endif]--><!-- [if gt IE 8] <!--><html lang=\"en\" class=\"no-js\"><!-- <![endif]--><head><meta charset=\"utf-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\"><title>Magics - THE REVOLUTIONARY THIN DIAPER</title><meta name=\"description\" content=\"\"><meta name=\"viewport\" content=\"width=device-width\"><script>window.brunch = window.brunch || {};</script><link rel=\"stylesheet\" href=\"MyFontsWebfontsKit.css\"><link rel=\"stylesheet\" href=\"css/app.css\"></head><body><div class=\"content\"><div class=\"elements\"><div class=\"clouds\"><div class=\"clouds-content\"><img src=\"images/elements/cloud_01.png\" data-stellar-ratio=\"0.7\" class=\"cloud-1\"><img src=\"images/elements/cloud_02.png\" data-stellar-ratio=\"0.71\" class=\"cloud-2\"><img src=\"images/elements/cloud_03.png\" data-stellar-ratio=\"0.73\" class=\"cloud-3\"><img src=\"images/elements/cloud_04.png\" data-stellar-ratio=\"0.78\" class=\"cloud-4\"><img src=\"images/elements/cloud_05.png\" data-stellar-ratio=\"0.75\" class=\"cloud-5\"><img src=\"images/elements/cloud_06.png\" data-stellar-ratio=\"0.74\" class=\"cloud-6\"><img src=\"images/elements/cloud_07.png\" data-stellar-ratio=\"0.7\" class=\"cloud-7\"><img src=\"images/elements/cloud_08.png\" data-stellar-ratio=\"0.79\" class=\"cloud-8\"><img src=\"images/elements/cloud_09.png\" data-stellar-ratio=\"0.73\" class=\"cloud-9\"><img src=\"images/elements/sun_01.png\" data-stellar-ratio=\"1.1\" class=\"sun-1\"></div></div><div class=\"bubbles\"><div class=\"bubbles-content\"><img src=\"images/elements/bubbles_01.png\" data-stellar-ratio=\"1.1\" class=\"bubble-1\"><img src=\"images/elements/bubbles_02.png\" data-stellar-ratio=\"1.2\" class=\"bubble-2\"><img src=\"images/elements/bubbles_03.png\" data-stellar-ratio=\"1.1\" class=\"bubble-3\"></div></div><div class=\"space\"><div class=\"space-content\"><img src=\"images/elements/space_01.png\" data-stellar-ratio=\"0.90\" class=\"space-1\"></div></div></div><!-- Loading--><div class=\"loading\"><div class=\"page-center\"><div class=\"logo\"><img alt=\"Magics\" src=\"images/Magics-Logo.png\"></div><div class=\"circle\"><img alt=\"Magics\" src=\"images/Loading.gif\"></div><div class=\"claim\">The revolutionary thin diaper</div></div></div><!-- Products--><div id=\"Products\" class=\"products hide-during-load\"><div class=\"menu cf\"><img src=\"images/Menu-Magics-Logo.png\" class=\"menu-magics-logo\"><ul class=\"nav nav-pills\"><li class=\"products-link\"><a href=\"#Products\">Products</a></li><li class=\"about-link\"><a href=\"#About\">About</a></li><li class=\"contact-link\"><a href=\"#Contact\">Contact</a></li><li><a href=\"\" class=\"longer\">Order Online</a></li></ul><a href=\"http://www.drylock.eu/\" class=\"menu-drylock-logo\"><img src=\"images/Menu-Drylock-Logo.png\"></a></div><div class=\"products-content\"><div class=\"row\"><div class=\"col-md-6 diapers-1\"><div class=\"row diapers-detail\"><div class=\"col-md-6\"><div class=\"diapers-info text-right\"><div class=\"title\">NEW BORN</div><div class=\"weight\">2–5 kg</div><div class=\"description\">36 ultra thin diapers</div></div></div><div class=\"col-md-1\"><div class=\"number-circle number-orange\">1</div></div><div class=\"col-md-5\"><img src=\"images/packshots/Magics_1_fin.png\"></div></div></div><div class=\"col-md-6 diapers-2\"><div class=\"row diapers-detail\"><div class=\"col-md-6\"><img src=\"images/packshots/Magics_2_fin.png\"></div><div class=\"col-md-1\"><div class=\"number-circle number-yellow\">2</div></div><div class=\"col-md-5 text-left\"><div class=\"diapers-info text-left\"><div class=\"title\">MINI</div><div class=\"weight\">3–6 kg</div><div class=\"description\">34 ultra thin diapers</div></div></div></div></div></div><div class=\"row\"><div class=\"col-md-5 col-md-push-1 diapers-3\"><div class=\"row diapers-detail\"><div class=\"col-md-5\"><img src=\"images/packshots/Magics_3_fin.png\"></div><div class=\"col-md-1\"><div class=\"number-circle number-green\">3</div></div><div class=\"col-md-6 text-left\"><div class=\"diapers-info text-left\"><div class=\"title\">MIDI</div><div class=\"weight\">4–9 kg</div><div class=\"description\">31 ultra thin diapers</div></div></div></div></div><div class=\"col-md-5 col-md-push-1 diapers-4\"><div class=\"row diapers-detail\"><div class=\"col-md-6 text-right\"><div class=\"diapers-info text-right\"><div class=\"title\">MAXI</div><div class=\"weight\">7–18 kg</div><div class=\"description\">29 ultra thin diapers</div></div></div><div class=\"col-md-1\"><div class=\"number-circle number-pink\">4</div></div><div class=\"col-md-5\"><img src=\"images/packshots/Magics_4_fin.png\"></div></div></div></div><div class=\"row\"><div class=\"col-md-5 col-md-push-1 diapers-5\"><div class=\"row diapers-detail\"><div class=\"col-md-6 text-right\"><div class=\"diapers-info text-right\"><div class=\"title\">JUNIOR</div><div class=\"weight\">11–25 kg</div><div class=\"description\">27 ultra thin diapers</div></div></div><div class=\"col-md-1\"><div class=\"number-circle number-blue\">5</div></div><div class=\"col-md-5\"><img src=\"images/packshots/Magics_5_fin.png\"></div></div></div><div class=\"col-md-5 col-md-push-1 diapers-6\"><div class=\"row diapers-detail\"><div class=\"col-md-5\"><img src=\"images/packshots/Magics_6_fin.png\"></div><div class=\"col-md-1\"><div class=\"number-circle number-violet\">6</div></div><div class=\"col-md-6 text-left\"><div class=\"diapers-info text-left\"><div class=\"title\">XL</div><div class=\"weight\">16–30kg</div><div class=\"description\">25 ultra thin diapers</div></div></div></div></div></div><div class=\"row\"><div class=\"col-md-5 col-md-push-1 wipes\"><div class=\"row diapers-detail\"><div class=\"col-md-12 text-center\"><div class=\"diapers-info text-center\"><div class=\"title\">BABY WIPES</div><div class=\"description\">64 ultra soft sheets</div></div><img src=\"images/packshots/Magics_wipes.png\"></div></div></div><div class=\"col-md-4 col-md-push-2 text-center videos\"><div class=\"videos-detail text-center\"><a href=\"http://www.youtube.com/watch?v=-HDieM32pts\"><img src=\"images/Video.png\"><div class=\"button\">Watch our videos!</div></a></div></div></div></div></div><!-- About--><div id=\"About\" class=\"about hide-during-load\"><div class=\"menu cf\"><img src=\"images/Menu-Magics-Logo.png\" class=\"menu-magics-logo\"><ul class=\"nav nav-pills\"><li class=\"products-link\"><a href=\"#Products\">Products</a></li><li class=\"about-link\"><a href=\"#About\">About</a></li><li class=\"contact-link\"><a href=\"#Contact\">Contact</a></li><li><a href=\"\" class=\"longer\">Order Online</a></li></ul><a href=\"http://www.drylock.eu/\" class=\"menu-drylock-logo\"><img src=\"images/Menu-Drylock-Logo.png\"></a></div><div class=\"about-content\"><h2>World class product innovation</h2><h3>Revolutionary Technology</h3><div class=\"row dry-lock-description\"><div class=\"col-md-12\"><div class=\"row\"><div class=\"col-md-8 col-md-push-4\"><div class=\"row\"><div class=\"col-md-12 text-left\"><h4>Drylock</h4><h5>original fluffless technology</h5></div></div><div class=\"row\"><div class=\"col-md-3\"><img src=\"images/About-Diaper.png\"></div><div class=\"col-md-7 description-text\"><p>Allows for thin, comfortable and highly absorbent products.</p><p>The thinnest and fastest performance diaper on the market. Products with integrated fluid management system. The product interacts with and responds to the liquid.</p><p>Breakthrough engineering and product know-how.</p><h4>All sizes available</h4></div></div></div></div></div></div><div class=\"row ecology-description\"><div class=\"col-md-12\"><div class=\"row\"><div class=\"col-md-8\"><div class=\"row\"><div class=\"col-md-12 text-left\"><h4>Ecological Benefits</h4></div></div><div class=\"row\"><div class=\"col-md-4\"><img src=\"images/Product-Recycle.png\"></div><div class=\"col-md-7 description-text\"><h5>Fluffless diaper:</h5><p>eliminating cellulose saves millions of trees each year.</p><h5>Glueless core:</h5><p>elimination of glue saves tons of chemicals each year.</p><h5>Compactness of diaper:</h5><p>saves packaging material and reduces transportation and warehousing requirements.</p></div></div></div></div></div></div><div class=\"row product-reviews\"><div class=\"col-md-12\"><div class=\"row\"><div class=\"col-md-8 col-md-push-4 product-reviews-content\"><div class=\"row\"><div class=\"col-md-1\"><img src=\"images/Apostrophes.png\"></div><div class=\"col-md-11\"><em>A perfect score. In terms of overall performance, Drylock is superior to all US made diapers.</em><strong>Carlos Richer</strong><p>(2012 STUDY COMPARING DRYLOCK WITH ALL MAIN US BRANDS)</p></div></div><div class=\"row\"><div class=\"col-md-1\"><img src=\"images/Apostrophes.png\"></div><div class=\"col-md-11\"><em>Saugt mehr und schneller als herkömmliche Produkte.</em><strong>Hy-TecHygiene Consulting</strong></div></div><div class=\"row\"><div class=\"col-md-1\"><img src=\"images/Apostrophes.png\"></div><div class=\"col-md-11\"><em>Very good in dryness and absorption.</em><strong>Courtray Consulting Labservice</strong></div></div></div></div></div></div></div></div><!-- Contact--><div id=\"Contact\" class=\"contact hide-during-load\"><div class=\"menu cf\"><img src=\"images/Menu-Magics-Logo.png\" class=\"menu-magics-logo\"><ul class=\"nav nav-pills\"><li class=\"products-link\"><a href=\"#Products\">Products</a></li><li class=\"about-link\"><a href=\"#About\">About</a></li><li class=\"contact-link\"><a href=\"#Contact\">Contact</a></li><li><a href=\"\" class=\"longer\">Order Online</a></li></ul><a href=\"http://www.drylock.eu/\" class=\"menu-drylock-logo\"><img src=\"images/Menu-Drylock-Logo.png\"></a></div><div class=\"contact-content\"><div class=\"row\"><div class=\"col-md-7\"><div class=\"contact-form\"><form><input type=\"text\" name=\"name\" class=\"name\"><input type=\"email\" name=\"email\" class=\"email\"><textarea name=\"message\" rows=\"6\" class=\"message\"></textarea><button type=\"submit\" class=\"send\"><img src=\"/images/Contact-Form-Submit.png\"></button></form></div></div><div class=\"col-md-5\"><div class=\"contact-address-belgium\"><img src=\"/images/Contact-Envelope.png\" class=\"envelope\"><img src=\"/images/Contact-Arroba.png\" class=\"arroba\"><h3>Drylock Technologies NV</h3><div>Spinnerijstraat 14</div><div>9240 Zele</div><strong>Belgium</strong><br><br><a href=\"mailto:info@drylock.eu\">info@drylock.eu</a></div><div class=\"contact-address-czech\"><img src=\"/images/Contact-Envelope.png\" class=\"envelope\"><img src=\"/images/Contact-Arroba.png\" class=\"arroba\"><h3>Drylock Technologies, s.r.o.</h3><div>Vlámská 801</div><div>Hrádek nad Nisou</div><div>463 34</div><strong>Czech Republic</strong><br><br><a href=\"mailto:info.cz@drylock.eu\">info.cz@drylock.eu</a></div></div></div></div></div><!-- Footer--><div class=\"footer cf hide-during-load\"></div></div><script src=\"js/app.js\" onload=\"require('initialize');\"></script><script>var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];\n(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];\ng.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';\ns.parentNode.insertBefore(g,s)}(document,'script'));</script></body></html>");;return buf.join("");
+buf.push("<!DOCTYPE html><!--[if lt IE 7]><html class=\"no-js lt-ie9 lt-ie8 lt-ie7\"><![endif]--><!--[if IE 7]><html class=\"no-js lt-ie9 lt-ie8\"><![endif]--><!--[if IE 8]><html class=\"no-js lt-ie9\"><![endif]--><!-- [if gt IE 8] <!--><html lang=\"en\" class=\"no-js\"><!-- <![endif]--><head><meta charset=\"utf-8\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge,chrome=1\"><title>Magics - THE REVOLUTIONARY THIN DIAPER</title><meta name=\"description\" content=\"\"><meta name=\"viewport\" content=\"width=device-width\"><script>window.brunch = window.brunch || {};</script><link rel=\"stylesheet\" href=\"MyFontsWebfontsKit.css\"><link rel=\"stylesheet\" href=\"css/app.css\"></head><body><div class=\"content\"><div class=\"elements\"><div class=\"clouds\"><div class=\"clouds-content\"><img src=\"images/elements/cloud_01.png\" data-stellar-ratio=\"0.7\" class=\"cloud-1\"><img src=\"images/elements/cloud_02.png\" data-stellar-ratio=\"0.71\" class=\"cloud-2\"><img src=\"images/elements/cloud_03.png\" data-stellar-ratio=\"0.73\" class=\"cloud-3\"><img src=\"images/elements/cloud_04.png\" data-stellar-ratio=\"0.78\" class=\"cloud-4\"><img src=\"images/elements/cloud_05.png\" data-stellar-ratio=\"0.75\" class=\"cloud-5\"><img src=\"images/elements/cloud_06.png\" data-stellar-ratio=\"0.74\" class=\"cloud-6\"><img src=\"images/elements/cloud_07.png\" data-stellar-ratio=\"0.7\" class=\"cloud-7\"><img src=\"images/elements/cloud_08.png\" data-stellar-ratio=\"0.79\" class=\"cloud-8\"><img src=\"images/elements/cloud_09.png\" data-stellar-ratio=\"0.73\" class=\"cloud-9\"></div></div><div class=\"bubbles\"><div class=\"bubbles-content\"><img src=\"images/elements/bubbles_01.png\" data-stellar-ratio=\"1.1\" class=\"bubble-1\"><img src=\"images/elements/bubbles_02.png\" data-stellar-ratio=\"1.2\" class=\"bubble-2\"><img src=\"images/elements/bubbles_03.png\" data-stellar-ratio=\"1.1\" class=\"bubble-3\"></div></div><div class=\"space\"><div class=\"space-content\"><img src=\"images/elements/space_01.png\" data-stellar-ratio=\"0.90\" class=\"space-1\"></div></div></div><!-- Loading--><div class=\"loading\"><div class=\"page-center\"><div class=\"logo\"><img alt=\"Magics\" src=\"images/Magics-Logo.png\"></div><div class=\"circle\"><img alt=\"Magics\" src=\"images/Loading.gif\"></div><div class=\"claim\">The revolutionary thin diaper</div></div></div><!-- Products--><div id=\"Products\" class=\"products hide-during-load\"><div class=\"menu cf\"><img src=\"images/Menu-Magics-Logo.png\" class=\"menu-magics-logo\"><ul class=\"nav nav-pills\"><li class=\"products-link\"><a href=\"#Products\">Products</a></li><li class=\"about-link\"><a href=\"#About\">About</a></li><li class=\"contact-link\"><a href=\"#Contact\">Contact</a></li><li><a href=\"\" class=\"longer\">Order Online</a></li></ul><a href=\"http://www.drylock.eu/\" class=\"menu-drylock-logo\"><img src=\"images/Menu-Drylock-Logo.png\"></a></div><div class=\"products-content\"><div class=\"row\"><div class=\"col-md-6 diapers-1\"><div class=\"row diapers-detail\"><div class=\"col-md-6\"><div class=\"diapers-info text-right\"><div class=\"title\">NEW BORN</div><div class=\"weight\">2–5 kg</div><div class=\"description\">36 ultra thin diapers</div></div></div><div class=\"col-md-1\"><div class=\"number-circle number-orange\">1</div></div><div class=\"col-md-5\"><img src=\"images/packshots/Magics_1_fin.png\"></div></div></div><div class=\"col-md-6 diapers-2\"><div class=\"row diapers-detail\"><div class=\"col-md-6\"><img src=\"images/packshots/Magics_2_fin.png\"></div><div class=\"col-md-1\"><div class=\"number-circle number-yellow\">2</div></div><div class=\"col-md-5 text-left\"><div class=\"diapers-info text-left\"><div class=\"title\">MINI</div><div class=\"weight\">3–6 kg</div><div class=\"description\">34 ultra thin diapers</div></div></div></div></div></div><div class=\"row\"><div class=\"col-md-5 col-md-push-1 diapers-3\"><div class=\"row diapers-detail\"><div class=\"col-md-5\"><img src=\"images/packshots/Magics_3_fin.png\"></div><div class=\"col-md-1\"><div class=\"number-circle number-green\">3</div></div><div class=\"col-md-6 text-left\"><div class=\"diapers-info text-left\"><div class=\"title\">MIDI</div><div class=\"weight\">4–9 kg</div><div class=\"description\">31 ultra thin diapers</div></div></div></div></div><div class=\"col-md-5 col-md-push-1 diapers-4\"><div class=\"row diapers-detail\"><div class=\"col-md-6 text-right\"><div class=\"diapers-info text-right\"><div class=\"title\">MAXI</div><div class=\"weight\">7–18 kg</div><div class=\"description\">29 ultra thin diapers</div></div></div><div class=\"col-md-1\"><div class=\"number-circle number-pink\">4</div></div><div class=\"col-md-5\"><img src=\"images/packshots/Magics_4_fin.png\"></div></div></div></div><div class=\"row\"><div class=\"col-md-5 col-md-push-1 diapers-5\"><div class=\"row diapers-detail\"><div class=\"col-md-6 text-right\"><div class=\"diapers-info text-right\"><div class=\"title\">JUNIOR</div><div class=\"weight\">11–25 kg</div><div class=\"description\">27 ultra thin diapers</div></div></div><div class=\"col-md-1\"><div class=\"number-circle number-blue\">5</div></div><div class=\"col-md-5\"><img src=\"images/packshots/Magics_5_fin.png\"></div></div></div><div class=\"col-md-5 col-md-push-1 diapers-6\"><div class=\"row diapers-detail\"><div class=\"col-md-5\"><img src=\"images/packshots/Magics_6_fin.png\"></div><div class=\"col-md-1\"><div class=\"number-circle number-violet\">6</div></div><div class=\"col-md-6 text-left\"><div class=\"diapers-info text-left\"><div class=\"title\">XL</div><div class=\"weight\">16–30kg</div><div class=\"description\">25 ultra thin diapers</div></div></div></div></div></div><div class=\"row\"><div class=\"col-md-5 col-md-push-1 wipes\"><div class=\"row diapers-detail\"><div class=\"col-md-12 text-center\"><div class=\"diapers-info text-center\"><div class=\"title\">BABY WIPES</div><div class=\"description\">64 ultra soft sheets</div></div><img src=\"images/packshots/Magics_wipes.png\"></div></div></div><div class=\"col-md-4 col-md-push-2 text-center videos\"><div class=\"videos-detail text-center\"><a href=\"http://www.youtube.com/watch?v=-HDieM32pts\"><img src=\"images/Video.png\"><div class=\"button\">Watch our videos!</div></a></div></div></div></div></div><!-- About--><div id=\"About\" class=\"about hide-during-load\"><div class=\"menu cf\"><img src=\"images/Menu-Magics-Logo.png\" class=\"menu-magics-logo\"><ul class=\"nav nav-pills\"><li class=\"products-link\"><a href=\"#Products\">Products</a></li><li class=\"about-link\"><a href=\"#About\">About</a></li><li class=\"contact-link\"><a href=\"#Contact\">Contact</a></li><li><a href=\"\" class=\"longer\">Order Online</a></li></ul><a href=\"http://www.drylock.eu/\" class=\"menu-drylock-logo\"><img src=\"images/Menu-Drylock-Logo.png\"></a></div><div class=\"about-content\"><h2>World class product innovation</h2><h3>Revolutionary Technology</h3><div class=\"row dry-lock-description\"><div class=\"col-md-12\"><div class=\"row\"><div class=\"col-md-8 col-md-push-4\"><div class=\"row\"><div class=\"col-md-12 text-left\"><h4>Drylock</h4><h5>original fluffless technology</h5></div></div><div class=\"row\"><div class=\"col-md-3\"><img src=\"images/About-Diaper.png\"></div><div class=\"col-md-7 description-text\"><p>Allows for thin, comfortable and highly absorbent products.</p><p>The thinnest and fastest performance diaper on the market. Products with integrated fluid management system. The product interacts with and responds to the liquid.</p><p>Breakthrough engineering and product know-how.</p><h4>All sizes available</h4></div></div></div></div></div></div><div class=\"row ecology-description\"><div class=\"col-md-12\"><div class=\"row\"><div class=\"col-md-8\"><div class=\"row\"><div class=\"col-md-12 text-left\"><h4>Ecological Benefits</h4></div></div><div class=\"row\"><div class=\"col-md-4\"><img src=\"images/Product-Recycle.png\"></div><div class=\"col-md-7 description-text\"><h5>Fluffless diaper:</h5><p>eliminating cellulose saves millions of trees each year.</p><h5>Glueless core:</h5><p>elimination of glue saves tons of chemicals each year.</p><h5>Compactness of diaper:</h5><p>saves packaging material and reduces transportation and warehousing requirements.</p></div></div></div></div></div></div><div class=\"row product-reviews\"><div class=\"col-md-12\"><div class=\"row\"><div class=\"col-md-8 col-md-push-4 product-reviews-content\"><div class=\"row\"><div class=\"col-md-1\"><img src=\"images/Apostrophes.png\"></div><div class=\"col-md-11\"><em>A perfect score. In terms of overall performance, Drylock is superior to all US made diapers.</em><strong>Carlos Richer</strong><p>(2012 STUDY COMPARING DRYLOCK WITH ALL MAIN US BRANDS)</p></div></div><div class=\"row\"><div class=\"col-md-1\"><img src=\"images/Apostrophes.png\"></div><div class=\"col-md-11\"><em>Saugt mehr und schneller als herkömmliche Produkte.</em><strong>Hy-TecHygiene Consulting</strong></div></div><div class=\"row\"><div class=\"col-md-1\"><img src=\"images/Apostrophes.png\"></div><div class=\"col-md-11\"><em>Very good in dryness and absorption.</em><strong>Courtray Consulting Labservice</strong></div></div></div></div></div></div></div></div><!-- Contact--><div id=\"Contact\" class=\"contact hide-during-load\"><div class=\"menu cf\"><img src=\"images/Menu-Magics-Logo.png\" class=\"menu-magics-logo\"><ul class=\"nav nav-pills\"><li class=\"products-link\"><a href=\"#Products\">Products</a></li><li class=\"about-link\"><a href=\"#About\">About</a></li><li class=\"contact-link\"><a href=\"#Contact\">Contact</a></li><li><a href=\"\" class=\"longer\">Order Online</a></li></ul><a href=\"http://www.drylock.eu/\" class=\"menu-drylock-logo\"><img src=\"images/Menu-Drylock-Logo.png\"></a></div><div class=\"contact-content\"><div class=\"row\"><div class=\"col-md-7\"><div class=\"contact-form\"><form><input type=\"text\" name=\"name\" class=\"name\"><input type=\"email\" name=\"email\" class=\"email\"><textarea name=\"message\" rows=\"6\" class=\"message\"></textarea><button type=\"submit\" class=\"send\"><img src=\"/images/Contact-Form-Submit.png\"></button></form></div></div><div class=\"col-md-5\"><div class=\"contact-address-belgium\"><img src=\"/images/Contact-Envelope.png\" class=\"envelope\"><img src=\"/images/Contact-Arroba.png\" class=\"arroba\"><h3>Drylock Technologies NV</h3><div>Spinnerijstraat 14</div><div>9240 Zele</div><strong>Belgium</strong><br><br><a href=\"mailto:info@drylock.eu\">info@drylock.eu</a></div><div class=\"contact-address-czech\"><img src=\"/images/Contact-Envelope.png\" class=\"envelope\"><img src=\"/images/Contact-Arroba.png\" class=\"arroba\"><h3>Drylock Technologies, s.r.o.</h3><div>Vlámská 801</div><div>Hrádek nad Nisou</div><div>463 34</div><strong>Czech Republic</strong><br><br><a href=\"mailto:info.cz@drylock.eu\">info.cz@drylock.eu</a></div></div></div></div></div><!-- Footer--><div class=\"footer hide-during-load\"><div class=\"footer-content\"><span>All Rights Reserved Drylock Technologies | 2013 -2014</span><br><span>Created by<a href=\"http://www.wercajk.com\" class=\"wercajk-link\">Wercajk</a></span></div></div></div><script src=\"js/app.js\" onload=\"require('initialize');\"></script><script>var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];\n(function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];\ng.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';\ns.parentNode.insertBefore(g,s)}(document,'script'));</script></body></html>");;return buf.join("");
 };
 if (typeof define === 'function' && define.amd) {
   define([], function() {
@@ -33988,8 +34004,7 @@ imagesLoaded(document.body, function(instance) {
     $('.hide-during-load').animate({
       opacity: 1
     }, 2000);
-    $(document.body).css('overflow-y', 'auto').css('overflow-x', 'hidden');
-    return $(document.body).scrollTo(850, 3000);
+    return $(document.body).css('overflow-y', 'auto').css('overflow-x', 'hidden');
   }, 1000);
 });
 
@@ -36221,10 +36236,6 @@ $('.menu ul a').click(function() {
 });
 
 ;require.register("routers/main", function(exports, require, module) {
-
-});
-
-;require.register("views/index", function(exports, require, module) {
 
 });
 
