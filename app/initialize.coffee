@@ -10,9 +10,26 @@ imagesLoaded document.body, (instance) ->
         $('.hide-during-load').animate({opacity: 1}, 2000)
 
         $(document.body)
-        .css('overflow-y', 'auto')
-        .css('overflow-x', 'hidden')
-        # .scrollTo(850, 3000)
+            .css('overflow-y', 'auto')
+            .css('overflow-x', 'hidden')
+
+        soundManager.setup({
+            url: '/path/to/swf-files/',
+            onready: ->
+                window.backgroundSound = soundManager.createSound({
+                    id: 'aSound',
+                    url: '/background-sound.mp3',
+                    # autoPlay: true,
+                    loop: 3
+                })
+                # backgroundSound.play()
+            ,
+            ontimeout: ->
+                # hide icon!
+        })
+
+
+
     , 1000)
 
 
@@ -22,6 +39,7 @@ imagesLoaded document.body, (instance) ->
 #         if $(this).css('position') == 'absolute'
 #             console.log this
 #             $(this).draggable()
+# $('.diapers-detail img').draggable()
 
 # Parallax effect for non mobile platforms
 if !window.navigatorDetect.isMobile()
