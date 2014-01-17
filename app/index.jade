@@ -14,9 +14,6 @@ html(lang="en")
     //- Load background image upfront
     img(src='images/background.jpg', style='display: none')
 
-    //- Sound button
-    img.sound-button(src='images/Sound-On.png')
-
     .content
 
       include includes/elements
@@ -45,6 +42,9 @@ html(lang="en")
       // Footer
       .footer.hide-during-load
         include includes/footer
+
+      //- Sound button
+      img.sound-button(src='images/Sound-On.png')
 
     script(src='js/app.js', onload='require(\'initialize\');')
     script.
