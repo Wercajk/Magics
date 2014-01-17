@@ -27,8 +27,7 @@ imagesLoaded document.body, (instance) ->
             onready: ->
                 window.backgroundSound = soundManager.createSound({
                     id: 'aSound',
-                    url: '/background-sound.mp3',
-                    autoPlay: true
+                    url: '/background-sound.mp3'
                 })
                 loopSound 'aSound'
             ,
@@ -71,7 +70,7 @@ $ ->
             backgroundSound.stop()
             $(this).attr('src', 'images/Sound-Off.png')
         else
-            backgroundSound.play()
+            loopSound 'aSound'
             $(this).attr('src', 'images/Sound-On.png')
 
 

@@ -40012,8 +40012,7 @@ imagesLoaded(document.body, function(instance) {
       onready: function() {
         window.backgroundSound = soundManager.createSound({
           id: 'aSound',
-          url: '/background-sound.mp3',
-          autoPlay: true
+          url: '/background-sound.mp3'
         });
         return loopSound('aSound');
       },
@@ -40045,7 +40044,7 @@ $(function() {
       backgroundSound.stop();
       return $(this).attr('src', 'images/Sound-Off.png');
     } else {
-      backgroundSound.play();
+      loopSound('aSound');
       return $(this).attr('src', 'images/Sound-On.png');
     }
   });
