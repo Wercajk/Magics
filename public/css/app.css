@@ -7525,10 +7525,9 @@ table {
 
 .about {
   width: 100%;
-  top: 300px;
   position: absolute;
   overflow: hidden;
-  top: 2345px;
+  top: 2414px;
   color: #fff;
 }
 .about .about-content {
@@ -7544,12 +7543,19 @@ table {
   color: #fff;
 }
 .about .about-content .dry-lock-description .description-text p {
-  padding-bottom: 13px;
+  padding-bottom: 16px;
   font-size: 16px;
 }
+.about .about-content .dry-lock-description .description-text h4 {
+  margin-top: 43px;
+}
 .about .about-content .ecology-description {
-  margin-top: 117px;
+  margin-top: 106px;
   margin-left: -5px;
+}
+.about .about-content .ecology-description h5 {
+  margin-top: 2px;
+  margin-bottom: 5px;
 }
 .about .about-content .ecology-description p {
   color: #fff;
@@ -7557,7 +7563,7 @@ table {
   font-size: 16px;
 }
 .about .about-content .product-reviews {
-  margin-top: 78px;
+  margin-top: 79px;
   margin-left: 193px;
 }
 .about .about-content .product-reviews .product-reviews-content > .row {
@@ -7698,6 +7704,7 @@ input {
 body {
   background: url("/images/background.jpg");
   background-color: #3f7cd5;
+  background: url("/images/background-positioning.jpg");
   background-position: 50% 0;
   background-repeat: no-repeat;
   height: 100%;
@@ -7724,51 +7731,55 @@ a:hover {
   height: 1px;
 }
 .elements .clouds .clouds-content {
+  position: relative;
+  left: -435px;
+  top: 100px;
   width: 1px;
   margin: 0 auto;
+  font-size: 0;
 }
 .elements .clouds .clouds-content img {
   margin: 0 auto;
   position: absolute;
 }
 .elements .clouds .clouds-content .cloud-1 {
-  left: 83.5px;
-  top: 564px;
+  left: -298px;
+  top: 484px;
 }
 .elements .clouds .clouds-content .cloud-2 {
-  left: 251px;
-  top: 479px;
+  left: -130px;
+  top: 399px;
 }
 .elements .clouds .clouds-content .cloud-3 {
-  left: 349px;
-  top: 555px;
+  left: -32px;
+  top: 475px;
   z-index: 0;
 }
 .elements .clouds .clouds-content .cloud-4 {
-  left: 523px;
-  top: 518px;
+  left: 142px;
+  top: 438px;
   z-index: 0;
 }
 .elements .clouds .clouds-content .cloud-5 {
-  left: 690px;
-  top: 630px;
+  left: 309px;
+  top: 550px;
 }
 .elements .clouds .clouds-content .cloud-6 {
-  left: 852px;
-  top: 566px;
+  left: 471px;
+  top: 486px;
 }
 .elements .clouds .clouds-content .cloud-7 {
-  left: 988px;
-  top: 527px;
+  left: 607px;
+  top: 447px;
 }
 .elements .clouds .clouds-content .cloud-8 {
-  left: 1382px;
-  top: 519px;
+  left: 1001px;
+  top: 439px;
   z-index: 10;
 }
 .elements .clouds .clouds-content .cloud-9 {
-  left: 1601px;
-  top: 540px;
+  left: 1220px;
+  top: 460px;
   z-index: 0;
 }
 .elements .clouds .clouds-content .sun-1 {
@@ -7894,57 +7905,65 @@ a:hover {
 }
 .diapers-1 .diapers-detail img {
   position: relative;
-  top: -28px;
+  top: -12px;
   left: -6px;
 }
-.diapers-2 {
-  padding-top: 115px;
-  padding-left: 35px;
+.diapers-1 .diapers-detail .col-xs-6 {
+  padding-left: 0;
+}
+.diapers-2 .diapers-detail {
+  position: relative;
+  top: 126px;
+  left: 31px;
+}
+.diapers-2 .diapers-detail img {
+  position: relative;
+  top: -17px;
 }
 .diapers-3 .diapers-detail {
   position: relative;
-  top: -130px;
+  top: -27px;
   left: -70px;
 }
 .diapers-3 .diapers-detail img {
   position: relative;
-  top: -28px;
+  top: -10px;
   left: -70px;
 }
 .diapers-4 .diapers-detail {
   position: relative;
-  top: -27px;
-  left: 72px;
+  top: 86px;
+  left: 62px;
 }
 .diapers-4 .diapers-detail img {
   position: relative;
-  top: -28px;
-  left: -6px;
+  top: -5px;
+  left: 3px;
 }
 .diapers-5 .diapers-detail {
   position: relative;
-  top: -171px;
-  left: -50px;
+  top: -56px;
+  left: -49px;
 }
 .diapers-5 .diapers-detail img {
   position: relative;
-  top: -28px;
+  top: -15px;
   left: 7px;
 }
 .diapers-6 .diapers-detail {
   position: relative;
-  top: 20px;
-  left: 31px;
+  top: 95px;
+  left: 103px;
 }
 .diapers-6 .diapers-detail img {
   position: relative;
-  top: -15px;
+  top: -10px;
   left: -70px;
 }
 .wipes .diapers-detail {
   position: relative;
-  top: -147px;
-  left: -29px;
+  top: -100px;
+  left: -103px;
 }
 .wipes .diapers-detail .diapers-info .description {
   font-size: 27px;
@@ -7952,6 +7971,16 @@ a:hover {
 .wipes .diapers-detail img {
   position: relative;
   top: 10px;
+  left: 5px;
+}
+.mats .diapers-detail {
+  position: relative;
+  top: 72px;
+  left: -70px;
+}
+.mats .diapers-detail img {
+  position: relative;
+  top: -15px;
   left: 5px;
 }
 .videos .videos-detail {
@@ -7995,10 +8024,9 @@ a:hover {
 }
 .about {
   width: 100%;
-  top: 300px;
   position: absolute;
   overflow: hidden;
-  top: 2345px;
+  top: 2414px;
   color: #fff;
 }
 .about .about-content {
@@ -8014,12 +8042,19 @@ a:hover {
   color: #fff;
 }
 .about .about-content .dry-lock-description .description-text p {
-  padding-bottom: 13px;
+  padding-bottom: 16px;
   font-size: 16px;
 }
+.about .about-content .dry-lock-description .description-text h4 {
+  margin-top: 43px;
+}
 .about .about-content .ecology-description {
-  margin-top: 117px;
+  margin-top: 106px;
   margin-left: -5px;
+}
+.about .about-content .ecology-description h5 {
+  margin-top: 2px;
+  margin-bottom: 5px;
 }
 .about .about-content .ecology-description p {
   color: #fff;
@@ -8027,7 +8062,7 @@ a:hover {
   font-size: 16px;
 }
 .about .about-content .product-reviews {
-  margin-top: 78px;
+  margin-top: 79px;
   margin-left: 193px;
 }
 .about .about-content .product-reviews .product-reviews-content > .row {
@@ -8082,10 +8117,9 @@ a:hover {
 }
 .contact {
   width: 100%;
-  top: 300px;
   position: absolute;
   overflow: hidden;
-  top: 3944px;
+  top: 4013px;
 }
 .contact .contact-form {
   position: relative;
@@ -8184,10 +8218,9 @@ a:hover {
 
 .contact {
   width: 100%;
-  top: 300px;
   position: absolute;
   overflow: hidden;
-  top: 3944px;
+  top: 4013px;
 }
 .contact .contact-form {
   position: relative;
@@ -8279,51 +8312,55 @@ a:hover {
   height: 1px;
 }
 .elements .clouds .clouds-content {
+  position: relative;
+  left: -435px;
+  top: 100px;
   width: 1px;
   margin: 0 auto;
+  font-size: 0;
 }
 .elements .clouds .clouds-content img {
   margin: 0 auto;
   position: absolute;
 }
 .elements .clouds .clouds-content .cloud-1 {
-  left: 83.5px;
-  top: 564px;
+  left: -298px;
+  top: 484px;
 }
 .elements .clouds .clouds-content .cloud-2 {
-  left: 251px;
-  top: 479px;
+  left: -130px;
+  top: 399px;
 }
 .elements .clouds .clouds-content .cloud-3 {
-  left: 349px;
-  top: 555px;
+  left: -32px;
+  top: 475px;
   z-index: 0;
 }
 .elements .clouds .clouds-content .cloud-4 {
-  left: 523px;
-  top: 518px;
+  left: 142px;
+  top: 438px;
   z-index: 0;
 }
 .elements .clouds .clouds-content .cloud-5 {
-  left: 690px;
-  top: 630px;
+  left: 309px;
+  top: 550px;
 }
 .elements .clouds .clouds-content .cloud-6 {
-  left: 852px;
-  top: 566px;
+  left: 471px;
+  top: 486px;
 }
 .elements .clouds .clouds-content .cloud-7 {
-  left: 988px;
-  top: 527px;
+  left: 607px;
+  top: 447px;
 }
 .elements .clouds .clouds-content .cloud-8 {
-  left: 1382px;
-  top: 519px;
+  left: 1001px;
+  top: 439px;
   z-index: 10;
 }
 .elements .clouds .clouds-content .cloud-9 {
-  left: 1601px;
-  top: 540px;
+  left: 1220px;
+  top: 460px;
   z-index: 0;
 }
 .elements .clouds .clouds-content .sun-1 {
@@ -8465,57 +8502,65 @@ a:hover {
 }
 .diapers-1 .diapers-detail img {
   position: relative;
-  top: -28px;
+  top: -12px;
   left: -6px;
 }
-.diapers-2 {
-  padding-top: 115px;
-  padding-left: 35px;
+.diapers-1 .diapers-detail .col-xs-6 {
+  padding-left: 0;
+}
+.diapers-2 .diapers-detail {
+  position: relative;
+  top: 126px;
+  left: 31px;
+}
+.diapers-2 .diapers-detail img {
+  position: relative;
+  top: -17px;
 }
 .diapers-3 .diapers-detail {
   position: relative;
-  top: -130px;
+  top: -27px;
   left: -70px;
 }
 .diapers-3 .diapers-detail img {
   position: relative;
-  top: -28px;
+  top: -10px;
   left: -70px;
 }
 .diapers-4 .diapers-detail {
   position: relative;
-  top: -27px;
-  left: 72px;
+  top: 86px;
+  left: 62px;
 }
 .diapers-4 .diapers-detail img {
   position: relative;
-  top: -28px;
-  left: -6px;
+  top: -5px;
+  left: 3px;
 }
 .diapers-5 .diapers-detail {
   position: relative;
-  top: -171px;
-  left: -50px;
+  top: -56px;
+  left: -49px;
 }
 .diapers-5 .diapers-detail img {
   position: relative;
-  top: -28px;
+  top: -15px;
   left: 7px;
 }
 .diapers-6 .diapers-detail {
   position: relative;
-  top: 20px;
-  left: 31px;
+  top: 95px;
+  left: 103px;
 }
 .diapers-6 .diapers-detail img {
   position: relative;
-  top: -15px;
+  top: -10px;
   left: -70px;
 }
 .wipes .diapers-detail {
   position: relative;
-  top: -147px;
-  left: -29px;
+  top: -100px;
+  left: -103px;
 }
 .wipes .diapers-detail .diapers-info .description {
   font-size: 27px;
@@ -8525,20 +8570,30 @@ a:hover {
   top: 10px;
   left: 5px;
 }
+.mats .diapers-detail {
+  position: relative;
+  top: 72px;
+  left: -120px;
+}
+.mats .diapers-detail img {
+  position: relative;
+  top: -15px;
+  left: 5px;
+}
 .videos .videos-detail {
   position: relative;
-  top: -36px;
-  left: -15px;
+  top: -118px;
+  left: -22px;
 }
 .videos .button {
   font-size: 23px;
   color: #fff;
   background: #d91369;
-  border-radius: 7px;
+  border-radius: 13px;
   behavior: url("PIE.htc");
-  width: 240px;
-  margin: 0 auto;
-  padding: 2px 3px;
+  width: 255px;
+  margin: 2px auto;
+  padding: 4px 3px;
 }
 .videos .button:hover {
   text-decoration: none;
