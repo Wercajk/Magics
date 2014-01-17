@@ -22,18 +22,19 @@ imagesLoaded document.body, (instance) ->
             .css('overflow-y', 'auto')
             .css('overflow-x', 'hidden')
 
-        soundManager.setup({
-            url: '/path/to/swf-files/',
-            onready: ->
-                window.backgroundSound = soundManager.createSound({
-                    id: 'aSound',
-                    url: '/background-sound.mp3'
-                })
-                loopSound 'aSound'
-            ,
-            ontimeout: ->
-                $('.sound-button').hide()
-        })
+        if !window.navigatorDetect.isMobile()
+            soundManager.setup({
+                url: '/path/to/swf-files/',
+                onready: ->
+                    window.backgroundSound = soundManager.createSound({
+                        id: 'aSound',
+                        url: '/background-sound.mp3'
+                    })
+                    loopSound 'aSound'
+                ,
+                ontimeout: ->
+                    $('.sound-button').hide()
+            })
 
 
 
