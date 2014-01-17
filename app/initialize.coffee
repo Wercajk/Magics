@@ -1,3 +1,12 @@
+
+
+# Loop function
+loopSound = (soundID) ->
+    window.setTimeout ->
+        soundManager.play(soundID,{onfinish: -> loopSound(soundID)})
+    ,1
+
+
 # Enable page after images are loaded
 imagesLoaded document.body, (instance) ->
 
@@ -19,9 +28,9 @@ imagesLoaded document.body, (instance) ->
                 window.backgroundSound = soundManager.createSound({
                     id: 'aSound',
                     url: '/background-sound.mp3',
-                    autoPlay: true,
-                    loop: 99
+                    autoPlay: true
                 })
+                loopSound 'aSound'
             ,
             ontimeout: ->
                 $('.sound-button').hide()
