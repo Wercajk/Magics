@@ -3,9 +3,9 @@ imagesLoaded document.body, (instance) ->
 
     setTimeout( ->
 
-        $('.loading .circle').animate({opacity: 0}, 3000, ->
-            $('.loading .circle').hide()
-        )
+        $('.loading .circle')
+            .animate({opacity: 0}, 3000)
+            .animate({margin: -20}, 1000, 'easeInOutCubic')
 
         $('.hide-during-load').animate({opacity: 1}, 2000)
 
@@ -19,13 +19,12 @@ imagesLoaded document.body, (instance) ->
                 window.backgroundSound = soundManager.createSound({
                     id: 'aSound',
                     url: '/background-sound.mp3',
-                    # autoPlay: true,
-                    loop: 3
+                    autoPlay: true,
+                    loop: 99
                 })
-                # backgroundSound.play()
             ,
             ontimeout: ->
-                # hide icon!
+                $('.sound-button').hide()
         })
 
 
@@ -41,20 +40,30 @@ imagesLoaded document.body, (instance) ->
 #             $(this).draggable()
 # $('.diapers-detail img').draggable()
 
-# Parallax effect for non mobile platforms
-if !window.navigatorDetect.isMobile()
-    $(window).stellar()
+$ ->
 
-$('.menu ul a').click ->
+    # Parallax effect for non mobile platforms
     if !window.navigatorDetect.isMobile()
-        $(document.body).animate({
-            scrollTop: $( this.hash ).offset().top
-        }, 2000, 'easeInOutQuart')
-    else
-        $(document.body).animate({
-            scrollTop: $( this.hash ).offset().top
-        }, 0)
-    return false
+        $(window).stellar()
+
+    $('.menu ul a').click ->
+        if !window.navigatorDetect.isMobile()
+            $(document.body).animate({
+                scrollTop: $( this.hash ).offset().top
+            }, 2000, 'easeInOutQuart')
+        else
+            $(document.body).animate({
+                scrollTop: $( this.hash ).offset().top
+            }, 0)
+        return false
+
+    $('.sound-button').click ->
+        if backgroundSound.playState
+            backgroundSound.stop()
+            $(this).attr('src', 'images/Sound-Off.png')
+        else
+            backgroundSound.play()
+            $(this).attr('src', 'images/Sound-On.png')
 
 
 

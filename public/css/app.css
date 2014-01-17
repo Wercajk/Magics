@@ -7704,7 +7704,6 @@ input {
 body {
   background: url("/images/background.jpg");
   background-color: #3f7cd5;
-  background: url("/images/background-positioning.jpg");
   background-position: 50% 0;
   background-repeat: no-repeat;
   height: 100%;
@@ -7721,6 +7720,12 @@ a {
 }
 a:hover {
   color: #151c64;
+}
+.sound-button {
+  position: fixed;
+  top: 17px;
+  right: 17px;
+  cursor: pointer;
 }
 .elements {
   position: relative;
@@ -7976,7 +7981,7 @@ a:hover {
 .mats .diapers-detail {
   position: relative;
   top: 72px;
-  left: -70px;
+  left: -120px;
 }
 .mats .diapers-detail img {
   position: relative;
@@ -7985,8 +7990,8 @@ a:hover {
 }
 .videos .videos-detail {
   position: relative;
-  top: -36px;
-  left: -15px;
+  top: -118px;
+  left: -22px;
 }
 .videos .button {
   font-size: 23px;
@@ -7994,12 +7999,12 @@ a:hover {
   font-family: FontoonCom;
   font-style: roman;
   background: #d91369;
-  -webkit-border-radius: 7px;
-  border-radius: 7px;
+  -webkit-border-radius: 13px;
+  border-radius: 13px;
   behavior: url("PIE.htc");
-  width: 240px;
-  margin: 0 auto;
-  padding: 2px 3px;
+  width: 255px;
+  margin: 2px auto;
+  padding: 4px 3px;
 }
 .videos .button:hover {
   text-decoration: none;
