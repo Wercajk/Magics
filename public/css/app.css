@@ -7709,6 +7709,9 @@ body {
   height: 100%;
   background-attachment: scroll;
   overflow: hidden;
+  -webkit-background-size: cover !important;
+  -moz-background-size: cover !important;
+  background-size: cover !important;
 }
 .hide-during-load {
   opacity: 0;
