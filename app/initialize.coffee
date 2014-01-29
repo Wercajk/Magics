@@ -1,12 +1,3 @@
-
-
-# Loop function
-loopSound = (soundID) ->
-    window.setTimeout ->
-        soundManager.play(soundID,{onfinish: -> loopSound(soundID)})
-    ,1
-
-
 # Enable page after images are loaded
 imagesLoaded document.body, (instance) ->
 
@@ -21,22 +12,6 @@ imagesLoaded document.body, (instance) ->
         $(document.body)
             .css('overflow-y', 'auto')
             .css('overflow-x', 'hidden')
-
-        if !window.navigatorDetect.isMobile()
-            soundManager.setup({
-                url: '/path/to/swf-files/',
-                onready: ->
-                    window.backgroundSound = soundManager.createSound({
-                        id: 'aSound',
-                        url: '/background-sound.mp3'
-                    })
-                    loopSound 'aSound'
-                ,
-                ontimeout: ->
-                    $('.sound-button').hide()
-            })
-
-
 
     , 1000)
 
