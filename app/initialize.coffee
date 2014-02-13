@@ -32,22 +32,9 @@ $ ->
 
     $('.menu ul a').click ->
         if !window.navigatorDetect.isMobile()
-            $(document.body).animate({
+            $('body, html').animate({
                 scrollTop: $( this.hash ).offset().top
             }, 2000, 'easeInOutQuart')
-        else
-            $(document.body).animate({
-                scrollTop: $( this.hash ).offset().top
-            }, 0)
-        return false
-
-    $('.sound-button').click ->
-        if backgroundSound.playState
-            backgroundSound.stop()
-            $(this).attr('src', 'images/Sound-Off.png')
-        else
-            loopSound 'aSound'
-            $(this).attr('src', 'images/Sound-On.png')
-
+            return false
 
 
