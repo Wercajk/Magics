@@ -2,15 +2,14 @@
   .row
     .col-xs-7
       .contact-form
-        form
-          input.name(type="text",name="name")
-          input.email(type="email",name="email")
-          textarea.message(name="message",rows=6)
-          button.send(type="submit")
-            img(src="/images/Contact-Form-Submit.png")
+        input.name(type="text",name="name")
+        input.email(type="email",name="email")
+        textarea.message(id="message",name="message",rows=2)
+        .send
+          img(src="/images/Contact-Form-Submit.png", alt='')
     .col-xs-5
       .contact-address-belgium
-        img.envelope(src="/images/Contact-Envelope.png")
+        img.envelope(src="/images/Contact-Envelope.png", alt='')
         h3 Drylock Technologies NV
         div Spinnerijstraat 14
         div 9240 Zele
@@ -18,10 +17,10 @@
         br
         br
         a(href="mailto:info@drylock.eu")
-          img.arroba(src="/images/Contact-Arroba.png")
+          img.arroba(src="/images/Contact-Arroba.png", alt='')
           span info@drylock.eu
       .contact-address-czech
-        img.envelope(src="/images/Contact-Envelope.png")
+        img.envelope(src="/images/Contact-Envelope.png", alt='')
         h3 Drylock Technologies, s.r.o.
         div Vlámská 801
         div Hrádek nad Nisou
@@ -30,6 +29,6 @@
         br
         br
         a(href="mailto:info.cz@drylock.eu")
-          img.arroba(src="/images/Contact-Arroba.png")
+          img.arroba(src="/images/Contact-Arroba.png", alt='')
           span info.cz@drylock.eu
 
